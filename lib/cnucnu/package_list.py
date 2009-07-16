@@ -24,11 +24,12 @@ sys.path.insert(0, '../../lib')
 
 import cnucnu.errors as cc_errors
 
-class Package:
+class Package(object):
+
     def __init__(self, name, regex, url, repo):
         self.name = name
-        self.regex = regex
-        self.url = url
+        self.__regex = regex
+        self.__url = url
         self._repo_version = None
         self._latest_upstream = None
         self._upstream_versions = None
@@ -41,6 +42,26 @@ class Package:
 
     def __getitem__(self, key):
         return getattr(self, key)
+
+    def get_regex(self):
+        return self.__regex
+
+    def set_regex(self, regex):
+        self.__regex = regex
+        self._latest_upstream = None
+        self._upstream_versions = None
+
+    regex = property(get_regex, set_regex)
+    
+    def get_url(self):
+        return self.__url
+
+    def set_url(self, url):
+        self.__url = url
+        self._latest_upstream = None
+        self._upstream_versions = None
+
+    url = property(get_url, set_url)
   
     @property
     def upstream_versions(self):
