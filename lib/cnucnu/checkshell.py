@@ -55,6 +55,7 @@ class CheckShell(cmd.Cmd):
         if self.package.url:
             self.package.url = None
         else:
+            print
             sys.exit(0)
 
     def default(self, args):
