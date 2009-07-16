@@ -45,7 +45,10 @@ class Package(object):
         self._rpm_diff = None
 
     def __str__(self):
-        return "%s %s %s" % (self.name, self.regex, self.url)
+        return "%(name)s: repo=%(repo_version)s upstream=%(latest_upstream)s" % self
+
+    def __repr__(self):
+        return "%(name)s %(regex)s %(url)s" % self
 
     def __getitem__(self, key):
         return getattr(self, key)
