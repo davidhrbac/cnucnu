@@ -23,6 +23,7 @@ sys.path.insert(0, '../lib')
 sys.path.insert(0, '../../lib')
 
 import cnucnu.errors as cc_errors
+from cnucnu.helper import rpm_cmp
 
 class Package(object):
 
@@ -30,12 +31,18 @@ class Package(object):
         self.name = name
         self.__regex = regex
         self.__url = url
-        self._repo_version = None
+        
         self._latest_upstream = None
         self._upstream_versions = None
         self._repo_version = None
+        self._rpm_diff = None
 
         self.repo = repo
+
+    def _invalidate_caches(self):
+        self._latest_upstream = None
+        self._upstream_versions = None
+        self._rpm_diff = None
 
     def __str__(self):
         return "%s %s %s" % (self.name, self.regex, self.url)
@@ -43,25 +50,17 @@ class Package(object):
     def __getitem__(self, key):
         return getattr(self, key)
 
-    def get_regex(self):
-        return self.__regex
-
     def set_regex(self, regex):
         self.__regex = regex
-        self._latest_upstream = None
-        self._upstream_versions = None
+        self._invalidate_caches()
 
-    regex = property(get_regex, set_regex)
+    regex = property(lambda self:self.__regex, set_regex)
     
-    def get_url(self):
-        return self.__url
-
     def set_url(self, url):
         self.__url = url
-        self._latest_upstream = None
-        self._upstream_versions = None
+        self._invalidate_caches()
 
-    url = property(get_url, set_url)
+    url = property(lambda self:self.__url, set_url)
   
     @property
     def upstream_versions(self):
@@ -83,14 +82,20 @@ class Package(object):
 
             self._upstream_versions = upstream_versions
 
+            # invalidate sub caches
+            self._latest_upstream = None
+            self._rpm_diff = None
+
         return self._upstream_versions
 
     @property
     def latest_upstream(self):
         if not self._latest_upstream:
-            
             from cnucnu.helper import rpm_max
             self._latest_upstream = rpm_max(self.upstream_versions)
+            
+            # invalidate _rpm_diff cache
+            self._rpm_diff = None
 
         return self._latest_upstream
 
@@ -99,6 +104,20 @@ class Package(object):
         if not self._repo_version:
             self._repo_version  = self.repo.package_version(self)
         return self._repo_version
+
+    @property
+    def rpm_diff(self):
+        if not self._rpm_diff:
+            self._rpm_diff = rpm_cmp(self.repo_version, self.latest_upstream)
+        return self._rpm_diff
+
+    @property
+    def upstream_newer(self):
+        return self.rpm_diff == -1
+    
+    @property
+    def repo_newer(self):
+        return self.rpm_diff == 1
 
 
 class PackageList:

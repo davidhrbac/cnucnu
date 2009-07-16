@@ -37,10 +37,23 @@ class PackageTest(unittest.TestCase):
         p = Package("name", "regex", "url", Repository())
         p._upstream_versions = [0, 1]
         p._latest_upstream = 1
+        p._rpm_diff = 0 
         p.regex = "new regex"
-        self.assertEqual(p.regex, p.get_regex())
+        self.assertEqual(p.regex, "new regex")
         self.assertEqual(p._upstream_versions, None)
         self.assertEqual(p._latest_upstream, None)
+        self.assertEqual(p._rpm_diff, None)
+    
+    def testUrlUpdate(self):
+        p = Package("name", "regex", "url", Repository())
+        p._upstream_versions = [0, 1]
+        p._latest_upstream = 1
+        p._rpm_diff = 1
+        p.url = "new url"
+        self.assertEqual(p.url, "new url")
+        self.assertEqual(p._upstream_versions, None)
+        self.assertEqual(p._latest_upstream, None)
+        self.assertEqual(p._rpm_diff, None)
     
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(PackageTest)

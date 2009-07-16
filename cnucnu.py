@@ -22,6 +22,7 @@ sys.path.insert(0, './lib')
 
 import cnucnu.package_list as package_list
 import cnucnu.checkshell as checkshell
+import pickle
 
 if __name__ == '__main__':
     import re
@@ -65,12 +66,10 @@ if __name__ == '__main__':
             sys.stderr.write("Testing: %i -  %s\n" % (package_nr, package.name))
 
             try:
-                from cnucnu.helper import rpm_cmp
-                diff = rpm_cmp(package.repo_version, package.latest_upstream) 
-                if diff == -1:
+                if package.upstream_newer:
                     print "Outdated package %(name)s: Rawhide version: %(repo_version)s, Upstream latest: %(latest_upstream)s" % package
                     outdated_f.write("%(name)s %(repo_version)s %(latest_upstream)s\n" % package)
-                elif diff == 1:
+                elif package.repo_newer:
                     print "Rawhide newer %(name)s: Rawhide version: %(repo_version)s, Upstream latest: %(latest_upstream)s" % package
                     too_new_f.write("%(name)s %(repo_version)s %(latest_upstream)s\n" % package)
 
@@ -86,3 +85,8 @@ if __name__ == '__main__':
         outdated_f.close()
         too_new_f.close()
         error_f.close()
+        pickle_file = open("data.pickle", "wb")
+        pickle.dump(packages, pickle_file)
+        pickle_file.close()
+
+
