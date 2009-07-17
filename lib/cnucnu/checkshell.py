@@ -22,12 +22,13 @@ import cmd
 import readline
 
 from cnucnu.package_list import Package
+from cnucnu.package_list import Repository
 
 class CheckShell(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         readline.set_completer_delims(' ')
-        self.package = Package("", None, None, None)
+        self.package = Package("", None, None, Repository())
         self.prompt_default = " URL:"
         self.update_prompt()
 

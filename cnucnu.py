@@ -43,7 +43,7 @@ if __name__ == '__main__':
     conf = config.Config(options.config_filename)
 
     if options.action == "check":
-        shell = checkshell.CheckShell()
+        shell = CheckShell()
         while True:
             try:
                 if not shell.cmdloop():
