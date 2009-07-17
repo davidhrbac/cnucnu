@@ -150,7 +150,7 @@ class Repository:
 
         return self._package_version_list
 
-    def repoquery(self, package_names=[""]):
+    def repoquery(self, package_names=[]):
         import subprocess as sp
         cmdline = ["/usr/bin/repoquery", "--archlist=src", "--all", "--repoid=%s" % self.repoid, "--qf", "%{name}\t%{version}"]
         cmdline.extend(package_names)
