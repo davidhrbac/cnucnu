@@ -42,9 +42,9 @@ class CheckShell(cmd.Cmd):
     def do_name(self, args):
         self.package.name = args
         if not self.package.regex:
-            self.package.regex = "%s-([0-9.]*)\\.[tz][ai][rp]" % self.package.name
+            self.package.regex = "DEFAULT"
         if not self.package.url:
-            self.package.url = "http://prdownloads.sourceforge.net/%s" % self.package.name
+            self.package.url = "SF-DEFAULT"
     
     def do_regex(self, args):
         self.package.regex = args

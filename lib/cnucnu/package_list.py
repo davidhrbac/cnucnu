@@ -29,8 +29,9 @@ class Package(object):
 
     def __init__(self, name, regex, url, repo):
         self.name = name
-        self.__regex = regex
-        self.__url = url
+
+        self.regex = regex
+        self.url = url
         
         self._latest_upstream = None
         self._upstream_versions = None
@@ -55,12 +56,16 @@ class Package(object):
         return getattr(self, key)
 
     def set_regex(self, regex):
+        if regex == "DEFAULT":
+            regex = "%s-([0-9.]*)\\.[tz][ai][rp]" % self.name
         self.__regex = regex
         self._invalidate_caches()
 
     regex = property(lambda self:self.__regex, set_regex)
     
     def set_url(self, url):
+        if url == "SF-DEFAULT":
+            url = "http://prdownloads.sourceforge.net/%s" % self.name
         self.__url = url
         self._invalidate_caches()
 
