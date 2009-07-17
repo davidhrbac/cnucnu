@@ -142,7 +142,7 @@ class Repository:
         self._package_version_list = None
 
     def package_version_list(self, package=None):
-        if not self._package_version_list or package and package not in self._package_version_list:
+        if not self._package_version_list or (package and package.name not in self._package_version_list):
             if package and package not in self.package_list:
                 self.package_list.packages.append(package)
             package_names = [p.name for p in self.package_list.packages]
@@ -150,14 +150,13 @@ class Repository:
 
         return self._package_version_list
 
-    def repoquery(self, package_names):
+    def repoquery(self, package_names=[""]):
         import subprocess as sp
         cmdline = ["/usr/bin/repoquery", "--archlist=src", "--all", "--repoid=%s" % self.repoid, "--qf", "%{name}\t%{version}"]
         cmdline.extend(package_names)
 
         repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
         (list, stderr) = repoquery.communicate()
-
         return dict([e.split("\t") for e in list.split("\n") if e != ""])
 
 
