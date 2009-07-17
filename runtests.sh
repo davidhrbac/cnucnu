@@ -18,3 +18,4 @@
 #}}}
 
 lib/cnucnu/tests/package_list_test.py
+lib/cnucnu/tests/mail_test.py
