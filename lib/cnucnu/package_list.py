@@ -38,6 +38,7 @@ class Package(object):
         self._rpm_diff = None
 
         self.repo = repo
+        self.repoid = repo.repoid
 
     def _invalidate_caches(self):
         self._latest_upstream = None
@@ -123,30 +124,6 @@ class Package(object):
         return self.rpm_diff == 1
 
 
-class PackageList:
-    def __init__(self, repo):
-        import cnucnu.wiki as wiki
-        w = wiki.Wiki()
-        page_text = w.get_pagesource("Using_FEver_to_track_upstream_changes")
-
-        import re
-        package_line = re.compile(' \\* ([^ ]*) (.*) ([^ \n]*)\n')
-
-        match = package_line.findall(page_text)
-
-        packages = []
-        repo.package_list = self
-        
-        for package in match:
-            (name, regex, url) = package
-            packages.append(Package(name, regex, url, repo))
-
-        self.packages = packages
-
-    def __getitem__(self, key):
-        return self.packages[key]
-
-
 class Repository:
     def __init__(self, package_list=None, repoid="rawhide-source"):
         self.repoid = repoid
@@ -173,3 +150,25 @@ class Repository:
         return self.package_version_list(package)[package.name]
 
 
+class PackageList:
+    def __init__(self, repo=Repository()):
+        import cnucnu.wiki as wiki
+        w = wiki.Wiki()
+        page_text = w.get_pagesource("Using_FEver_to_track_upstream_changes")
+
+        import re
+        package_line = re.compile(' \\* ([^ ]*) (.*) ([^ \n]*)\n')
+
+        match = package_line.findall(page_text)
+
+        packages = []
+        repo.package_list = self
+        
+        for package in match:
+            (name, regex, url) = package
+            packages.append(Package(name, regex, url, repo))
+
+        self.packages = packages
+
+    def __getitem__(self, key):
+        return self.packages[key]

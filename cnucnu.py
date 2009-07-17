@@ -20,8 +20,11 @@
 import sys
 sys.path.insert(0, './lib')
 
-import cnucnu.package_list as package_list
-import cnucnu.checkshell as checkshell
+from cnucnu import  config
+from cnucnu.package_list import Repository, PackageList
+from cnucnu.checkshell import CheckShell
+from cnucnu.bugzilla_reporter import BugzillaReporter
+
 import pickle
 
 if __name__ == '__main__':
@@ -31,11 +34,15 @@ if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser()
      
-    parser.add_option("", "--check", dest="check", help="check URL and regex interactively", action="store_true", default=False)
+    parser.add_option("", "--check", dest="action", help="check URL and regex interactively", action="store_const", const="check")
+    parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials", default="./cnucnu.ini")
+    parser.add_option("", "--create-bugs", dest="action", help="file bugs for outdated packages", action="store_const", const="create-bugs")
 
     (options, args) = parser.parse_args()
 
-    if options.check:
+    conf = config.Config(options.config_filename)
+
+    if options.action == "check":
         shell = checkshell.CheckShell()
         while True:
             try:
@@ -45,9 +52,23 @@ if __name__ == '__main__':
                 print 'Exception occured:'
                 print repr(ex)
                 break
+    elif options.action == "create-bugs":
+        bugzilla_config =  conf.get_bugzilla_config()
+        br = BugzillaReporter(**bugzilla_config)
+
+        pl = PackageList()
+        for p in pl:
+            print "testing: %s" % p.name
+            try:
+                if p.upstream_newer:
+                    if p.name not in ['abook', 'crm114', 'crossvc', 'ctorrent', 'ekg2', 'emacs-auctex', 'fdupes', 'hping3', 'libtlen', 'mysqltuner']:
+                        br.report_outdated(p)
+            except Exception, e:
+                pprint(e)
+
     else:
-        repo = package_list.Repository(repoid="rawhide-source")
-        plist = package_list.PackageList(repo=repo)
+        repo = Repository(repoid="rawhide-source")
+        plist = PackageList(repo=repo)
         packages = plist.packages
 
         package_nr = 0
