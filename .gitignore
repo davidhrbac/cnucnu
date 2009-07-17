@@ -1,0 +1,5 @@
+*.pyc
+.*.swp
+cnucnu.ini
+*.log
+*.pickle
