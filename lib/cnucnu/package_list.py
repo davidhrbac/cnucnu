@@ -18,6 +18,7 @@
 #}}}
 
 import sys
+import re
 sys.path.insert(0, './lib')
 sys.path.insert(0, '../lib')
 sys.path.insert(0, '../../lib')
@@ -28,6 +29,7 @@ from cnucnu.helper import rpm_cmp
 class Package(object):
 
     def __init__(self, name, regex, url, repo):
+        # :TODO: add some sanity checks
         self.name = name
 
         self.regex = regex
@@ -57,7 +59,9 @@ class Package(object):
 
     def set_regex(self, regex):
         if regex == "DEFAULT":
-            regex = "%s-([0-9.]*)\\.[tz][ai][rp]" % self.name
+            regex = "%s-([0-9.]*)\\.[tz][ai][rp]" % re.escape(self.name)
+        elif regex == "FM-DEFAULT":
+            regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
         self.__regex = regex
         self._invalidate_caches()
 
@@ -66,6 +70,9 @@ class Package(object):
     def set_url(self, url):
         if url == "SF-DEFAULT":
             url = "http://prdownloads.sourceforge.net/%s" % self.name
+        elif url == "FM-DEFAULT":
+            url = "http://freshmeat.net/projects/%s" % self.name
+
         self.__url = url
         self._invalidate_caches()
 
@@ -75,7 +82,6 @@ class Package(object):
     def upstream_versions(self):
         if not self._upstream_versions:
             from cnucnu.helper import get_html
-            import re
             
             try:
                 html = get_html(self.url)

@@ -45,6 +45,11 @@ class CheckShell(cmd.Cmd):
             self.package.regex = "DEFAULT"
         if not self.package.url:
             self.package.url = "SF-DEFAULT"
+
+    def do_fm(self, args):
+        self.package.name = args
+        self.package.regex = "FM-DEFAULT"
+        self.package.url = "FM-DEFAULT"
     
     def do_regex(self, args):
         self.package.regex = args
