@@ -146,38 +146,43 @@ class Repository:
             if package and package not in self.package_list:
                 self.package_list.packages.append(package)
             package_names = [p.name for p in self.package_list.packages]
-            import subprocess as sp
-            cmdline = ["/usr/bin/repoquery", "--archlist=src", "--all", "--repoid=rawhide-source", "--qf", "%{name}\t%{version}"]
-            cmdline.extend(package_names)
-
-            repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
-            (list, stderr) = repoquery.communicate()
-
-            self._package_version_list = dict([e.split("\t") for e in list.split("\n") if e != ""])
+            self._package_version_list = self.repoquery(package_names)
 
         return self._package_version_list
+
+    def repoquery(self, package_names):
+        import subprocess as sp
+        cmdline = ["/usr/bin/repoquery", "--archlist=src", "--all", "--repoid=%s" % self.repoid, "--qf", "%{name}\t%{version}"]
+        cmdline.extend(package_names)
+
+        repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
+        (list, stderr) = repoquery.communicate()
+
+        return dict([e.split("\t") for e in list.split("\n") if e != ""])
+
 
     def package_version(self, package):
         return self.package_version_list(package)[package.name]
 
 
 class PackageList:
-    def __init__(self, repo=Repository()):
-        import cnucnu.wiki as wiki
-        w = wiki.Wiki()
-        page_text = w.get_pagesource("Using_FEver_to_track_upstream_changes")
+    def __init__(self, repo=Repository(), wiki_page="Using_FEver_to_track_upstream_changes", packages=None):
+        if not packages:
+            import cnucnu.wiki as wiki
+            w = wiki.Wiki()
+            page_text = w.get_pagesource(wiki_page)
 
-        import re
-        package_line = re.compile(' \\* ([^ ]*) (.*) ([^ \n]*)\n')
+            import re
+            package_line = re.compile(' \\* ([^ ]*) (.*) ([^ \n]*)\n')
 
-        match = package_line.findall(page_text)
+            match = package_line.findall(page_text)
 
-        packages = []
-        repo.package_list = self
-        
-        for package in match:
-            (name, regex, url) = package
-            packages.append(Package(name, regex, url, repo))
+            packages = []
+            repo.package_list = self
+            
+            for package in match:
+                (name, regex, url) = package
+                packages.append(Package(name, regex, url, repo))
 
         self.packages = packages
 
