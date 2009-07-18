@@ -186,4 +186,13 @@ class PackageList:
         self.packages = packages
 
     def __getitem__(self, key):
-        return self.packages[key]
+        if isinstance(key, int):
+            return self.packages[key]
+        elif isinstance(key, str):
+            for p in self.packages:
+                if p.name == key:
+                    return p
+            raise KeyError("Package %s not found" % key) 
+
+
+

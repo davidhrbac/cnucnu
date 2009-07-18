@@ -21,8 +21,7 @@ import sys
 import cmd
 import readline
 
-from cnucnu.package_list import Package
-from cnucnu.package_list import Repository
+from cnucnu.package_list import Package, PackageList, Repository
 
 class CheckShell(cmd.Cmd):
     def __init__(self):
@@ -50,12 +49,20 @@ class CheckShell(cmd.Cmd):
         self.package.name = args
         self.package.regex = "FM-DEFAULT"
         self.package.url = "FM-DEFAULT"
+
+    def do_inspect(self, args):
+        self.package_list = PackageList()
+        try:
+            self.package = self.package_list[args]
+        except KeyError, ke:
+            print ke
     
     def do_regex(self, args):
         self.package.regex = args
 
     def do_EOF(self, args):
         self.emptyline()
+
 
     def emptyline(self):
         if self.package.url:
