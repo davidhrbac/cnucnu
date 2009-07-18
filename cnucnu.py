@@ -78,7 +78,7 @@ if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser()
      
-    parser.add_option("", "--check", dest="action", help="check URL and regex interactively", action="store_const", const="check")
+    parser.add_option("", "--shell", dest="action", help="Interactive shell", action="store_const", const="shell")
     parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials", default="./cnucnu.ini")
     parser.add_option("", "--create-bugs", dest="action", help="file bugs for outdated packages", action="store_const", const="create-bugs")
     parser.add_option("", "--fm-outdated-all", dest="action", help="compare all packages in rawhide with freshmeat", action="store_const", const="fm-outdated-all")
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     conf = config.Config(options.config_filename)
-    if options.action == "check":
+    if options.action == "shell":
         shell = CheckShell(config=conf)
         while True:
             try:
@@ -97,7 +97,7 @@ if __name__ == '__main__':
                 print repr(ex)
                 break
     elif options.action == "create-bugs":
-        bugzilla_config =  conf.get_bugzilla_config()
+        bugzilla_config =  conf.bugzilla_config
         br = BugzillaReporter(**bugzilla_config)
 
         pl = PackageList()

@@ -46,8 +46,11 @@ class CheckShell(cmd.Cmd):
     @property
     def br(self):
         if not self._br:
-            bugzilla_config = self.config.get_bugzilla_config()
-            self._br = BugzillaReporter(**bugzilla_config)
+            try:
+                bugzilla_config = self.config.bugzilla_config
+                self._br = BugzillaReporter(**bugzilla_config)
+            except:
+                print "Cannot query bugzilla, maybe config is faulty or missing"
         return self._br
 
     def update_prompt(self):
@@ -119,16 +122,16 @@ class CheckShell(cmd.Cmd):
                     else:
                         status = ""
                     print "Repo Version: %s%s" % (self.package.repo_version, status)
-                    if self.package.upstream_newer:
+                    if self.package.upstream_newer and self.br:
                         bugs = self.br.get_open(self.package)
                         if bugs:
                             for bug in bugs:
-                                print "Open Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
+                                print "Open Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s %s:%s" % (bug.bug_id, bug.bug_status, bug.summary)
 
                         bugs = self.br.get_bug(self.package)
                         if bugs:
                             for bug in bugs:
-                                print "Closed Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
+                                print "Matching Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s %s:%s" % (bug.bug_id, bug.bug_status, bug.summary)
             except Exception, e:
                 print e
         return stop
