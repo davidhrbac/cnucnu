@@ -1,5 +1,5 @@
 include bugzilla-set-status.py
-include cnucnu.ini.sample
+include cnucnu.yaml.sample
 include COPYING
 include gpl-2.0.txt
 include gpl-3.0.txt
