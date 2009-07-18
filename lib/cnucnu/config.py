@@ -28,15 +28,13 @@ class Config(object):
         ini.readfp(file)
         file.close()
 
-        self.bugzilla_username = ini.get("cnucnu", "bugzilla username")
-        self.bugzilla_password = ini.get("cnucnu", "bugzilla password")
-        self.bugzilla_url = ini.get("cnucnu", "bugzilla url")
-        self.bugzilla_product = ini.get("cnucnu", "bugzilla product")
+        self._bugzilla_config = {}
 
-    def get_bugzilla_config(self):
-        config = {}
-        for attr in dir(self):
-            if attr.startswith("bugzilla_"):
-                config[attr] = getattr(self, attr)
-        return config
-
+    @property
+    def bugzilla_config(self):
+        if not self._bugzilla_config:
+            for name, value in self.ini.items("cnucnu"):
+                bugzilla_prefix = "bugzilla "
+                if name.startswith(bugzilla_prefix):
+                    self._bugzilla_config["bugzilla_"+name[len(bugzilla_prefix):]] = value
+        return self._bugzilla_config

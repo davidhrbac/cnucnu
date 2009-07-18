@@ -21,26 +21,48 @@ import sys
 import cmd
 import readline
 
-from cnucnu.package_list import Package
-from cnucnu.package_list import Repository
+from cnucnu.package_list import Package, PackageList, Repository
+from cnucnu.bugzilla_reporter import BugzillaReporter
 
 class CheckShell(cmd.Cmd):
-    def __init__(self):
+    def __init__(self, config):
         cmd.Cmd.__init__(self)
         readline.set_completer_delims(' ')
-        self.package = Package("", None, None, Repository())
+        self.repo = Repository()
+        self.package = Package("", None, None, self.repo)
+        self._package_list = None
         self.prompt_default = " URL:"
         self.update_prompt()
+        self.config = config
+        self._br = None
+
+    @property
+    def package_list(self):
+        if not self._package_list:
+            self._package_list = PackageList(repo=self.repo)
+            if self.package.name:
+                self._package_list.append(self.package)
+        return self._package_list
+
+    @property
+    def br(self):
+        if not self._br:
+            try:
+                bugzilla_config = self.config.bugzilla_config
+                self._br = BugzillaReporter(**bugzilla_config)
+            except:
+                print "Cannot query bugzilla, maybe config is faulty or missing"
+        return self._br
 
     def update_prompt(self):
-        self.prompt = "%(url)s - %(regex)s" % self.package
+        self.prompt = "%(name)s %(regex)s %(url)s " % self.package
         self.prompt += "%s> " % self.prompt_default
 
     def do_url(self, args):
         self.package.url = args
 
     def do_name(self, args):
-        self.package.name = args
+        self.package = Package(args, self.package.regex, self.package.name, self.repo)
         if not self.package.regex:
             self.package.regex = "DEFAULT"
         if not self.package.url:
@@ -50,12 +72,26 @@ class CheckShell(cmd.Cmd):
         self.package.name = args
         self.package.regex = "FM-DEFAULT"
         self.package.url = "FM-DEFAULT"
+
+    def do_report(self, args):
+        self.br.report_outdated(self.package, dry_run=False)
+
+    def do_inspect(self, args):
+        try:
+            self.package = self.package_list[args]
+        except KeyError, ke:
+            print ke
+
+    def complete_inspect(self, text, line, begidx, endidx):
+        package_names = [p.name for p in self.package_list if p.name.startswith(text)]
+        return package_names
     
     def do_regex(self, args):
         self.package.regex = args
 
     def do_EOF(self, args):
         self.emptyline()
+
 
     def emptyline(self):
         if self.package.url:
@@ -79,8 +115,24 @@ class CheckShell(cmd.Cmd):
         self.update_prompt()
         if self.package.url and self.package.regex:
             try:
-                print "Versions: ", self.package.upstream_versions
-                print "Latest: ", self.package.latest_upstream
+                print "Versions:", self.package.upstream_versions
+                print "Latest:", self.package.latest_upstream
+                if self.package.name:
+                    if self.package.status:
+                        status = " %s" % self.package.status
+                    else:
+                        status = ""
+                    print "Repo Version: %s%s" % (self.package.repo_version, status)
+                    if self.package.upstream_newer and self.br:
+                        bugs = self.br.get_open(self.package)
+                        if bugs:
+                            for bug in bugs:
+                                print "Open Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s %s:%s" % (bug.bug_id, bug.bug_status, bug.summary)
+
+                        bugs = self.br.get_bug(self.package)
+                        if bugs:
+                            for bug in bugs:
+                                print "Matching Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s %s:%s" % (bug.bug_id, bug.bug_status, bug.summary)
             except Exception, e:
                 print e
         return stop

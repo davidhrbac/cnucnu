@@ -37,9 +37,10 @@ parser.add_option("-u", "--username", dest="username", help="bugzilla username")
 
 (options, args) = parser.parse_args()
 
-username = options.username
 
-bz = Bugzilla(url="https://bugzilla.redhat.com/xmlrpc.cgi", user=username)
+
+
+bz = Bugzilla(url="https://bugzilla.redhat.com/xmlrpc.cgi")
 
 qs = {'product': ['Fedora'], 'query_format': ['advanced'], 'bug_status': ['NEW'], 'emailreporter1': ['1'], 'emailtype1': ['exact'], 'email1': ['upstream-release-monitoring@fedoraproject.org']}
 
@@ -47,6 +48,11 @@ bugs = bz.query(qs)
 
 pprint(bugs)
 
+username = options.username
+if not username:
+    username = raw_input("Username: ")
+
+bz.login(user=username, password=getpass.getpass())
 # :TODO:
 # Maybe all bugs could be changed somehow like this:
 #
@@ -54,19 +60,24 @@ pprint(bugs)
 #          'keywords': 'FutureFeature'
 #         }
 #bug_id_list = [b.bug_id for b in bugs]
-#
 #bz._update_bugs(bug_id_list, update)
 
-bz.login(password=getpass.getpass())
 
-kw_defaults = {'nomail': 1, 'action': 'add', 'keywords': 'FutureFeature'}
-for bug in bugs:
-    print "changing: %s" % bug.bug_id
-    print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
-    kw = {"bug_id": bug.bug_id}
+def set_FutureFeature(bug_id):
+    kw_defaults = {'nomail': 1, 'action': 'add', 'keywords': 'FutureFeature'}
+    kw = {"bug_id": bug_id}
     kw.update(kw_defaults)
+    return bz._proxy.bugzilla.updateKeywords(kw, username, "")
 
-    # :TODO: setstatus seems still to send mails, therefore the raw interface is used
-    #bug.setstatus("ASSIGNED", nomail=1)
-    bz._proxy.bugzilla.changeStatus(bug.bug_id, "ASSIGNED", username, "", "", False, False, 1)
-    bz._proxy.bugzilla.updateKeywords(kw, username, "")
+def set_ASSIGNED(bug_id):
+    return bz._proxy.bugzilla.changeStatus(bug_id, "ASSIGNED", username, "", "", False, False, 1)
+
+if __name__ == '__main__':
+    for bug in bugs:
+        print "changing: %s" % bug.bug_id
+        print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
+
+        # :TODO: setstatus seems still to send mails, therefore the raw interface is used
+        #bug.setstatus("ASSIGNED", nomail=1)
+        set_ASSIGNED(bug.bug_id)
+        set_FutureFeature(bug.bug_id)
