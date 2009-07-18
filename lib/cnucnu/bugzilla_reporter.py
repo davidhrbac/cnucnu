@@ -52,31 +52,50 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
         self.new_bug['product'] = bugzilla_product
 
 
-    def report_outdated(self, package):
+    def report_outdated(self, package, dry_run=True):
         if package.upstream_newer:
-            open = self.get_open(package)
-            if not open:
-                bug = {'component': package.name,
-                       'summary': "%(name)s-%(latest_upstream)s is available" % package,
-                       'description': self.description_template % package
-                        }
-                bug.update(self.new_bug)
+            matching_bugs = self.get_bug(package)
+            # TODO: warning in case of more than one matching bug, then something is wrong
+            if not matching_bugs:
+                open = self.get_open(package)
+                if not open:
+                    bug = {'component': package.name,
+                           'summary': "%(name)s-%(latest_upstream)s is available" % package,
+                           'description': self.description_template % package
+                            }
+                    bug.update(self.new_bug)
 
-                pprint(bug)
-                new_bug = self.bz.createbug(**bug)
-                print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % new_bug.bug_id
+                    if not dry_run:
+                        new_bug = self.bz.createbug(**bug)
+                        print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % new_bug.bug_id
+                    else:
+                        pprint(bug)
+                else:
+                    open_bug = open[0]
+                    summary = open_bug.summary
+
+                    # summary should be '<name>-<version> <some text>'
+                    # To extract the version get everything before the first space
+                    # with split and then remove the name and '-' via slicing
+                    bug_version = summary.split(" ")[0][len(package.name)+1:]
+
+                    if bug_version != package.latest_upstream:
+                        # :TODO:
+                        print "bug needs to be updated, but python-bugzilla seems not to support updating summary"
             else:
-                open_bug = open[0]
-                summary = open_bug.summary
+                for bug in matching_bugs:
+                    print "bug already filed: https://bugzilla.redhat.com/show_bug.cgi?id=%s %s" % (bug.bug_id, bug.bug_status)
 
-                # summary should be '<name>-<version> <some text>'
-                # To extract the version get everything before the first space
-                # with split and then remove the name and '-' via slicing
-                bug_version = summary.split(" ")[0][len(package.name)+1:]
-
-                if bug_version != package.latest_upstream:
-                    # :TODO:
-                    print "bug needs to be updated, but python-bugzilla seems not to support updating summary"
+    def get_bug(self, package):
+        q = {'component': [package.name],
+             'bug_status': self.bug_status_open + self.bug_status_closed,
+             'short_desc': ['%(name)s-%(latest_upstream)s' % package],
+             'short_desc_type': ['substring']
+            }
+       
+        q.update(self.base_query)
+        bugs = self.bz.query(q)
+        return bugs
 
     def get_open(self, package):
         q = {'component': [package.name],

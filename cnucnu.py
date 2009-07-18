@@ -25,6 +25,10 @@ from cnucnu.package_list import Repository, PackageList, Package
 from cnucnu.checkshell import CheckShell
 from cnucnu.bugzilla_reporter import BugzillaReporter
 
+import pprint as pprint_module
+pp = pprint_module.PrettyPrinter(indent=4)
+pprint = pp.pprint
+
 import pickle
 
 def analyse_packages(packages):
@@ -82,12 +86,8 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     conf = config.Config(options.config_filename)
-
     if options.action == "check":
-        bugzilla_config =  conf.get_bugzilla_config()
-        br = BugzillaReporter(**bugzilla_config)
-        shell = CheckShell()
-        shell.br = br
+        shell = CheckShell(config=conf)
         while True:
             try:
                 if not shell.cmdloop():
@@ -106,7 +106,7 @@ if __name__ == '__main__':
             try:
                 if p.upstream_newer:
                     if p.name not in ['abook', 'crm114', 'crossvc', 'ctorrent', 'ekg2', 'emacs-auctex', 'fdupes', 'hping3', 'libtlen', 'mysqltuner']:
-                        br.report_outdated(p)
+                        br.report_outdated(p, dry_run=False)
             except Exception, e:
                 pprint(e)
     elif options.action == "fm-outdated-all":

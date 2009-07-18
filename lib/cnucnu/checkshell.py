@@ -22,9 +22,10 @@ import cmd
 import readline
 
 from cnucnu.package_list import Package, PackageList, Repository
+from cnucnu.bugzilla_reporter import BugzillaReporter
 
 class CheckShell(cmd.Cmd):
-    def __init__(self):
+    def __init__(self, config):
         cmd.Cmd.__init__(self)
         readline.set_completer_delims(' ')
         self.repo = Repository()
@@ -32,7 +33,8 @@ class CheckShell(cmd.Cmd):
         self._package_list = None
         self.prompt_default = " URL:"
         self.update_prompt()
-        self.br = None
+        self.config = config
+        self._br = None
 
     @property
     def package_list(self):
@@ -40,6 +42,13 @@ class CheckShell(cmd.Cmd):
             self._package_list = PackageList(repo=self.repo)
             self._package_list.append(self.package)
         return self._package_list
+
+    @property
+    def br(self):
+        if not self._br:
+            bugzilla_config = self.config.get_bugzilla_config()
+            self._br = BugzillaReporter(**bugzilla_config)
+        return self._br
 
     def update_prompt(self):
         self.prompt = "%(name)s %(regex)s %(url)s " % self.package
@@ -59,6 +68,9 @@ class CheckShell(cmd.Cmd):
         self.package.name = args
         self.package.regex = "FM-DEFAULT"
         self.package.url = "FM-DEFAULT"
+
+    def do_report(self, args):
+        self.br.report_outdated(self.package, dry_run=False)
 
     def do_inspect(self, args):
         try:
@@ -108,9 +120,15 @@ class CheckShell(cmd.Cmd):
                         status = ""
                     print "Repo Version: %s%s" % (self.package.repo_version, status)
                     if self.package.upstream_newer:
-                        open_bugs = self.br.get_open(self.package)
-                        for bug in open_bugs:
-                            print "Open Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
+                        bugs = self.br.get_open(self.package)
+                        if bugs:
+                            for bug in bugs:
+                                print "Open Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
+
+                        bugs = self.br.get_bug(self.package)
+                        if bugs:
+                            for bug in bugs:
+                                print "Closed Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
             except Exception, e:
                 print e
         return stop
