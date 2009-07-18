@@ -27,9 +27,19 @@ class CheckShell(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         readline.set_completer_delims(' ')
-        self.package = Package("", None, None, Repository())
+        self.repo = Repository()
+        self.package = Package("", None, None, self.repo)
+        self._package_list = None
         self.prompt_default = " URL:"
         self.update_prompt()
+        self.br = None
+
+    @property
+    def package_list(self):
+        if not self._package_list:
+            self._package_list = PackageList(repo=self.repo)
+            self._package_list.append(self.package)
+        return self._package_list
 
     def update_prompt(self):
         self.prompt = "%(name)s %(regex)s %(url)s " % self.package
@@ -51,11 +61,14 @@ class CheckShell(cmd.Cmd):
         self.package.url = "FM-DEFAULT"
 
     def do_inspect(self, args):
-        self.package_list = PackageList()
         try:
             self.package = self.package_list[args]
         except KeyError, ke:
             print ke
+
+    def complete_inspect(self, text, line, begidx, endidx):
+        package_names = [p.name for p in self.package_list if p.name.startswith(text)]
+        return package_names
     
     def do_regex(self, args):
         self.package.regex = args
@@ -86,8 +99,18 @@ class CheckShell(cmd.Cmd):
         self.update_prompt()
         if self.package.url and self.package.regex:
             try:
-                print "Versions: ", self.package.upstream_versions
-                print "Latest: ", self.package.latest_upstream
+                print "Versions:", self.package.upstream_versions
+                print "Latest:", self.package.latest_upstream
+                if self.package.name:
+                    if self.package.status:
+                        status = " %s" % self.package.status
+                    else:
+                        status = ""
+                    print "Repo Version: %s%s" % (self.package.repo_version, status)
+                    if self.package.upstream_newer:
+                        open_bugs = self.br.get_open(self.package)
+                        for bug in open_bugs:
+                            print "Open Bug:", "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % bug.bug_id
             except Exception, e:
                 print e
         return stop

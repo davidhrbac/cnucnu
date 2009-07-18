@@ -134,6 +134,15 @@ class Package(object):
     def repo_newer(self):
         return self.rpm_diff == 1
 
+    @property
+    def status(self):
+        if self.upstream_newer:
+            return "(outdated)"
+        elif self.repo_newer:
+            return "(repo newer)"
+        else:
+            return ""
+
 
 class Repository:
     def __init__(self, package_list=None, repoid="rawhide-source"):
@@ -184,6 +193,7 @@ class PackageList:
                 packages.append(Package(name, regex, url, repo))
 
         self.packages = packages
+        self.append = self.packages.append
 
     def __getitem__(self, key):
         if isinstance(key, int):

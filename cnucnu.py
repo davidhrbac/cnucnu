@@ -84,7 +84,10 @@ if __name__ == '__main__':
     conf = config.Config(options.config_filename)
 
     if options.action == "check":
+        bugzilla_config =  conf.get_bugzilla_config()
+        br = BugzillaReporter(**bugzilla_config)
         shell = CheckShell()
+        shell.br = br
         while True:
             try:
                 if not shell.cmdloop():
