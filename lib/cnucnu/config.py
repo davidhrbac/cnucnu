@@ -17,15 +17,13 @@
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
 #}}}
 
-import ConfigParser
+from helper import pprint, filter_dict
+import yaml
 
 class Config(object):
-    def __init__(self, ini_filename):
-        ini = ConfigParser.ConfigParser()
-        self.ini = ini
-
-        file = open(ini_filename, "rb")
-        ini.readfp(file)
+    def __init__(self, yaml_filename):
+        file = open(yaml_filename, "rb")
+        self.config = yaml.load(file.read())
         file.close()
 
         self._bugzilla_config = {}
@@ -33,8 +31,26 @@ class Config(object):
     @property
     def bugzilla_config(self):
         if not self._bugzilla_config:
-            for name, value in self.ini.items("cnucnu"):
-                bugzilla_prefix = "bugzilla "
-                if name.startswith(bugzilla_prefix):
-                    self._bugzilla_config["bugzilla_"+name[len(bugzilla_prefix):]] = value
+            b = self.config["bugzilla"]
+            for c, v in b.items():
+                b[c] = v % b
+
+            self._bugzilla_config = b
         return self._bugzilla_config
+
+    @property
+    def bugzilla_class_conf(self):
+        rpc_conf = filter_dict(self.bugzilla_config, ["url", "user", "password"])
+        return rpc_conf
+
+
+if __name__ == '__main__':
+    cf = Config('../../cnucnu.yaml')
+    print "Global config"
+    pprint(cf.config)
+
+    print "\nBugzilla config"
+    pprint(cf.bugzilla_config)
+
+    print "\nBugzilla class config"
+    pprint(cf.bugzilla_class_conf)

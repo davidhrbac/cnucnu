@@ -1,6 +1,6 @@
 *.pyc
 .*.swp
-cnucnu.ini
+cnucnu.yaml
 *.log
 *.pickle
 dist

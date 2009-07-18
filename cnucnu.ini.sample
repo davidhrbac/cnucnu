@@ -1,6 +1,0 @@
-[cnucnu]
-
-bugzilla username = upstream-release-monitoring@fedoraproject.org
-bugzilla password = your password
-bugzilla url = https://bugzilla.redhat.com/xmlrpc.cgi
-bugzilla product = Fedora

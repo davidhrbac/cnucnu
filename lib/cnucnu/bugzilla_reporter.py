@@ -19,9 +19,8 @@
 
 from bugzilla import Bugzilla
 from config import Config
-import pprint as pprint_module
-pp = pprint_module.PrettyPrinter(indent=4)
-pprint = pp.pprint
+from helper import filter_dict
+from helper import pprint
 
 class BugzillaReporter(object):
     base_query = {'query_format': ['advanced'], 'emailreporter1': ['1'], 'emailtype1': ['exact']}
@@ -29,14 +28,12 @@ class BugzillaReporter(object):
     bug_status_open = ['NEW', 'ASSIGNED', 'MODIFIED', 'ON_DEV', 'ON_QA', 'VERIFIED', 'FAILS_QA', 'RELEASE_PENDING', 'POST']
     bug_status_closed = ['CLOSED']
 
-    new_bug = {'version': 'rawhide',
-# Using assigned returns an exception:
+    new_bug = { 'status': 'NEW',
+# Using ASSIGNED returns an exception:
 # <Fault 32000: 'You are not allowed to file new bugs with the\n      ASSIGNED status.'>
 # if the account is in editbugs, fedora_bugs, fedora_contrib, setpriority
 # if not, then it is silently ignored
 #               'status': 'ASSIGNED',
-               'status': 'NEW',
-               'keywords': 'FutureFeature'
             }
     summary_template = "%(name)s-%(latest_upstream)s is available"
     description_template = \
@@ -47,16 +44,30 @@ URL: %(url)s
 More information about the service that created this bug can be found at:
 https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
             
-    def __init__(self, bugzilla_url, bugzilla_username, bugzilla_password, bugzilla_product):
-        bz = Bugzilla(url=bugzilla_url, user=bugzilla_username, password=bugzilla_password)
+    def __init__(self, config):
+        rpc_conf = filter_dict(config, ["url", "user", "password"])
+        bz = Bugzilla(**rpc_conf)
         self.bz = bz
         self.bz.login()
-        self.product = bugzilla_product
-        self.base_query['product'] = [bugzilla_product]
-        self.base_query['email1'] = [bugzilla_username]
-        self.new_bug['product'] = bugzilla_product
-        self.bugzilla_username = bugzilla_username
+        self.bugzilla_config = config
 
+        self.base_query['product'] = config['product']
+        self.base_query['email1'] = config['user']
+        self.new_bug['product'] = config['product']
+        if "keywords" in config:
+            self.new_bug['keywords'] = config['keywords']
+        self.new_bug['version'] = config['version']
+
+        self.bugzilla_username = config['user']
+
+
+    def bug_url(self, bug):
+        if isinstance(bug, str):
+            bug_id = bug
+        else:
+            bug_id = bug.bug_id
+
+        return "%s%s" % (self.bugzilla_config['bug url prefix'], bug_id)
 
     def report_outdated(self, package, dry_run=True):
         if package.upstream_newer:
@@ -73,8 +84,11 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
 
                     if not dry_run:
                         new_bug = self.bz.createbug(**bug)
-                        print self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, "ASSIGNED", self.bugzilla_username, "", "", False, False, 1)
-                        print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % new_bug.bug_id
+                        status = self.config['status']
+                        if status != "NEW":
+                            change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, status, self.config['user'], "", "", False, False, 1)
+                            print "status changed", change_status
+                        print self.bug_url(new_bug)
                     else:
                         pprint(bug)
                 else:
@@ -96,7 +110,7 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
                         return res
             else:
                 for bug in matching_bugs:
-                    print "bug already filed: https://bugzilla.redhat.com/show_bug.cgi?id=%s %s" % (bug.bug_id, bug.bug_status)
+                    print "bug already filed:%s %s" % (self.bug_url(bug), bug.bug_status)
 
     def get_bug(self, package):
         q = {'component': [package.name],
