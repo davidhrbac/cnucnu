@@ -1,0 +1,8 @@
+include bugzilla-set-status.py
+include cnucnu.ini.sample
+include COPYING
+include gpl-2.0.txt
+include gpl-3.0.txt
+include MANIFEST.in
+include runtests.sh
+include setup.py

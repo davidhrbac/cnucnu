@@ -3,3 +3,6 @@
 cnucnu.ini
 *.log
 *.pickle
+dist
+build
+MANIFEST
