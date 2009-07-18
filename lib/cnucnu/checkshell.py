@@ -32,7 +32,7 @@ class CheckShell(cmd.Cmd):
         self.update_prompt()
 
     def update_prompt(self):
-        self.prompt = "%(url)s - %(regex)s" % self.package
+        self.prompt = "%(name)s %(regex)s %(url)s " % self.package
         self.prompt += "%s> " % self.prompt_default
 
     def do_url(self, args):
