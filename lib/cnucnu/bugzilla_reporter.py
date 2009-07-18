@@ -55,6 +55,7 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
         self.base_query['product'] = [bugzilla_product]
         self.base_query['email1'] = [bugzilla_username]
         self.new_bug['product'] = bugzilla_product
+        self.bugzilla_username = bugzilla_username
 
 
     def report_outdated(self, package, dry_run=True):
@@ -72,7 +73,7 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
 
                     if not dry_run:
                         new_bug = self.bz.createbug(**bug)
-                        print self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, "ASSIGNED", username, "", "", False, False, 1)
+                        print self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, "ASSIGNED", self.bugzilla_username, "", "", False, False, 1)
                         print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % new_bug.bug_id
                     else:
                         pprint(bug)
