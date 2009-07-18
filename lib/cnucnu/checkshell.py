@@ -40,7 +40,8 @@ class CheckShell(cmd.Cmd):
     def package_list(self):
         if not self._package_list:
             self._package_list = PackageList(repo=self.repo)
-            self._package_list.append(self.package)
+            if self.package.name:
+                self._package_list.append(self.package)
         return self._package_list
 
     @property
@@ -61,7 +62,7 @@ class CheckShell(cmd.Cmd):
         self.package.url = args
 
     def do_name(self, args):
-        self.package.name = args
+        self.package = Package(args, self.package.regex, self.package.name, self.repo)
         if not self.package.regex:
             self.package.regex = "DEFAULT"
         if not self.package.url:
