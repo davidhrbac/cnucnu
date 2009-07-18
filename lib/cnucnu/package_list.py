@@ -41,7 +41,7 @@ class Package(object):
         self._rpm_diff = None
 
         self.repo = repo
-        self.repoid = repo.repoid
+        self.repo_name = repo.name
 
     def _invalidate_caches(self):
         self._latest_upstream = None
@@ -145,8 +145,17 @@ class Package(object):
 
 
 class Repository:
-    def __init__(self, package_list=None, repoid="rawhide-source"):
-        self.repoid = repoid
+    def __init__(self, package_list=None, repoid=None):
+        self.repofrompath = None
+
+        if repoid:
+            self.repoid = repoid
+            self.name = repoid
+        else:
+            self.repoid = "cnucnu-rawhide"
+            self.repofrompath = "cnucnu-rawhide,http://download.fedora.redhat.com/pub/fedora/linux/development/source/SRPMS"
+            self.name = "Fedora Rawhide"
+
         self.package_list = package_list
         self._package_version_list = None
 
@@ -161,7 +170,10 @@ class Repository:
 
     def repoquery(self, package_names=[]):
         import subprocess as sp
-        cmdline = ["/usr/bin/repoquery", "--archlist=src", "--all", "--repoid=%s" % self.repoid, "--qf", "%{name}\t%{version}"]
+        # TODO: get rid of repofrompath message even with --quiet
+        cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}"]
+        if self.repofrompath:
+            cmdline.extend(['--repofrompath', self.repofrompath])
         cmdline.extend(package_names)
 
         repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
@@ -174,7 +186,9 @@ class Repository:
 
 
 class PackageList:
-    def __init__(self, repo=Repository(), wiki_page="Using_FEver_to_track_upstream_changes", packages=None):
+    def __init__(self, repo=None, wiki_page="Using_FEver_to_track_upstream_changes", packages=None):
+        if not repo:
+            repo = Repository()
         if not packages:
             import cnucnu.wiki as wiki
             w = wiki.Wiki()

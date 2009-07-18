@@ -36,7 +36,7 @@ class BugzillaReporter(object):
 
     description_template = \
 """Latest upstream release: %(latest_upstream)s
-Current version in %(repoid)s: %(repo_version)s
+Current version in %(repo_name)s: %(repo_version)s
 URL: %(url)s
 
 More information about the service that created this bug can be found at:

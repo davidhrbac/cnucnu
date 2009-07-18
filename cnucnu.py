@@ -111,7 +111,7 @@ if __name__ == '__main__':
                 pprint(e)
     elif options.action == "fm-outdated-all":
         print "checking all against FM"
-        repo = Repository(repoid="rawhide-source")
+        repo = Repository()
         package_names = [name for name in repo.repoquery()]
         pl=[Package(name, "FM-DEFAULT", "FM-DEFAULT", repo) for name in package_names]
         packages = PackageList(packages=pl)
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     else:
         print "default..."
-        repo = Repository(repoid="rawhide-source")
+        repo = Repository()
         plist = PackageList(repo=repo)
         packages = plist.packages
         analyse_packages(packages)
