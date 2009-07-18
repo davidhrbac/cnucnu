@@ -30,10 +30,15 @@ class BugzillaReporter(object):
     bug_status_closed = ['CLOSED']
 
     new_bug = {'version': 'rawhide',
-               'status': 'ASSIGNED',
+# Using assigned returns an exception:
+# <Fault 32000: 'You are not allowed to file new bugs with the\n      ASSIGNED status.'>
+# if the account is in editbugs, fedora_bugs, fedora_contrib, setpriority
+# if not, then it is silently ignored
+#               'status': 'ASSIGNED',
+               'status': 'NEW',
                'keywords': 'FutureFeature'
             }
-
+    summary_template = "%(name)s-%(latest_upstream)s is available"
     description_template = \
 """Latest upstream release: %(latest_upstream)s
 Current version in %(repo_name)s: %(repo_version)s
@@ -60,13 +65,14 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
                 open = self.get_open(package)
                 if not open:
                     bug = {'component': package.name,
-                           'summary': "%(name)s-%(latest_upstream)s is available" % package,
+                           'summary': self.summary_template % package,
                            'description': self.description_template % package
                             }
                     bug.update(self.new_bug)
 
                     if not dry_run:
                         new_bug = self.bz.createbug(**bug)
+                        print self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, "ASSIGNED", username, "", "", False, False, 1)
                         print "https://bugzilla.redhat.com/show_bug.cgi?id=%s" % new_bug.bug_id
                     else:
                         pprint(bug)
@@ -80,8 +86,13 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
                     bug_version = summary.split(" ")[0][len(package.name)+1:]
 
                     if bug_version != package.latest_upstream:
-                        # :TODO:
-                        print "bug needs to be updated, but python-bugzilla seems not to support updating summary"
+                        # :TODO: comment creation untested
+                        update = {'short_desc': self.summary_template % package,
+                                  'comment': self.description_template % package
+                                 }
+                        res = self.bz._update_bugs(open_bug.bug_id, update)
+                        print res
+                        return res
             else:
                 for bug in matching_bugs:
                     print "bug already filed: https://bugzilla.redhat.com/show_bug.cgi?id=%s %s" % (bug.bug_id, bug.bug_status)
