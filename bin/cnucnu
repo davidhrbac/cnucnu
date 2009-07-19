@@ -83,28 +83,28 @@ if __name__ == '__main__':
     parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials")
     parser.add_option("", "--create-bugs", dest="action", help="file bugs for outdated packages", action="store_const", const="create-bugs")
     parser.add_option("", "--fm-outdated-all", dest="action", help="compare all packages in rawhide with freshmeat", action="store_const", const="fm-outdated-all")
-    parser.add_option("", "--dump-default-config", dest="yaml_file", help="dumps default config to ./cnucnu.yaml.sample", action="store_true", default=False)
+    parser.add_option("", "--dump-config", dest="action", help="dumps dconfig to stdout", action="store_const", const="dump-config")
+    parser.add_option("", "--dump-default-config", dest="action", help="dumps default config to stdout", action="store_const", const="dump-default-config")
     parser.add_option("", "--dry-run", dest="dry_run", help="Do not file or change bugs", default=False)
 
     (options, args) = parser.parse_args()
-    if options.yaml_file:
-        ofile = open("./cnucnu.yaml.sample", "wb")
-        config = Config()
-        ofile.write(config.yaml)
-        ofile.close()
+
+    config = Config()
+
+    if options.action == "dump-default-config":
+        sys.stdout.write(config.yaml)
         sys.exit(0)
 
     yaml_file = options.config_filename
-    yaml_data = ""
     if not yaml_file:
-        try:
-            f = open("./cnucnu.yaml", "rb")
-            yaml_data = f.read()
-            f.close()
-        except IOError:
-            pass
+            yaml_file = "./cnucnu.yaml"
 
-    config = Config(yaml_file=yaml_file, yaml_data=yaml_data)
+    config.update_yaml_file(yaml_file)
+    
+    if options.action == "dump-config":
+        sys.stdout.write(config.yaml)
+        sys.exit(0)
+
     if options.action == "shell":
         shell = CheckShell(config=config)
         while True:
