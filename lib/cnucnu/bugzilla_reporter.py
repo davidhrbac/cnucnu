@@ -35,20 +35,14 @@ class BugzillaReporter(object):
 # if not, then it is silently ignored
 #               'status': 'ASSIGNED',
             }
-    summary_template = "%(name)s-%(latest_upstream)s is available"
-    description_template = \
-"""Latest upstream release: %(latest_upstream)s
-Current version in %(repo_name)s: %(repo_version)s
-URL: %(url)s
-
-More information about the service that created this bug can be found at:
-https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
             
     def __init__(self, config):
         rpc_conf = filter_dict(config, ["url", "user", "password"])
         bz = Bugzilla(**rpc_conf)
         self.bz = bz
-        self.bz.login()
+
+        if "password" in rpc_conf and rpc_conf["password"]:
+            self.bz.login()
         self.bugzilla_config = config
 
         self.base_query['product'] = config['product']
@@ -77,8 +71,8 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
                 open = self.get_open(package)
                 if not open:
                     bug = {'component': package.name,
-                           'summary': self.summary_template % package,
-                           'description': self.description_template % package
+                           'summary': self.config["summary template"] % package,
+                           'description': self.config["description template"] % package
                             }
                     bug.update(self.new_bug)
 
@@ -102,8 +96,8 @@ https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes"""
 
                     if bug_version != package.latest_upstream:
                         # :TODO: comment creation untested
-                        update = {'short_desc': self.summary_template % package,
-                                  'comment': self.description_template % package
+                        update = {'short_desc': self.config["summary template"] % package,
+                                  'comment': self.config["summary template"] % package
                                  }
                         res = self.bz._update_bugs(open_bug.bug_id, update)
                         print res

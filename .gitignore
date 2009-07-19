@@ -1,6 +1,7 @@
 *.pyc
 .*.swp
 cnucnu.yaml
+cnucnu.yaml.sample
 *.log
 *.pickle
 dist
