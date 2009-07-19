@@ -18,6 +18,7 @@
 #}}}
 
 import sys
+import os
 sys.path.insert(0, './lib')
 
 from cnucnu.config import Config
@@ -96,9 +97,12 @@ if __name__ == '__main__':
 
     yaml_file = options.config_filename
     if not yaml_file:
-            yaml_file = "./cnucnu.yaml"
+        new_yaml_file = "./cnucnu.yaml"
+        if os.access(new_yaml_file, os.R_OK):
+            yaml_file = new_yaml_file
 
-    config.update_yaml_file(yaml_file)
+    if yaml_file:
+        config.update_yaml_file(yaml_file)
     
     if options.action == "dump-config":
         sys.stdout.write(config.yaml)
