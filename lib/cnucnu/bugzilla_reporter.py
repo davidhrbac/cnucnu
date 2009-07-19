@@ -43,7 +43,7 @@ class BugzillaReporter(object):
 
         if "password" in rpc_conf and rpc_conf["password"]:
             self.bz.login()
-        self.bugzilla_config = config
+        self.config = config
 
         self.base_query['product'] = config['product']
         self.base_query['email1'] = config['user']
@@ -61,7 +61,7 @@ class BugzillaReporter(object):
         else:
             bug_id = bug.bug_id
 
-        return "%s%s" % (self.bugzilla_config['bug url prefix'], bug_id)
+        return "%s%s" % (self.config['bug url prefix'], bug_id)
 
     def report_outdated(self, package, dry_run=True):
         if package.upstream_newer:
@@ -78,7 +78,7 @@ class BugzillaReporter(object):
 
                     if not dry_run:
                         new_bug = self.bz.createbug(**bug)
-                        status = self.config['status']
+                        status = self.config['bug status']
                         if status != "NEW":
                             change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, status, self.config['user'], "", "", False, False, 1)
                             print "status changed", change_status
