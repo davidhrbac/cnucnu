@@ -17,6 +17,8 @@
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
 #}}}
 
-lib/cnucnu/tests/package_list_test.py
-lib/cnucnu/tests/mail_test.py
-lib/cnucnu/tests/config_test.py
+. setup-env.sh
+
+cnucnu/tests/package_list_test.py
+cnucnu/tests/mail_test.py
+cnucnu/tests/config_test.py

@@ -21,40 +21,29 @@ import unittest
 
 import sys
 sys.path.insert(0, '../..')
-sys.path.insert(0, '..')
-sys.path.insert(0, './lib')
 
 
-from cnucnu.config import Config
+from cnucnu.mail import Message
 
-class ConfigTest(unittest.TestCase):
+class MailTest(unittest.TestCase):
 
-    def testCreateConfig(self):
-        c = Config()
-        c = Config(yaml="{}")
-        c = Config(config={})
+    def testCreateMessage(self):
+        m = Message("me@example.com", "you@example.com", "subject", "message")
 
-    def testSimpleUpdate(self):
-        old = {0: 0, "d": {0: 0}}
-        new = {1: 1, "d": {1: 1}}
-        expected = {0: 0, 1: 1, "d": {0: 0, 1: 1}}
-
-        c = Config(config=old, load_default=False)
-        c.update(new)
-
-        self.assertEqual(c.config, expected)
+    def testMessageEncoding(self):
+        sender = "Mr. Umläut <u@example.com>"
+        receipient = "ß <l@example.com>"
+        subject = "ä"
+        message = "Ö"
+        
+        m = Message(sender, receipient, subject, message)
+        self.assertEqual(m.receipient, receipient)
+        self.assertEqual(m.sender, sender)
+        message_string = 'MIME-Version: 1.0\nContent-Type: text/plain; charset="utf-8"\nContent-Transfer-Encoding: base64\nSubject: =?utf-8?b?w6Q=?=\nFrom: =?utf-8?b?TXIuIFVtbMOkdXQ=?= <u@example.com>\nTo: =?utf-8?b?w58=?= <l@example.com>\n\nw5Y=\n'
+        self.assertEqual(message_string, m.as_string())
     
-    def testComplexUpdate(self):
-        old = {0: 0, "d": {0: 0, 1: 1, 2: 2}, 2: {}}
-        new = {1: 1, "d": {1: {0: 0}, 2: None}}
-        expected = {0: 0, 1: 1, "d": {0: 0, 1: {0: 0}, 2: None}, 2: {}}
-
-        c = Config(config=old, load_default=False)
-        c.update(new)
-
-        self.assertEqual(c.config, expected)
     
 if __name__ == "__main__":
-    suite = unittest.TestLoader().loadTestsFromTestCase(ConfigTest)
+    suite = unittest.TestLoader().loadTestsFromTestCase(MailTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
     #unittest.main()

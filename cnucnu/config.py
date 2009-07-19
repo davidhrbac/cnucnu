@@ -148,7 +148,7 @@ if __name__ == '__main__':
     print "Default config"
     pprint(cf.config)
 
-    cf.update_yaml_file('../../cnucnu.yaml')
+    cf.update_yaml_file('../cnucnu.yaml')
     
     print "Global config"
     pprint(cf.config)

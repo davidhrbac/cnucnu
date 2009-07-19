@@ -5,6 +5,6 @@ else
     CNUCNU_BASEDIR="."
 fi
 
-export PYTHONPATH=${CNUCNU_BASEDIR:-${PWD}}/lib
+export PYTHONPATH=${CNUCNU_BASEDIR:-${PWD}}
 
 #echo "new PYTHONPATH: ${PYTHONPATH}"

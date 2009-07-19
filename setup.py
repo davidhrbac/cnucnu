@@ -25,8 +25,8 @@ setup(name='cnucnu',
       author='Till Maas',
       author_email='opensource@till.name',
       url='http://fedorapeople.org/gitweb?p=till/public_git/cnucnu.git;a=summary',
-      scripts=['bin/cnucnu'],
-      package_dir = {'': 'lib'},
+      scripts=['cnucnu.py'],
+      package_dir = {'': '.'},
       packages = ['cnucnu'],
      )
 
