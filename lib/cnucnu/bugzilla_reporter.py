@@ -68,7 +68,7 @@ class BugzillaReporter(object):
     def report_outdated(self, package, dry_run=True):
         if package.upstream_newer:
             if self.cvs.has_upstream_version(package):
-                print "Upstream Version found in CVS, skipping bug report: %(name) U:%(upstream_latest) R:%(repo_version)" % package
+                print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % package
                 return False
 
             matching_bugs = self.get_bug(package)
