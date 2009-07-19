@@ -83,12 +83,12 @@ if __name__ == '__main__':
     parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials")
     parser.add_option("", "--create-bugs", dest="action", help="file bugs for outdated packages", action="store_const", const="create-bugs")
     parser.add_option("", "--fm-outdated-all", dest="action", help="compare all packages in rawhide with freshmeat", action="store_const", const="fm-outdated-all")
-    parser.add_option("", "--dump-default-config", dest="yaml_file", help="dumps default config to ./cnucnu.yaml.sample")
+    parser.add_option("", "--dump-default-config", dest="yaml_file", help="dumps default config to ./cnucnu.yaml.sample", action="store_true", default=False)
     parser.add_option("", "--dry-run", dest="dry_run", help="Do not file or change bugs", default=False)
 
     (options, args) = parser.parse_args()
     if options.yaml_file:
-        ofile = open(options.yaml_file, "wb")
+        ofile = open("./cnucnu.yaml.sample", "wb")
         config = Config()
         ofile.write(config.yaml)
         ofile.close()

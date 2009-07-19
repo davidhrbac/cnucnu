@@ -138,6 +138,10 @@ class Config(object):
 
 if __name__ == '__main__':
     cf = Config()
+
+    print "Default config"
+    pprint(cf.config)
+
     cf.update_yaml_file('../../cnucnu.yaml')
     
     print "Global config"
