@@ -25,6 +25,7 @@ sys.path.insert(0, '../../lib')
 
 import cnucnu.errors as cc_errors
 from cnucnu.helper import rpm_cmp
+from cnucnu.config import Config
 
 class Package(object):
 
@@ -145,16 +146,18 @@ class Package(object):
 
 
 class Repository:
-    def __init__(self, package_list=None, repoid=None):
-        self.repofrompath = None
+    def __init__(self, package_list=None, name="", path=""):
+        if not (name and path):
+            c = Config().config["repo"]
+            name = c["name"]
+            path = c["path"]
 
-        if repoid:
-            self.repoid = repoid
-            self.name = repoid
-        else:
-            self.repoid = "cnucnu-rawhide"
-            self.repofrompath = "cnucnu-rawhide,http://download.fedora.redhat.com/pub/fedora/linux/development/source/SRPMS"
-            self.name = "Fedora Rawhide"
+        import string
+        self.name = name
+        self.path = path
+        self.repoid = "cnucnu-%s" % "".join(c for c in name if c in string.letters)
+
+        self.repofrompath = "%s,%s" % (self.repoid, self.path)
 
         self.package_list = package_list
         self._package_version_list = None
@@ -186,13 +189,17 @@ class Repository:
 
 
 class PackageList:
-    def __init__(self, repo=None, wiki_page="Using_FEver_to_track_upstream_changes", packages=None):
+    def __init__(self, repo=None, mediawiki=False, packages=None):
         if not repo:
             repo = Repository()
-        if not packages:
-            import cnucnu.wiki as wiki
-            w = wiki.Wiki()
-            page_text = w.get_pagesource(wiki_page)
+
+        if not mediawiki:
+            mediawiki = Config().config["package list"]["mediawiki"]
+        if not packages and mediawiki:
+
+            from wiki import MediaWiki
+            w = MediaWiki(base_url=mediawiki["base url"])
+            page_text = w.get_pagesource(mediawiki["page"])
 
             import re
             package_line = re.compile(' \\* ([^ ]*) (.*) ([^ \n]*)\n')
@@ -217,6 +224,3 @@ class PackageList:
                 if p.name == key:
                     return p
             raise KeyError("Package %s not found" % key) 
-
-
-

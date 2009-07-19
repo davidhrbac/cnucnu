@@ -20,7 +20,7 @@
 import sys
 sys.path.insert(0, './lib')
 
-from cnucnu import  config
+from cnucnu.config import Config
 from cnucnu.package_list import Repository, PackageList, Package
 from cnucnu.checkshell import CheckShell
 from cnucnu.bugzilla_reporter import BugzillaReporter
@@ -79,15 +79,33 @@ if __name__ == '__main__':
     parser = OptionParser()
      
     parser.add_option("", "--shell", dest="action", help="Interactive shell", action="store_const", const="shell")
-    parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials", default="./cnucnu.yaml")
+    parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials")
     parser.add_option("", "--create-bugs", dest="action", help="file bugs for outdated packages", action="store_const", const="create-bugs")
     parser.add_option("", "--fm-outdated-all", dest="action", help="compare all packages in rawhide with freshmeat", action="store_const", const="fm-outdated-all")
+    parser.add_option("", "--dump-default-config", dest="yaml_file", help="dumps default config to ./cnucnu.yaml.sample")
+    parser.add_option("", "--dry-run", dest="dry_run", help="Do not file or change bugs", default=False)
 
     (options, args) = parser.parse_args()
+    if options.yaml_file:
+        ofile = open(options.yaml_file, "wb")
+        config = Config()
+        ofile.write(config.yaml)
+        ofile.close()
+        sys.exit(0)
 
-    conf = config.Config(options.config_filename)
+    yaml_file = options.config_filename
+    yaml_data = ""
+    if not yaml_file:
+        try:
+            f = open("./cnucnu.yaml", "rb")
+            yaml_data = f.read()
+            f.close()
+        except IOError:
+            pass
+
+    config = Config(yaml_file=yaml_file, yaml_data=yaml_data)
     if options.action == "shell":
-        shell = CheckShell(config=conf)
+        shell = CheckShell(config=config)
         while True:
             try:
                 if not shell.cmdloop():
@@ -97,16 +115,17 @@ if __name__ == '__main__':
                 print repr(ex)
                 break
     elif options.action == "create-bugs":
-        bugzilla_config =  conf.bugzilla_config
+        bugzilla_config =  config.bugzilla_config
         br = BugzillaReporter(bugzilla_config)
 
-        pl = PackageList()
+        repo = Repository(**config.config["repo"])
+        pl = PackageList(repo=repo, **config.config["package list"])
         for p in pl:
             print "testing: %s" % p.name
             try:
                 if p.upstream_newer:
                     if p.name not in ['abook', 'crm114', 'crossvc', 'ctorrent', 'ekg2', 'emacs-auctex', 'fdupes', 'hping3', 'libtlen', 'mysqltuner']:
-                        br.report_outdated(p, dry_run=False)
+                        br.report_outdated(p, dry_run=options.dry_run)
             except Exception, e:
                 pprint(e)
     elif options.action == "fm-outdated-all":
@@ -124,7 +143,3 @@ if __name__ == '__main__':
         plist = PackageList(repo=repo)
         packages = plist.packages
         analyse_packages(packages)
-
-
-
-

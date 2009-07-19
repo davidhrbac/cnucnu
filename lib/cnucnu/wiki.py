@@ -19,9 +19,9 @@
 
 import fedora.client
 
-class Wiki(fedora.client.Wiki):
+class MediaWiki(fedora.client.Wiki):
     def __init__(self, base_url='https://fedoraproject.org/w/', *args, **kw):
-        super(Wiki, self).__init__(base_url, *args, **kw)
+        super(MediaWiki, self).__init__(base_url, *args, **kw)
 
     def json_request(self, method="api.php", req_params=None, auth=False, **kwargs):
         if req_params:
@@ -45,5 +45,5 @@ class Wiki(fedora.client.Wiki):
 
 
 if __name__ == '__main__':
-    wiki = Wiki()
+    wiki = MediaWiki(base_url='https://fedoraproject.org/w/')
     print wiki.get_pagesource("Using_FEver_to_track_upstream_changes")
