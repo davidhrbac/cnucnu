@@ -19,8 +19,6 @@
 
 import sys
 import os
-sys.path.insert(0, './lib')
-sys.path.insert(0, '../lib')
 
 from cnucnu.config import Config
 from cnucnu.package_list import Repository, PackageList, Package

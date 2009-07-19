@@ -21,9 +21,9 @@ import sys
 import cmd
 import readline
 
-from cnucnu.package_list import Package, PackageList, Repository
-from cnucnu.bugzilla_reporter import BugzillaReporter
-from cnucnu.cvs import CVS
+from package_list import Package, PackageList, Repository
+from bugzilla_reporter import BugzillaReporter
+from cvs import CVS
 
 class CheckShell(cmd.Cmd):
     def __init__(self, config):

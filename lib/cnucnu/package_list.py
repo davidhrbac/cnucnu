@@ -19,13 +19,10 @@
 
 import sys
 import re
-sys.path.insert(0, './lib')
-sys.path.insert(0, '../lib')
-sys.path.insert(0, '../../lib')
 
-import cnucnu.errors as cc_errors
-from cnucnu.helper import rpm_cmp
-from cnucnu.config import Config
+import errors as cc_errors
+from helper import rpm_cmp
+from config import Config
 
 class Package(object):
 

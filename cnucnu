@@ -1,0 +1,4 @@
+#! /bin/bash
+
+. setup-env.sh
+bin/cnucnu "$@"
