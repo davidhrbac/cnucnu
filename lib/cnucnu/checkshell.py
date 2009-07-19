@@ -23,6 +23,7 @@ import readline
 
 from cnucnu.package_list import Package, PackageList, Repository
 from cnucnu.bugzilla_reporter import BugzillaReporter
+from cnucnu.cvs import CVS
 
 class CheckShell(cmd.Cmd):
     def __init__(self, config):
@@ -35,6 +36,7 @@ class CheckShell(cmd.Cmd):
         self.update_prompt()
         self.config = config
         self._br = None
+        self.cvs = CVS()
 
     @property
     def package_list(self):
@@ -123,16 +125,24 @@ class CheckShell(cmd.Cmd):
                     else:
                         status = ""
                     print "Repo Version: %s%s" % (self.package.repo_version, status)
-                    if self.package.upstream_newer and self.br:
-                        bugs = self.br.get_open(self.package)
-                        if bugs:
-                            for bug in bugs:
-                                print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
 
-                        bugs = self.br.get_bug(self.package)
-                        if bugs:
-                            for bug in bugs:
-                                print "Matching Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                    if self.package.upstream_newer:
+                        if self.cvs:
+                            sourcefile = self.cvs.has_upstream_version(self.package)
+                            if sourcefile:
+                                print "Found in CVS:", sourcefile
+                            else:
+                                print "Not Found in CVS"
+
+                        if self.br:
+                            bugs = self.br.get_open(self.package)
+                            if bugs:
+                                for bug in bugs:
+                                    print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                            bugs = self.br.get_bug(self.package)
+                            if bugs:
+                                for bug in bugs:
+                                    print "Matching Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
             except Exception, e:
                 print e
         return stop

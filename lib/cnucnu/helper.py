@@ -39,3 +39,34 @@ def rpm_max(list):
 def filter_dict(d, key_list):
     return dict([v for v in d.items() if v[0] in key_list])
 
+def secure_download(url, cainfo=""):
+    import pycurl
+    import StringIO
+
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url.encode("ascii"))
+
+    # -k / --insecure
+    # c.setopt(pycurl.SSL_VERIFYPEER, 0)
+
+    # Verify certificate
+    c.setopt(pycurl.SSL_VERIFYPEER, 1)
+
+    # Verify CommonName or Subject Alternate Name
+    c.setopt(pycurl.SSL_VERIFYHOST, 2)
+
+    # --cacert
+    if cainfo:
+        c.setopt(pycurl.CAINFO, cainfo)
+
+    res = StringIO.StringIO()
+
+    c.setopt(pycurl.WRITEFUNCTION, res.write)
+
+    c.perform()
+    c.close()
+    data = res.getvalue()
+    res.close()
+
+    return data
+

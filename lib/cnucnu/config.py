@@ -48,6 +48,11 @@ bugzilla:
 repo:
     path: 'http://download.fedora.redhat.com/pub/fedora/linux/development/source/SRPMS'
     name: Fedora Rawhide
+
+cvs:
+    viewvc_url: https://cvs.fedoraproject.org/viewvc/rpms/%(name)s/devel/sources?revision=HEAD
+    cainfo: "fedora-server-ca.cert"
+
 package list:
     mediawiki:
         base url: 'https://fedoraproject.org/w/'
