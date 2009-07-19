@@ -40,6 +40,7 @@ bugzilla:
 
                            URL: %%(url)s
 
+
                            More information about the service that created this bug can be found at:
 
     %(explanation url)s'
