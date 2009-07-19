@@ -4,6 +4,8 @@ cnucnu.yaml
 cnucnu.yaml.sample
 *.log
 *.pickle
-dist
-build
+
+# setup.py
+dist/
+build/
 MANIFEST
