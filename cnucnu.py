@@ -128,11 +128,7 @@ if __name__ == '__main__':
             print "testing: %s" % p.name
             try:
                 if p.upstream_newer:
-                    # Issues:
-                    # abook: Upstream version: 0.6.0pre2, Rawhide Version: 0.6.0, Rawhide V-R: 0.6.0-0.4.pre2.fc11
-                    # crossvc: Upsream version: 1.5.2-0, Rawhide Version: 1.5.2
-                    if p.name not in ['crm114', 'ctorrent', 'ekg2', 'emacs-auctex', 'fdupes', 'hping3', 'libtlen', 'mysqltuner']:
-                        br.report_outdated(p, dry_run=options.dry_run)
+                    br.report_outdated(p, dry_run=options.dry_run)
             except Exception, e:
                 pprint(e)
     elif options.action == "fm-outdated-all":

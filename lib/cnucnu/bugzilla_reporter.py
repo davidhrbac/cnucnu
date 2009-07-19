@@ -21,6 +21,7 @@ from bugzilla import Bugzilla
 from config import Config
 from helper import filter_dict
 from helper import pprint
+from cvs import CVS
 
 class BugzillaReporter(object):
     base_query = {'query_format': ['advanced'], 'emailreporter1': ['1'], 'emailtype1': ['exact']}
@@ -53,6 +54,7 @@ class BugzillaReporter(object):
         self.new_bug['version'] = config['version']
 
         self.bugzilla_username = config['user']
+        self.cvs = CVS()
 
 
     def bug_url(self, bug):
@@ -65,6 +67,10 @@ class BugzillaReporter(object):
 
     def report_outdated(self, package, dry_run=True):
         if package.upstream_newer:
+            if self.cvs.has_upstream_version(package):
+                print "Upstream Version found in CVS, skipping bug report: %(name) U:%(upstream_latest) R:%(repo_version)" % package
+                return False
+
             matching_bugs = self.get_bug(package)
             # TODO: warning in case of more than one matching bug, then something is wrong
             if not matching_bugs:
