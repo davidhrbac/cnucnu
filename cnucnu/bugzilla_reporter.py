@@ -101,10 +101,10 @@ class BugzillaReporter(object):
                     bug_version = summary.split(" ")[0][len(package.name)+1:]
 
                     if bug_version != package.latest_upstream:
-                        # :TODO: comment creation untested
                         update = {'short_desc': self.config["summary template"] % package,
-                                  'comment': self.config["summary template"] % package
+                                  'comment': self.config["description template"] % package
                                  }
+                        print repr(update)
                         res = self.bz._update_bugs(open_bug.bug_id, update)
                         print res
                         return res
