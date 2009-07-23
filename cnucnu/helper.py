@@ -22,9 +22,24 @@ pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
 
 def get_html(url):
-    import urllib
-    res = urllib.urlopen(url)
-    return res.read()
+    import pycurl
+    import StringIO
+
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url.encode("ascii"))
+
+    res = StringIO.StringIO()
+
+    c.setopt(pycurl.WRITEFUNCTION, res.write)
+    c.setopt(pycurl.FOLLOWLOCATION, 1)
+    c.setopt(pycurl.MAXREDIRS, 10)
+
+    c.perform()
+    c.close()
+    data = res.getvalue()
+    res.close()
+
+    return data
 
 def rpm_cmp(v1, v2):
     import rpm
@@ -62,6 +77,10 @@ def secure_download(url, cainfo=""):
     res = StringIO.StringIO()
 
     c.setopt(pycurl.WRITEFUNCTION, res.write)
+
+    # follow up to 10 http location: headers
+    c.setopt(pycurl.FOLLOWLOCATION, 1)
+    c.setopt(pycurl.MAXREDIRS, 10)
 
     c.perform()
     c.close()
