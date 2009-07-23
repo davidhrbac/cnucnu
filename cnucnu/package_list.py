@@ -137,7 +137,7 @@ class Package(object):
         if self.upstream_newer:
             return "(outdated)"
         elif self.repo_newer:
-            return "(repo newer)"
+            return "(%(repo_name)s newer)" % self
         else:
             return ""
 
