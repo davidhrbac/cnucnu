@@ -22,24 +22,29 @@ pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
 
 def get_html(url):
-    import pycurl
-    import StringIO
+    if url.startswith("ftp://"):
+        import urllib
+        req = urllib.urlopen(url)
+        return req.read()
+    else:
+        import pycurl
+        import StringIO
 
-    c = pycurl.Curl()
-    c.setopt(pycurl.URL, url.encode("ascii"))
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL, url.encode("ascii"))
 
-    res = StringIO.StringIO()
+        res = StringIO.StringIO()
 
-    c.setopt(pycurl.WRITEFUNCTION, res.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 10)
+        c.setopt(pycurl.WRITEFUNCTION, res.write)
+        c.setopt(pycurl.FOLLOWLOCATION, 1)
+        c.setopt(pycurl.MAXREDIRS, 10)
 
-    c.perform()
-    c.close()
-    data = res.getvalue()
-    res.close()
+        c.perform()
+        c.close()
+        data = res.getvalue()
+        res.close()
 
-    return data
+        return data
 
 def rpm_cmp(v1, v2):
     import rpm
