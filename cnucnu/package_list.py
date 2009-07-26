@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # vim: fileencoding=utf8 foldmethod=marker
-#{{{ License header: GPLv2+
+# {{{ License header: GPLv2+
 #    This file is part of cnucnu.
 #
 #    Cnucnu is free software: you can redistribute it and/or modify
@@ -15,7 +15,12 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
-#}}}
+# }}}
+""" :author: Till Maas
+    :contact: opensource@till.name
+    :license: GPLv2+
+"""
+__docformat__ = "restructuredtext"
 
 import sys
 import re
@@ -187,6 +192,17 @@ class Repository:
 
 class PackageList:
     def __init__(self, repo=None, mediawiki=False, packages=None):
+        """ A list of packages to be checked.
+
+        :Parameters:
+            repo : `cnucnu.Repository`
+                Repository to compare with upstream
+            mediawiki : dict
+                Get a list of package names, urls and regexes from a mediawiki page defined in the dict.
+            packages : [cnucnu.Package]
+                List of packages to populate the package_list with
+
+        """
         if not repo:
             repo = Repository()
 

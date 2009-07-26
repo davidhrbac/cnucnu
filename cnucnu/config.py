@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # vim: fileencoding=utf8 foldmethod=marker
-#{{{ License header: GPLv2+
+# {{{ License header: GPLv2+
 #    This file is part of cnucnu.
 #
 #    Cnucnu is free software: you can redistribute it and/or modify
@@ -15,7 +15,12 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
-#}}}
+# }}}
+""" :author: Till Maas
+    :contact: opensource@till.name
+    :license: GPLv2+
+"""
+__docformat__ = "restructuredtext"
 
 from helper import pprint, filter_dict
 import yaml
@@ -31,7 +36,7 @@ bugzilla:
     version: rawhide
     keywords: FutureFeature
     bug status: ASSIGNED
-    explanation url: 'https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes'
+    explanation url: 'https://fedoraproject.org/wiki/Upstream_Release_Monitoring'
 
     summary template: "%%(name)s-%%(latest_upstream)s is available"
     description template: 'Latest upstream release: %%(latest_upstream)s
@@ -57,13 +62,15 @@ cvs:
 package list:
     mediawiki:
         base url: 'https://fedoraproject.org/w/'
-        page: Using_FEver_to_track_upstream_changes
+        page: Upstream_Release_Monitoring
 
 
 # vim: filetype=yaml
 """
 
 class Config(object):
+    """ Config management class for cnucnu.
+    """
     def __init__(self, yaml_file=None, yaml=None, yaml_data=None, config=None, load_default=True):
         # TODO: remove yaml option
         if yaml_data:
@@ -102,6 +109,15 @@ class Config(object):
         return old
 
     def update(self, new, old=None):
+        """ Update dictionary with new values recursively.
+
+        :Parameters:
+            new : dict
+                new dictionary
+            old : dict
+                old dictionary, defaults to self.config
+
+        """
         if not old:
             old = self.config
         for k, v in new.items():
@@ -114,11 +130,6 @@ class Config(object):
                 old[k] = new[k]
         self._bugzilla_config = {}
         return old
-
-
-#                D.update(E, **F) -> None.  Update D from E and F: for k in E: D[k] = E[k]
-#                    (if E has keys else: for (k, v) in E: D[k] = v) then: for k in F: D[k] = F[k]
-
 
     @property
     def bugzilla_config(self):
