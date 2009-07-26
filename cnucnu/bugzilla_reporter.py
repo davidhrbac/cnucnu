@@ -65,6 +65,19 @@ class BugzillaReporter(object):
 
         return "%s%s" % (self.config['bug url prefix'], bug_id)
 
+    def create_new_bug(self, package, dry_run=True):
+        bug = {'component': package.name,
+               'summary': self.config["summary template"] % package,
+               'description': self.config["description template"] % package
+                }
+        bug.update(self.new_bug)
+        if not dry_run:
+            new_bug = self.bz.createbug(**bug)
+            return new_bug
+        else:
+            return bug
+
+
     def report_outdated(self, package, dry_run=True):
         if package.upstream_newer:
             if self.cvs.has_upstream_version(package):
@@ -76,21 +89,15 @@ class BugzillaReporter(object):
             if not matching_bugs:
                 open = self.get_open(package)
                 if not open:
-                    bug = {'component': package.name,
-                           'summary': self.config["summary template"] % package,
-                           'description': self.config["description template"] % package
-                            }
-                    bug.update(self.new_bug)
-
+                    new_bug = self.create_new_bug(package, dry_run)
                     if not dry_run:
-                        new_bug = self.bz.createbug(**bug)
                         status = self.config['bug status']
                         if status != "NEW":
                             change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, status, self.config['user'], "", "", False, False, 1)
                             print "status changed", change_status
                         print self.bug_url(new_bug)
                     else:
-                        pprint(bug)
+                        pprint(new_bug)
                 else:
                     open_bug = open[0]
                     summary = open_bug.summary
