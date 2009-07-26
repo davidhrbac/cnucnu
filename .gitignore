@@ -9,3 +9,8 @@ cnucnu.yaml.sample
 dist/
 build/
 MANIFEST
+
+# rpm build
+*.tar.gz
+noarch/*.rpm
+*.src.rpm
