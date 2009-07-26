@@ -36,7 +36,7 @@ bugzilla:
     version: rawhide
     keywords: FutureFeature
     bug status: ASSIGNED
-    explanation url: 'https://fedoraproject.org/wiki/Using_FEver_to_track_upstream_changes'
+    explanation url: 'https://fedoraproject.org/wiki/Upstream_Release_Monitoring'
 
     summary template: "%%(name)s-%%(latest_upstream)s is available"
     description template: 'Latest upstream release: %%(latest_upstream)s
@@ -62,7 +62,7 @@ cvs:
 package list:
     mediawiki:
         base url: 'https://fedoraproject.org/w/'
-        page: Using_FEver_to_track_upstream_changes
+        page: Upstream_Release_Monitoring
 
 
 # vim: filetype=yaml
