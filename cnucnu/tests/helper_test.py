@@ -57,9 +57,30 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-rc2"), 1)
         
         self.assertEqual(cnucnu_cmp("1.0.0", "1.0.0-rc1"), 1)
+    
+    def test_cnucnu_cmp_pre(self):
+        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0"), 0)
+        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-pre1"), 1)
+        self.assertEqual(cnucnu_cmp("4.0.0", "3.9.9-pre1"), 1)
+        self.assertEqual(cnucnu_cmp("4.0.1-pre1", "4.0.0-pre1"), 1)
+        self.assertEqual(cnucnu_cmp("4.0.1-pre1", "4.0.0"), 1)
 
-    def test_cnucnu_max(self):
+        self.assertEqual(cnucnu_cmp("4.0.1pre1", "4.0.0"), 1)
+        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0pre1"), 1)
+        
+        self.assertEqual(cnucnu_cmp("4.0.0-pre2", "4.0.0-pre1"), 1)
+        self.assertEqual(cnucnu_cmp("4.0.0-pre2", "4.0.0pre1"), 1)
+        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-pre2"), 1)
+        
+        self.assertEqual(cnucnu_cmp("1.0.0", "1.0.0-pre1"), 1)
+
+    def test_cnucnu_max_rc(self):
         versions = ["4.0.1", "4.0.0", "4.0.0-rc2", "4.0.0rc1"]
+        for i in range(0,len(versions) - 1):
+            self.assertEqual(cnucnu_max(versions[i:]), versions[i])
+    
+    def test_cnucnu_max_pre(self):
+        versions = ["4.0.1", "4.0.0", "4.0.0-pre2", "4.0.0pre1"]
         for i in range(0,len(versions) - 1):
             self.assertEqual(cnucnu_max(versions[i:]), versions[i])
 

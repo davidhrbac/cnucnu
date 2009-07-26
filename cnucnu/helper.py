@@ -62,10 +62,11 @@ def cnucnu_cmp(v1, v2):
 
 def split_rc(version):
     import re
-    RC = re.compile("([^-r]*)(-?rc([0-9]))?")
+    RC = re.compile("([^-rp]*)(-?(rc|pre)([0-9]))?")
     match = RC.match(version)
 
-    v, ignore, rc = match.groups()
+    v = match.groups()[0]
+    rc = match.groups()[3]
 
     return (v, rc)
 
