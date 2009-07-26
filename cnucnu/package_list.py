@@ -26,7 +26,7 @@ import sys
 import re
 
 import errors as cc_errors
-from helper import rpm_cmp
+from helper import cnucnu_cmp
 from config import Config
 
 class Package(object):
@@ -109,8 +109,8 @@ class Package(object):
     @property
     def latest_upstream(self):
         if not self._latest_upstream:
-            from cnucnu.helper import rpm_max
-            self._latest_upstream = rpm_max(self.upstream_versions)
+            from cnucnu.helper import cnucnu_max
+            self._latest_upstream = cnucnu_max(self.upstream_versions)
             
             # invalidate _rpm_diff cache
             self._rpm_diff = None
@@ -126,7 +126,7 @@ class Package(object):
     @property
     def rpm_diff(self):
         if not self._rpm_diff:
-            self._rpm_diff = rpm_cmp(self.repo_version, self.latest_upstream)
+            self._rpm_diff = cnucnu_cmp(self.repo_version, self.latest_upstream)
         return self._rpm_diff
 
     @property
