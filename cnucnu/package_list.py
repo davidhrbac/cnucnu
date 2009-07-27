@@ -26,7 +26,7 @@ import sys
 import re
 
 import errors as cc_errors
-from helper import rpm_cmp
+from helper import cnucnu_cmp
 from config import Config
 
 class Package(object):
@@ -109,8 +109,8 @@ class Package(object):
     @property
     def latest_upstream(self):
         if not self._latest_upstream:
-            from cnucnu.helper import rpm_max
-            self._latest_upstream = rpm_max(self.upstream_versions)
+            from cnucnu.helper import cnucnu_max
+            self._latest_upstream = cnucnu_max(self.upstream_versions)
             
             # invalidate _rpm_diff cache
             self._rpm_diff = None
@@ -126,7 +126,7 @@ class Package(object):
     @property
     def rpm_diff(self):
         if not self._rpm_diff:
-            self._rpm_diff = rpm_cmp(self.repo_version, self.latest_upstream)
+            self._rpm_diff = cnucnu_cmp(self.repo_version, self.latest_upstream)
         return self._rpm_diff
 
     @property
@@ -162,32 +162,39 @@ class Repository:
         self.repofrompath = "%s,%s" % (self.repoid, self.path)
 
         self.package_list = package_list
-        self._package_version_list = None
+        self._nvr_dict = None
 
-    def package_version_list(self, package=None):
-        if not self._package_version_list or (package and package.name not in self._package_version_list):
+    def nvr_dict(self, package=None):
+        if not self._nvr_dict or (package and package.name not in self._nvr_dict):
             if package and package not in self.package_list:
                 self.package_list.packages.append(package)
             package_names = [p.name for p in self.package_list.packages]
-            self._package_version_list = self.repoquery(package_names)
+            self._nvr_dict = self.repoquery(package_names)
 
-        return self._package_version_list
+        return self._nvr_dict
 
     def repoquery(self, package_names=[]):
         import subprocess as sp
         # TODO: get rid of repofrompath message even with --quiet
-        cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}"]
+        cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}\t{release}"]
         if self.repofrompath:
             cmdline.extend(['--repofrompath', self.repofrompath])
         cmdline.extend(package_names)
 
         repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
         (list, stderr) = repoquery.communicate()
-        return dict([e.split("\t") for e in list.split("\n") if e != ""])
-
+        new_nvr_dict = {}
+        for line in list.split("\n"):
+            if line != "":
+                name, version, release = line.split("\t")
+                new_nvr_dict[name] = (version, release)
+        return new_nvr_dict
 
     def package_version(self, package):
-        return self.package_version_list(package)[package.name]
+        return self.nvr_dict(package)[package.name][0]
+    
+    def package_release(self, package):
+        return self.nvr_dict(package)[package.name][1]
 
 
 class PackageList:

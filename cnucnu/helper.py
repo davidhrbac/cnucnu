@@ -48,11 +48,52 @@ def get_html(url):
 
 def rpm_cmp(v1, v2):
     import rpm
-    return rpm.labelCompare((None, v1, None), (None, v2, None))
+    diff = rpm.labelCompare((None, v1, None), (None, v2, None))
+    return diff
 
 def rpm_max(list):
     list.sort(cmp=rpm_cmp)
     return list[-1]
+
+def cnucnu_cmp(v1, v2):
+    import rpm
+
+    v1, rc1 = split_rc(v1)
+    v2, rc2 = split_rc(v2)
+
+    diff = rpm_cmp(v1, v2)
+    # base versions are the same, check for rc-status
+    if diff == 0:
+        # both are rc, higher rc is newer
+        if rc1 and rc2:
+            return cmp(rc1, rc2)
+        # only first is rc, then second is newer
+        elif rc1:
+            return -1
+        # only second is rc, then first is newer
+        elif rc2:
+            return 1
+        # none is rc, both are the same
+        else:
+            return 0
+    # base versions are different, ignore rc-status
+    else:
+        return diff
+
+def split_rc(version):
+    import re
+    RC = re.compile("([^-rp]*)(-?(rc|pre)([0-9]))?")
+    match = RC.match(version)
+
+    v = match.groups()[0]
+    rc = match.groups()[3]
+
+    return (v, rc)
+
+def cnucnu_max(list):
+    list.sort(cmp=cnucnu_cmp)
+    return list[-1]
+
 
 """ return a dict that only contains keys that are in key_list
 """
