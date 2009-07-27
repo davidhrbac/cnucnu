@@ -20,56 +20,15 @@
 import sys
 import os
 
-from cnucnu.config import Config
+from cnucnu.config import global_config
 from cnucnu.package_list import Repository, PackageList, Package
 from cnucnu.checkshell import CheckShell
 from cnucnu.bugzilla_reporter import BugzillaReporter
+from cnucnu.cvs import CVS
 
 import pprint as pprint_module
 pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
-
-import pickle
-
-def analyse_packages(packages):
-    package_nr = 0
-
-    if package_nr == 0:
-        mode = "w"
-    else:
-        mode = "a"
-
-
-    outdated_f = open("cnucnu-outdated.log", mode)
-    too_new_f = open("cnucnu-too_new.log", mode)
-    error_f = open("cnucnu-error.log", mode)
-
-    for package in packages[package_nr:]:
-        sys.stderr.write("Testing: %i -  %s\n" % (package_nr, package.name))
-
-        try:
-            if package.upstream_newer:
-                print "Outdated package %(name)s: Rawhide version: %(repo_version)s, Upstream latest: %(latest_upstream)s" % package
-                outdated_f.write("%(name)s %(repo_version)s %(latest_upstream)s\n" % package)
-            elif package.repo_newer:
-                print "Rawhide newer %(name)s: Rawhide version: %(repo_version)s, Upstream latest: %(latest_upstream)s" % package
-                too_new_f.write("%(name)s %(repo_version)s %(latest_upstream)s\n" % package)
-
-        except cc_errors.UpstreamVersionRetrievalError, e:
-            sys.stderr.write("%s\n" % str(e))
-            sys.stderr.write("Rawhide Version: %s\n" % package.repo_version)
-            error_f.write("%s: %s - Rawhide Version: %s\n" % (package.name, str(e), package.repo_version))
-        except KeyError, ke:
-            sys.stderr.write("Package not found in Rawhide: %s\n" % str(ke))
-
-        package_nr = package_nr + 1
-
-    outdated_f.close()
-    too_new_f.close()
-    error_f.close()
-    pickle_file = open("data.pickle", "wb")
-    pickle.dump(packages, pickle_file)
-    pickle_file.close()
 
 if __name__ == '__main__':
     import re
@@ -88,10 +47,8 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
-    config = Config()
-
     if options.action == "dump-default-config":
-        sys.stdout.write(config.yaml)
+        sys.stdout.write(global_config.yaml)
         sys.exit(0)
 
     yaml_file = options.config_filename
@@ -101,35 +58,35 @@ if __name__ == '__main__':
             yaml_file = new_yaml_file
 
     if yaml_file:
-        config.update_yaml_file(yaml_file)
+        global_config.update_yaml_file(yaml_file)
     
     if options.action == "dump-config":
-        sys.stdout.write(config.yaml)
+        sys.stdout.write(global_config.yaml)
         sys.exit(0)
 
     if options.action == "shell":
-        shell = CheckShell(config=config)
+        shell = CheckShell(config=global_config)
         while True:
-            try:
-                if not shell.cmdloop():
-                    break
-            except Exception, ex: 
-                print 'Exception occured:'
-                print repr(ex)
+            if not shell.cmdloop():
                 break
-    elif options.action == "create-bugs":
-        bugzilla_config =  config.bugzilla_config
-        br = BugzillaReporter(bugzilla_config)
 
-        repo = Repository(**config.config["repo"])
-        pl = PackageList(repo=repo, **config.config["package list"])
+    elif options.action == "create-bugs":
+        br = BugzillaReporter(global_config.bugzilla_config)
+        repo = Repository(**global_config.config["repo"])
+        cvs = CVS(**global_config.config["cvs"])
+
+        outdated = []
+
+        pl = PackageList(repo=repo, cvs=cvs, br=br, **global_config.config["package list"])
         for p in pl:
             print "testing: %s" % p.name
             try:
                 if p.upstream_newer:
-                    br.report_outdated(p, dry_run=options.dry_run)
+                   pprint(p.report_outdated(dry_run=options.dry_run))
             except Exception, e:
                 pprint(e)
+
+
     elif options.action == "fm-outdated-all":
         print "checking all against FM"
         repo = Repository()
@@ -137,11 +94,4 @@ if __name__ == '__main__':
         pl=[Package(name, "FM-DEFAULT", "FM-DEFAULT", repo) for name in package_names]
         packages = PackageList(packages=pl)
         repo.package_list = packages
-        analyse_packages(packages)
-
-    else:
-        print "default..."
-        repo = Repository()
-        plist = PackageList(repo=repo)
-        packages = plist.packages
         analyse_packages(packages)

@@ -68,6 +68,7 @@ package list:
 # vim: filetype=yaml
 """
 
+
 class Config(object):
     """ Config management class for cnucnu.
     """
@@ -134,7 +135,8 @@ class Config(object):
     @property
     def bugzilla_config(self):
         if not self._bugzilla_config:
-            b = self.config["bugzilla"]
+            b = {}
+            b.update(self.config["bugzilla"])
             for c, v in b.items():
                 if isinstance(v, str):
                     b[c] = v % b
@@ -151,6 +153,7 @@ class Config(object):
     def yaml(self):
         return yaml.dump(self.config, indent=4, default_flow_style=False)
 
+global_config = Config()
 
 
 if __name__ == '__main__':
@@ -158,6 +161,8 @@ if __name__ == '__main__':
 
     print "Default config"
     pprint(cf.config)
+    print "yaml of default config"
+    print cf.yaml
 
     cf.update_yaml_file('../cnucnu.yaml')
     
@@ -170,5 +175,3 @@ if __name__ == '__main__':
     print "\nBugzilla class config"
     pprint(cf.bugzilla_class_conf)
 
-    print
-    print cf.yaml

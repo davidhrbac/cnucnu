@@ -22,13 +22,13 @@
 import pycurl
 import StringIO
 from helper import secure_download
-from config import Config
+from config import global_config
 
 class CVS(object):
     """ cainfo: filename :-/
     """ 
     def __init__(self, viewvc_url="", cainfo=""):
-        defaults = Config().config["cvs"]
+        defaults = global_config.config["cvs"]
 
         if not viewvc_url:
             viewvc_url = defaults["viewvc_url"]

@@ -22,68 +22,90 @@ import unittest
 import sys
 sys.path.insert(0, '../..')
 
-from cnucnu.helper import cnucnu_cmp, cnucnu_max, split_rc
+from cnucnu.helper import upstream_cmp, upstream_max, split_rc, cmp_upstream_repo, get_rc
 
 class HelperTest(unittest.TestCase):
 
-    def test_cnucnu_cmp_basic(self):
+    def test_upstream_cmp_basic(self):
         # equal
-        self.assertEqual(cnucnu_cmp("0", "0"), 0)
+        self.assertEqual(upstream_cmp("0", "0"), 0)
         # first newer
-        self.assertEqual(cnucnu_cmp("1", "0"), 1)
+        self.assertEqual(upstream_cmp("1", "0"), 1)
         # second newer
-        self.assertEqual(cnucnu_cmp("0", "1"), -1)
+        self.assertEqual(upstream_cmp("0", "1"), -1)
 
     def test_split_rc(self):
-        self.assertEqual(split_rc("4.0.0-rc1"), ("4.0.0", "1"))
-        self.assertEqual(split_rc("4.0.0"), ("4.0.0", None))
-        self.assertEqual(split_rc("0"), ("0", None))
-        self.assertEqual(split_rc("1"), ("1", None))
+        self.assertEqual(split_rc("4.0.0-rc1"), ("4.0.0", "rc1"))
+        self.assertEqual(split_rc("4.0.0-pre2"), ("4.0.0", "pre2"))
+        self.assertEqual(split_rc("4.0.0"), ("4.0.0", ""))
+        self.assertEqual(split_rc("0"), ("0", ""))
+        self.assertEqual(split_rc("1"), ("1", ""))
         
-        self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "1"))
+        self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "rc1"))
 
-    def test_cnucnu_cmp_rc(self):
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0"), 0)
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-rc1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0", "3.9.9-rc1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.1-rc1", "4.0.0-rc1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.1-rc1", "4.0.0"), 1)
+    def test_upstream_cmp_rc(self):
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0"), 0)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0-rc1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0-RC1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "3.9.9-rc1"), 1)
+        self.assertEqual(upstream_cmp("4.0.1-rc1", "4.0.0-rc1"), 1)
+        self.assertEqual(upstream_cmp("4.0.1-rc1", "4.0.0"), 1)
+        self.assertEqual(upstream_cmp("4.0.1-RC1", "4.0.0"), 1)
 
-        self.assertEqual(cnucnu_cmp("4.0.1rc1", "4.0.0"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0rc1"), 1)
+        self.assertEqual(upstream_cmp("4.0.1rc1", "4.0.0"), 1)
+        self.assertEqual(upstream_cmp("4.0.1RC1", "4.0.0"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0rc1"), 1)
         
-        self.assertEqual(cnucnu_cmp("4.0.0-rc2", "4.0.0-rc1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0-rc2", "4.0.0rc1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-rc2"), 1)
+        self.assertEqual(upstream_cmp("4.0.0-rc2", "4.0.0-rc1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0-rc2", "4.0.0rc1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0-rc2"), 1)
         
-        self.assertEqual(cnucnu_cmp("1.0.0", "1.0.0-rc1"), 1)
+        self.assertEqual(upstream_cmp("1.0.0", "1.0.0-rc1"), 1)
     
-    def test_cnucnu_cmp_pre(self):
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0"), 0)
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-pre1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0", "3.9.9-pre1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.1-pre1", "4.0.0-pre1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.1-pre1", "4.0.0"), 1)
+    def test_upstream_cmp_pre(self):
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0"), 0)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0-pre1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "3.9.9-pre1"), 1)
+        self.assertEqual(upstream_cmp("4.0.1-pre1", "4.0.0-pre1"), 1)
+        self.assertEqual(upstream_cmp("4.0.1-pre1", "4.0.0"), 1)
 
-        self.assertEqual(cnucnu_cmp("4.0.1pre1", "4.0.0"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0pre1"), 1)
+        self.assertEqual(upstream_cmp("4.0.1pre1", "4.0.0"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0pre1"), 1)
         
-        self.assertEqual(cnucnu_cmp("4.0.0-pre2", "4.0.0-pre1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0-pre2", "4.0.0pre1"), 1)
-        self.assertEqual(cnucnu_cmp("4.0.0", "4.0.0-pre2"), 1)
+        self.assertEqual(upstream_cmp("4.0.0-pre2", "4.0.0-pre1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0-pre2", "4.0.0pre1"), 1)
+        self.assertEqual(upstream_cmp("4.0.0", "4.0.0-pre2"), 1)
         
-        self.assertEqual(cnucnu_cmp("1.0.0", "1.0.0-pre1"), 1)
+        self.assertEqual(upstream_cmp("1.0.0", "1.0.0-pre1"), 1)
 
-    def test_cnucnu_max_rc(self):
+    def test_upstream_max_rc(self):
         versions = ["4.0.1", "4.0.0", "4.0.0-rc2", "4.0.0rc1"]
         for i in range(0,len(versions) - 1):
-            self.assertEqual(cnucnu_max(versions[i:]), versions[i])
+            self.assertEqual(upstream_max(versions[i:]), versions[i])
     
-    def test_cnucnu_max_pre(self):
+    def test_upstream_max_pre(self):
         versions = ["4.0.1", "4.0.0", "4.0.0-pre2", "4.0.0pre1"]
         for i in range(0,len(versions) - 1):
-            self.assertEqual(cnucnu_max(versions[i:]), versions[i])
+            self.assertEqual(upstream_max(versions[i:]), versions[i])
 
+
+    def test_get_rc(self):
+        self.assertEqual(get_rc("0.4.pre2.fc11"), "pre2")
+
+    def test_cmp_upstream_repo(self):
+        self.assertEqual(cmp_upstream_repo("0.1.0", ("0.1.0", "5.fc10")), 0)
+        self.assertEqual(cmp_upstream_repo("0.1.0", ("0.1.0", "")), 0)
+        self.assertEqual(cmp_upstream_repo("0.1.1", ("0.1.0", "5.fc10")), 1)
+        self.assertEqual(cmp_upstream_repo("0.1.0", ("0.2.0", "5.fc10")), -1)
+
+    def test_cmp_upstream_repo_pre(self):
+        upstream_v = "0.6.0pre2"
+        repo_vr = ("0.6.0", "0.4.pre2.fc11")
+        repo_vr_older = ("0.5.9", "0.4.pre2.fc11")
+        repo_vr_newer = ("0.6.0", "1.fc11")
+        self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr), 0)
+        self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr_older), 1)
+        self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr_newer), -1)
 
 
     
