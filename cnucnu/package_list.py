@@ -148,7 +148,7 @@ class Package(object):
 
 
 class Repository:
-    def __init__(self, package_list=None, name="", path=""):
+    def __init__(self, name="", path=""):
         if not (name and path):
             c = Config().config["repo"]
             name = c["name"]
@@ -161,16 +161,12 @@ class Repository:
 
         self.repofrompath = "%s,%s" % (self.repoid, self.path)
 
-        self.package_list = package_list
         self._nvr_dict = None
 
-    def nvr_dict(self, package=None):
-        if not self._nvr_dict or (package and package.name not in self._nvr_dict):
-            if package and package not in self.package_list:
-                self.package_list.packages.append(package)
-            package_names = [p.name for p in self.package_list.packages]
-            self._nvr_dict = self.repoquery(package_names)
-
+    @property
+    def nvr_dict(self):
+        if not self._nvr_dict:
+            self._nvr_dict = self.repoquery()
         return self._nvr_dict
 
     def repoquery(self, package_names=[]):
@@ -191,10 +187,10 @@ class Repository:
         return new_nvr_dict
 
     def package_version(self, package):
-        return self.nvr_dict(package)[package.name][0]
+        return self.nvr_dict[package.name][0]
     
     def package_release(self, package):
-        return self.nvr_dict(package)[package.name][1]
+        return self.nvr_dict[package.name][1]
 
 
 class PackageList:
