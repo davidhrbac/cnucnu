@@ -214,7 +214,7 @@ class Package(object):
 
     @property
     def open_outdated_bug(self):
-        return self.br.get_open_outdated_bug(self)[0]
+        return self.br.get_open_outdated_bug(self)
 
     def report_outdated(self, dry_run=True):
         if not self.upstream_newer:

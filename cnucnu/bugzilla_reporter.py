@@ -121,8 +121,12 @@ class BugzillaReporter(object):
             }
        
         q.update(self.base_query)
-        # TODO if more than one bug, manual intervention is required
-        bug = self.bz.query(q)[0]
+        bugs = self.bz.query(q)
+        if bugs:
+            # TODO if more than one bug, manual intervention is required
+            bug = bugs[0]
+        else:
+            return bugs
 
         # The summary_pattern contains a space at the end, which is currently
         # not recognized by bugzilla. Therefore this test is required:
@@ -137,4 +141,9 @@ class BugzillaReporter(object):
             }
 
         q.update(self.base_query)
-        return self.bz.query(q)
+        bugs = self.bz.query(q)
+        if bugs:
+            # TODO if more than one bug, manual intervention is required
+            return bugs[0]
+        else:
+            return bugs
