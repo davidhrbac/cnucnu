@@ -26,12 +26,60 @@ import sys
 import re
 
 import errors as cc_errors
-from helper import cnucnu_cmp
-from config import Config
+from helper import upstream_cmp, cmp_upstream_repo
+from config import global_config
+from cvs import CVS
+from bugzilla_reporter import BugzillaReporter
+
+class Repository:
+    def __init__(self, name="", path=""):
+        if not (name and path):
+            c = global_config.config["repo"]
+            name = c["name"]
+            path = c["path"]
+
+        import string
+        self.name = name
+        self.path = path
+        self.repoid = "cnucnu-%s" % "".join(c for c in name if c in string.letters)
+
+        self.repofrompath = "%s,%s" % (self.repoid, self.path)
+
+        self._nvr_dict = None
+
+    @property
+    def nvr_dict(self):
+        if not self._nvr_dict:
+            self._nvr_dict = self.repoquery()
+        return self._nvr_dict
+
+    def repoquery(self, package_names=[]):
+        import subprocess as sp
+        # TODO: get rid of repofrompath message even with --quiet
+        cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}\t%{release}"]
+        if self.repofrompath:
+            cmdline.extend(['--repofrompath', self.repofrompath])
+        cmdline.extend(package_names)
+
+        repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
+        (list, stderr) = repoquery.communicate()
+        new_nvr_dict = {}
+        for line in list.split("\n"):
+            if line != "":
+                name, version, release = line.split("\t")
+                new_nvr_dict[name] = (version, release)
+        return new_nvr_dict
+
+    def package_version(self, package):
+        return self.nvr_dict[package.name][0]
+    
+    def package_release(self, package):
+        return self.nvr_dict[package.name][1]
+
 
 class Package(object):
 
-    def __init__(self, name, regex, url, repo):
+    def __init__(self, name, regex, url, repo=Repository(), cvs=CVS(), br=BugzillaReporter()):
         # :TODO: add some sanity checks
         self.name = name
 
@@ -41,10 +89,14 @@ class Package(object):
         self._latest_upstream = None
         self._upstream_versions = None
         self._repo_version = None
+        self._repo_release = None
         self._rpm_diff = None
+
 
         self.repo = repo
         self.repo_name = repo.name
+        self.cvs = cvs
+        self.br = br
 
     def _invalidate_caches(self):
         self._latest_upstream = None
@@ -109,8 +161,8 @@ class Package(object):
     @property
     def latest_upstream(self):
         if not self._latest_upstream:
-            from cnucnu.helper import cnucnu_max
-            self._latest_upstream = cnucnu_max(self.upstream_versions)
+            from cnucnu.helper import upstream_max
+            self._latest_upstream = upstream_max(self.upstream_versions)
             
             # invalidate _rpm_diff cache
             self._rpm_diff = None
@@ -122,20 +174,26 @@ class Package(object):
         if not self._repo_version:
             self._repo_version  = self.repo.package_version(self)
         return self._repo_version
+    
+    @property
+    def repo_release(self):
+        if not self._repo_release:
+            self._repo_release  = self.repo.package_release(self)
+        return self._repo_release
 
     @property
     def rpm_diff(self):
         if not self._rpm_diff:
-            self._rpm_diff = cnucnu_cmp(self.repo_version, self.latest_upstream)
+            self._rpm_diff = cmp_upstream_repo(self.latest_upstream, (self.repo_version, self.repo_release))
         return self._rpm_diff
 
     @property
     def upstream_newer(self):
-        return self.rpm_diff == -1
+        return self.rpm_diff == 1
     
     @property
     def repo_newer(self):
-        return self.rpm_diff == 1
+        return self.rpm_diff == -1
 
     @property
     def status(self):
@@ -146,71 +204,48 @@ class Package(object):
         else:
             return ""
 
-
-class Repository:
-    def __init__(self, name="", path=""):
-        if not (name and path):
-            c = Config().config["repo"]
-            name = c["name"]
-            path = c["path"]
-
-        import string
-        self.name = name
-        self.path = path
-        self.repoid = "cnucnu-%s" % "".join(c for c in name if c in string.letters)
-
-        self.repofrompath = "%s,%s" % (self.repoid, self.path)
-
-        self._nvr_dict = None
+    @property
+    def upstream_version_in_cvs(self):
+        return self.cvs.has_upstream_version(self)
 
     @property
-    def nvr_dict(self):
-        if not self._nvr_dict:
-            self._nvr_dict = self.repoquery()
-        return self._nvr_dict
+    def exact_outdated_bug(self):
+        return self.br.get_exact_outdated_bug(self)
 
-    def repoquery(self, package_names=[]):
-        import subprocess as sp
-        # TODO: get rid of repofrompath message even with --quiet
-        cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}\t{release}"]
-        if self.repofrompath:
-            cmdline.extend(['--repofrompath', self.repofrompath])
-        cmdline.extend(package_names)
+    @property
+    def open_outdated_bug(self):
+        return self.br.get_open_outdated_bug(self)[0]
 
-        repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
-        (list, stderr) = repoquery.communicate()
-        new_nvr_dict = {}
-        for line in list.split("\n"):
-            if line != "":
-                name, version, release = line.split("\t")
-                new_nvr_dict[name] = (version, release)
-        return new_nvr_dict
+    def report_outdated(self, dry_run=True):
+        if not self.upstream_newer:
+            print "Upstream of package not newer, report_outdated aborted!" + str(self)
+            return None
 
-    def package_version(self, package):
-        return self.nvr_dict[package.name][0]
-    
-    def package_release(self, package):
-        return self.nvr_dict[package.name][1]
+        if self.upstream_version_in_cvs:
+            print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
+            return None
+
+        return self.br.report_outdated(self, dry_run)
+
 
 
 class PackageList:
-    def __init__(self, repo=None, mediawiki=False, packages=None):
+    def __init__(self, repo=Repository(), cvs=CVS(), br=BugzillaReporter(), mediawiki=False, packages=None):
         """ A list of packages to be checked.
 
         :Parameters:
             repo : `cnucnu.Repository`
                 Repository to compare with upstream
+            cvs : `cnucnu.CVS`
+                CVS to compares sources files with upstream version
             mediawiki : dict
                 Get a list of package names, urls and regexes from a mediawiki page defined in the dict.
             packages : [cnucnu.Package]
                 List of packages to populate the package_list with
 
         """
-        if not repo:
-            repo = Repository()
-
         if not mediawiki:
-            mediawiki = Config().config["package list"]["mediawiki"]
+            mediawiki = global_config.config["package list"]["mediawiki"]
         if not packages and mediawiki:
 
             from wiki import MediaWiki
@@ -227,7 +262,7 @@ class PackageList:
             
             for package in match:
                 (name, regex, url) = package
-                packages.append(Package(name, regex, url, repo))
+                packages.append(Package(name, regex, url, repo, cvs, br))
 
         self.packages = packages
         self.append = self.packages.append

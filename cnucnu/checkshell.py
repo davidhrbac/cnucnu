@@ -23,12 +23,14 @@ import readline
 
 from package_list import Package, PackageList, Repository
 from bugzilla_reporter import BugzillaReporter
+from helper import pprint
 from cvs import CVS
 
 class CheckShell(cmd.Cmd):
     def __init__(self, config):
         cmd.Cmd.__init__(self)
         readline.set_completer_delims(' ')
+
         self.repo = Repository()
         self.package = Package("", None, None, self.repo)
         self._package_list = None
@@ -49,11 +51,12 @@ class CheckShell(cmd.Cmd):
     @property
     def br(self):
         if not self._br:
+            bugzilla_config = self.config.bugzilla_config
             try:
-                bugzilla_config = self.config.bugzilla_config
                 self._br = BugzillaReporter(bugzilla_config)
+            
             except Exception, e:
-                print "Cannot query bugzilla, maybe config is faulty or missing", e
+                print "Cannot query bugzilla, maybe config is faulty or missing", repr(e), dict(e), str(e)
         return self._br
 
     def update_prompt(self):
@@ -76,7 +79,7 @@ class CheckShell(cmd.Cmd):
         self.package.url = "FM-DEFAULT"
 
     def do_report(self, args):
-        self.br.report_outdated(self.package, dry_run=False)
+        pprint(self.package.report_outdated(dry_run))
 
     def do_inspect(self, args):
         try:
@@ -116,34 +119,22 @@ class CheckShell(cmd.Cmd):
 
         self.update_prompt()
         if self.package.url and self.package.regex:
-            try:
-                print "Versions:", self.package.upstream_versions
-                print "Latest:", self.package.latest_upstream
-                if self.package.name:
-                    if self.package.status:
-                        status = " %s" % self.package.status
-                    else:
-                        status = ""
-                    print "Repo Version: %s%s" % (self.package.repo_version, status)
+            print "Upstream Versions:", self.package.upstream_versions
+            print "Latest:", self.package.latest_upstream
 
-                    if self.package.upstream_newer:
-                        if self.cvs:
-                            sourcefile = self.cvs.has_upstream_version(self.package)
-                            if sourcefile:
-                                print "Found in CVS:", sourcefile
-                            else:
-                                print "Not Found in CVS"
+            if self.package.name:
+                print "%(repo_name)s Version: %(repo_version)s %(repo_release)s %(status)s" % self.package
 
-                        if self.br:
-                            bugs = self.br.get_open(self.package)
-                            if bugs:
-                                for bug in bugs:
-                                    print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
-                            bugs = self.br.get_bug(self.package)
-                            if bugs:
-                                for bug in bugs:
-                                    print "Matching Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
-            except Exception, e:
-                print e
+                sourcefile = self.package.upstream_version_in_cvs
+                if sourcefile:
+                    print "Found in CVS:", sourcefile
+                else:
+                    print "Not Found in CVS"
+                bug = self.package.exact_outdated_bug
+                if bug:
+                    print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                bug = self.package.open_outdated_bug
+                if bug:
+                    print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
         return stop
 

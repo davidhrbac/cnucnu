@@ -55,7 +55,7 @@ def rpm_max(list):
     list.sort(cmp=rpm_cmp)
     return list[-1]
 
-def cnucnu_cmp(v1, v2):
+def upstream_cmp(v1, v2):
     import rpm
 
     v1, rc1 = split_rc(v1)
@@ -82,17 +82,38 @@ def cnucnu_cmp(v1, v2):
 
 def split_rc(version):
     import re
-    RC = re.compile("([^-rp]*)(-?(rc|pre)([0-9]))?")
+    RC = re.compile("([^-rp]*)(-?(([Rr][Cc]|[Pp][Rr][Ee])[0-9]))?")
     match = RC.match(version)
 
     v = match.groups()[0]
-    rc = match.groups()[3]
+    rc = match.groups()[2]
+    if rc:
+        return (v, rc)
+    else:
+        return (v, "")
 
-    return (v, rc)
+def get_rc(release):
+    import re
+    RC = re.compile(r'0\.[0-9]*\.(([Rr][Cc]|[Pp][Rr][Ee])[0-9])')
+    match = RC.match(release)
 
-def cnucnu_max(list):
-    list.sort(cmp=cnucnu_cmp)
+    if match:
+        rc = match.groups()[0]
+        return rc
+    else:
+        return ""
+
+def upstream_max(list):
+    list.sort(cmp=upstream_cmp)
     return list[-1]
+
+def cmp_upstream_repo(upstream_v, repo_vr):
+    repo_rc = get_rc(repo_vr[1])
+
+    repo_version = "%s%s" % (repo_vr[0], repo_rc)
+
+    return upstream_cmp(upstream_v, repo_version)
+
 
 
 """ return a dict that only contains keys that are in key_list

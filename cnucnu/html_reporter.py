@@ -1,6 +1,6 @@
-#! /bin/bash
-# vim: foldmethod=marker
-#{{{ License header: GPLv2+
+#!/usr/bin/python
+# vim: fileencoding=utf8 foldmethod=marker
+# {{{ License header: GPLv2+
 #    This file is part of cnucnu.
 #
 #    Cnucnu is free software: you can redistribute it and/or modify
@@ -15,11 +15,21 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
-#}}}
+# }}}
+""" :author: Till Maas
+    :contact: till.maas@till.name
+    :license: GPLv2+
+"""
+__docformat__ = "restructuredtext"
 
-. setup-env.sh
+#from genshi.template import MarkupTemplate
+from genshi.template import TemplateLoader
+from package_list import PackageList
 
-cnucnu/tests/package_list_test.py
-cnucnu/tests/mail_test.py
-cnucnu/tests/config_test.py
-cnucnu/tests/helper_test.py
+if __name__ == "__main__":
+    loader = TemplateLoader(["templates"])
+    tmpl = loader.load('status.html')
+    packages = PackageList()
+    stream = tmpl.generate(packages=packages)
+    print stream.render()
+

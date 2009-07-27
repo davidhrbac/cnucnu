@@ -18,10 +18,9 @@
 # }}}
 
 from bugzilla import Bugzilla
-from config import Config
+from config import global_config
 from helper import filter_dict
 from helper import pprint
-from cvs import CVS
 
 class BugzillaReporter(object):
     base_query = {'query_format': ['advanced'], 'emailreporter1': ['1'], 'emailtype1': ['exact']}
@@ -37,13 +36,9 @@ class BugzillaReporter(object):
 #               'status': 'ASSIGNED',
             }
             
-    def __init__(self, config):
-        rpc_conf = filter_dict(config, ["url", "user", "password"])
-        bz = Bugzilla(**rpc_conf)
-        self.bz = bz
+    def __init__(self, config=global_config.bugzilla_config):
+        self._bz = None
 
-        if "password" in rpc_conf and rpc_conf["password"]:
-            self.bz.login()
         self.config = config
 
         self.base_query['product'] = config['product']
@@ -54,7 +49,16 @@ class BugzillaReporter(object):
         self.new_bug['version'] = config['version']
 
         self.bugzilla_username = config['user']
-        self.cvs = CVS()
+
+    @property
+    def bz(self):
+        if not self._bz:
+            rpc_conf = filter_dict(self.config, ["url", "user", "password"])
+            self._bz = Bugzilla(**rpc_conf)
+            if "password" in rpc_conf and rpc_conf["password"]:
+                self._bz.login()
+        return self._bz
+
 
 
     def bug_url(self, bug):
@@ -65,72 +69,69 @@ class BugzillaReporter(object):
 
         return "%s%s" % (self.config['bug url prefix'], bug_id)
 
-    def create_new_bug(self, package, dry_run=True):
-        bug = {'component': package.name,
+    def report_outdated(self, package, dry_run=True):
+        if not package.exact_outdated_bug:
+            if not package.open_outdated_bug:
+                new_bug, change_status = self.create_outdated_bug(package, dry_run)
+            else:
+                open_bug = package.open_outdated_bug
+                summary = open_bug.summary
+
+                # summary should be '<name>-<version> <some text>'
+                # To extract the version get everything before the first space
+                # with split and then remove the name and '-' via slicing
+                bug_version = summary.split(" ")[0][len(package.name)+1:]
+
+                if bug_version != package.latest_upstream:
+                    update = {'short_desc': self.config["summary template"] % package,
+                              'comment': self.config["description template"] % package
+                             }
+                    print repr(update)
+                    res = self.bz._update_bugs(open_bug.bug_id, update)
+                    print res
+                    return res
+        else:
+            bug = package.exact_outdated_bug
+            print "bug already filed:%s %s" % (self.bug_url(bug), bug.bug_status)
+
+
+    def create_outdated_bug(self, package, dry_run=True):
+        bug_dict = {'component': package.name,
                'summary': self.config["summary template"] % package,
                'description': self.config["description template"] % package
                 }
-        bug.update(self.new_bug)
+        bug_dict.update(self.new_bug)
         if not dry_run:
             new_bug = self.bz.createbug(**bug)
-            return new_bug
+            status = self.config['bug status']
+            change_status = None
+            if status != "NEW":
+                change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, status, self.config['user'], "", "", False, False, 1)
+                print "status changed", change_status
+            return (new_bug, change_status)
         else:
-            return bug
+            return bug_dict
 
-
-    def report_outdated(self, package, dry_run=True):
-        if package.upstream_newer:
-            if self.cvs.has_upstream_version(package):
-                print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % package
-                return False
-
-            matching_bugs = self.get_bug(package)
-            # TODO: warning in case of more than one matching bug, then something is wrong
-            if not matching_bugs:
-                open = self.get_open(package)
-                if not open:
-                    new_bug = self.create_new_bug(package, dry_run)
-                    if not dry_run:
-                        status = self.config['bug status']
-                        if status != "NEW":
-                            change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, status, self.config['user'], "", "", False, False, 1)
-                            print "status changed", change_status
-                        print self.bug_url(new_bug)
-                    else:
-                        pprint(new_bug)
-                else:
-                    open_bug = open[0]
-                    summary = open_bug.summary
-
-                    # summary should be '<name>-<version> <some text>'
-                    # To extract the version get everything before the first space
-                    # with split and then remove the name and '-' via slicing
-                    bug_version = summary.split(" ")[0][len(package.name)+1:]
-
-                    if bug_version != package.latest_upstream:
-                        update = {'short_desc': self.config["summary template"] % package,
-                                  'comment': self.config["description template"] % package
-                                 }
-                        print repr(update)
-                        res = self.bz._update_bugs(open_bug.bug_id, update)
-                        print res
-                        return res
-            else:
-                for bug in matching_bugs:
-                    print "bug already filed:%s %s" % (self.bug_url(bug), bug.bug_status)
-
-    def get_bug(self, package):
+    def get_exact_outdated_bug(self, package):
+        summary_pattern = '%(name)s-%(latest_upstream)s ' % package
         q = {'component': [package.name],
              'bug_status': self.bug_status_open + self.bug_status_closed,
-             'short_desc': ['%(name)s-%(latest_upstream)s' % package],
+             'short_desc': [summary_pattern],
              'short_desc_type': ['substring']
             }
        
         q.update(self.base_query)
-        bugs = self.bz.query(q)
-        return bugs
+        # TODO if more than one bug, manual intervention is required
+        bug = self.bz.query(q)[0]
 
-    def get_open(self, package):
+        # The summary_pattern contains a space at the end, which is currently
+        # not recognized by bugzilla. Therefore this test is required:
+        if bug.summary.startswith(summary_pattern):
+            return bug
+        else:
+            return None
+
+    def get_open_outdated_bug(self, package):
         q = {'component': [package.name],
              'bug_status': self.bug_status_open
             }
