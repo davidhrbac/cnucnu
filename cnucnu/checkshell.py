@@ -79,7 +79,7 @@ class CheckShell(cmd.Cmd):
         self.package.url = "FM-DEFAULT"
 
     def do_report(self, args):
-        pprint(self.package.report_outdated(dry_run))
+        pprint(self.package.report_outdated())
 
     def do_inspect(self, args):
         try:
