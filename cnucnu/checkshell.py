@@ -25,6 +25,7 @@ from package_list import Package, PackageList, Repository
 from bugzilla_reporter import BugzillaReporter
 from helper import pprint
 from cvs import CVS
+from errors import UpstreamVersionRetrievalError
 
 class CheckShell(cmd.Cmd):
     def __init__(self, config):
@@ -67,7 +68,7 @@ class CheckShell(cmd.Cmd):
         self.package.url = args
 
     def do_name(self, args):
-        self.package = Package(args, self.package.regex, self.package.name, self.repo)
+        self.package = Package(args, self.package.regex, self.package.url, self.repo)
         if not self.package.regex:
             self.package.regex = "DEFAULT"
         if not self.package.url:
@@ -119,22 +120,25 @@ class CheckShell(cmd.Cmd):
 
         self.update_prompt()
         if self.package.url and self.package.regex:
-            print "Upstream Versions:", self.package.upstream_versions
-            print "Latest:", self.package.latest_upstream
+            try:
+                print "Upstream Versions:", self.package.upstream_versions
+                print "Latest:", self.package.latest_upstream
 
-            if self.package.name:
-                print "%(repo_name)s Version: %(repo_version)s %(repo_release)s %(status)s" % self.package
+                if self.package.name:
+                    print "%(repo_name)s Version: %(repo_version)s %(repo_release)s %(status)s" % self.package
 
-                sourcefile = self.package.upstream_version_in_cvs
-                if sourcefile:
-                    print "Found in CVS:", sourcefile
-                else:
-                    print "Not Found in CVS"
-                bug = self.package.exact_outdated_bug
-                if bug:
-                    print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
-                bug = self.package.open_outdated_bug
-                if bug:
-                    print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                    sourcefile = self.package.upstream_version_in_cvs
+                    if sourcefile:
+                        print "Found in CVS:", sourcefile
+                    else:
+                        print "Not Found in CVS"
+                    bug = self.package.exact_outdated_bug
+                    if bug:
+                        print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                    bug = self.package.open_outdated_bug
+                    if bug:
+                        print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+            except UpstreamVersionRetrievalError, uvre:
+                print "Cannot retrieve upstream Version:", uvre
         return stop
 
