@@ -26,6 +26,7 @@ import sys
 import re
 
 import errors as cc_errors
+import pycurl
 from helper import upstream_cmp, cmp_upstream_repo
 from config import global_config
 from cvs import CVS
@@ -140,8 +141,11 @@ class Package(object):
             
             try:
                 html = get_html(self.url)
+            # TODO: get_html should raise a generic retrieval error
             except IOError, ioe:
                 raise cc_errors.UpstreamVersionRetrievalError("%(name)s: IO error while retrieving upstream URL. - %(url)s - %(regex)s" % self)
+            except pycurl.error, e:
+                raise cc_errors.UpstreamVersionRetrievalError("%(name)s: Pycurl while retrieving upstream URL. - %(url)s - %(regex)s" % self + " " + str(e))
 
             upstream_versions = re.findall(self.regex, html)
             for version in upstream_versions:
