@@ -102,7 +102,7 @@ class BugzillaReporter(object):
                 }
         bug_dict.update(self.new_bug)
         if not dry_run:
-            new_bug = self.bz.createbug(**bug)
+            new_bug = self.bz.createbug(**bug_dict)
             status = self.config['bug status']
             change_status = None
             if status != "NEW":
@@ -110,7 +110,7 @@ class BugzillaReporter(object):
                 print "status changed", change_status
             return (new_bug, change_status)
         else:
-            return bug_dict
+            return (bug_dict, None)
 
     def get_exact_outdated_bug(self, package):
         summary_pattern = '%(name)s-%(latest_upstream)s ' % package

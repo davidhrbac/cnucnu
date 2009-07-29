@@ -80,7 +80,7 @@ class CheckShell(cmd.Cmd):
         self.package.url = "FM-DEFAULT"
 
     def do_report(self, args):
-        pprint(self.package.report_outdated())
+        pprint(self.package.report_outdated(dry_run=False))
 
     def do_inspect(self, args):
         try:
@@ -106,11 +106,11 @@ class CheckShell(cmd.Cmd):
             print
             sys.exit(0)
 
-    def default(self, args):
+    def default(self, line):
         if not self.package.url:
-            self.do_url(args)
+            self.do_url(line)
         else:
-            self.do_regex(args)
+            self.do_regex(line)
 
     def postcmd(self, stop, line):
         if not self.package.url:
