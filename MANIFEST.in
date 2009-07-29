@@ -1,5 +1,4 @@
-include bugzilla-set-status.py
-include cnucnu.yaml.sample
+include bugzilla_set_status.py
 include COPYING
 include gpl-2.0.txt
 include gpl-3.0.txt
