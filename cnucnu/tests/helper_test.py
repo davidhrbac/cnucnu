@@ -94,7 +94,17 @@ class HelperTest(unittest.TestCase):
 
     def test_upstream_max_pre(self):
         self.test_upstream_max_sorted(["4.0.1", "4.0.0", "4.0.0-pre2", "4.0.0pre1"])
-        self.test_upstream_max_sorted(["1.2a", "1.2", "1.2pre"])
+        self.test_upstream_max_sorted(["1.2.1", "1.2b", "1.2a", "1.2", "1.2pre"])
+        self.test_upstream_max_sorted(["1.3", "1.2"])
+
+
+#    def test_perl_versioning(self):
+#        """ 1.20 is newer than 1.902 """
+#        self.test_upstream_max_sorted(["1.20", "1.902", "1.901", "1.18"])
+
+#    def test_upstream_gnu_prerelease(self):
+#        """ 1.2a and 1.2b are preleases here """
+#        self.test_upstream_max_sorted(["1.2", "1.2a", "1.2b", "1.1"])
 
     def test_get_rc(self):
         self.assertEqual(get_rc("0.4.pre2.fc11"), "pre2")
