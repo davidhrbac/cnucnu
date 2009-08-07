@@ -17,34 +17,65 @@
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
 # }}}
 
+from twisted.web.client import getPage
+from twisted.internet import reactor
+
 import pprint as pprint_module
 pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
 
-def get_html(url):
+def get_html(url, callback=None, errback=None):
     if url.startswith("ftp://"):
         import urllib
         req = urllib.urlopen(url)
-        return req.read()
-    else:
-        import pycurl
-        import StringIO
-
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL, url.encode("ascii"))
-
-        res = StringIO.StringIO()
-
-        c.setopt(pycurl.WRITEFUNCTION, res.write)
-        c.setopt(pycurl.FOLLOWLOCATION, 1)
-        c.setopt(pycurl.MAXREDIRS, 10)
-
-        c.perform()
-        c.close()
-        data = res.getvalue()
-        res.close()
-
+        data = req.read()
+        if callback:
+            try:
+                for cb in callback:
+                    cb(data)
+            except TypeError:
+                callback(data)
         return data
+    else:
+        if callback:
+            df = getPage(url)
+            try:
+                for cb in callback:
+                    df.addCallback(cb)
+            except TypeError:
+                df.addCallback(callback)
+
+            if errback:
+                try:
+                    for eb in errback:
+                        df.addErrback(eb)
+                except TypeError:
+                    df.addErrback(errback)
+        else:
+            import StringIO
+            import pycurl
+
+            res = StringIO.StringIO()
+
+            c = pycurl.Curl()
+            c.setopt(pycurl.URL, url.encode("ascii"))
+
+            c.setopt(pycurl.WRITEFUNCTION, res.write)
+            c.setopt(pycurl.FOLLOWLOCATION, 1)
+            c.setopt(pycurl.MAXREDIRS, 10)
+
+            c.perform()
+            c.close()
+            
+            # this causes a hangug if reactor.run() was already called once
+            #df = getPage(url)
+            #df.addCallback(res.write)
+            #df.addCallback(lambda ignore: reactor.stop())
+            #reactor.run()
+
+            data = res.getvalue()
+            res.close()
+            return data
 
 def rpm_cmp(v1, v2):
     import rpm
@@ -82,7 +113,7 @@ def upstream_cmp(v1, v2):
 
 def split_rc(version):
     import re
-    RC = re.compile("([^-rp]*)(-?(([Rr][Cc]|[Pp][Rr][Ee])[0-9]))?")
+    RC = re.compile("([^-rp]*)(-?(([Rr][Cc]|[Pp][Rr][Ee])[0-9]?))?")
     match = RC.match(version)
 
     v = match.groups()[0]

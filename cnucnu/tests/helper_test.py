@@ -22,7 +22,7 @@ import unittest
 import sys
 sys.path.insert(0, '../..')
 
-from cnucnu.helper import upstream_cmp, upstream_max, split_rc, cmp_upstream_repo, get_rc
+from cnucnu.helper import upstream_cmp, upstream_max, split_rc, cmp_upstream_repo, get_rc, get_html
 
 class HelperTest(unittest.TestCase):
 
@@ -40,7 +40,8 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(split_rc("4.0.0"), ("4.0.0", ""))
         self.assertEqual(split_rc("0"), ("0", ""))
         self.assertEqual(split_rc("1"), ("1", ""))
-        
+        self.assertEqual(split_rc("1.2pre"), ("1.2", "pre"))
+
         self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "rc1"))
 
     def test_upstream_cmp_rc(self):
@@ -55,13 +56,13 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(upstream_cmp("4.0.1rc1", "4.0.0"), 1)
         self.assertEqual(upstream_cmp("4.0.1RC1", "4.0.0"), 1)
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0rc1"), 1)
-        
+
         self.assertEqual(upstream_cmp("4.0.0-rc2", "4.0.0-rc1"), 1)
         self.assertEqual(upstream_cmp("4.0.0-rc2", "4.0.0rc1"), 1)
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0-rc2"), 1)
-        
+
         self.assertEqual(upstream_cmp("1.0.0", "1.0.0-rc1"), 1)
-    
+
     def test_upstream_cmp_pre(self):
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0"), 0)
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0-pre1"), 1)
@@ -71,23 +72,29 @@ class HelperTest(unittest.TestCase):
 
         self.assertEqual(upstream_cmp("4.0.1pre1", "4.0.0"), 1)
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0pre1"), 1)
-        
+
         self.assertEqual(upstream_cmp("4.0.0-pre2", "4.0.0-pre1"), 1)
         self.assertEqual(upstream_cmp("4.0.0-pre2", "4.0.0pre1"), 1)
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0-pre2"), 1)
-        
+
         self.assertEqual(upstream_cmp("1.0.0", "1.0.0-pre1"), 1)
 
     def test_upstream_max_rc(self):
         versions = ["4.0.1", "4.0.0", "4.0.0-rc2", "4.0.0rc1"]
         for i in range(0,len(versions) - 1):
             self.assertEqual(upstream_max(versions[i:]), versions[i])
-    
-    def test_upstream_max_pre(self):
-        versions = ["4.0.1", "4.0.0", "4.0.0-pre2", "4.0.0pre1"]
+
+    def test_upstream_max_sorted(self, versions=["2", "1"]):
+        """ versions is expected to be sorted, newest version first """
         for i in range(0,len(versions) - 1):
             self.assertEqual(upstream_max(versions[i:]), versions[i])
 
+    def test_upstream_max(self, versions=["1", "2"], expected="2"):
+        self.assertEqual(upstream_max(versions), expected)
+
+    def test_upstream_max_pre(self):
+        self.test_upstream_max_sorted(["4.0.1", "4.0.0", "4.0.0-pre2", "4.0.0pre1"])
+        self.test_upstream_max_sorted(["1.2a", "1.2", "1.2pre"])
 
     def test_get_rc(self):
         self.assertEqual(get_rc("0.4.pre2.fc11"), "pre2")
@@ -107,8 +114,26 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr_older), 1)
         self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr_newer), -1)
 
+    def test_get_html(self):
+        import StringIO
+        from cnucnu.helper import reactor
 
-    
+        http_url = ("http://www.fedoraproject.org")
+        res = StringIO.StringIO()
+
+        data1 = get_html(http_url)
+
+        callback = [res.write, lambda ignore: reactor.stop()]
+        get_html(http_url, callback=callback)
+        reactor.run()
+        data2 = res.getvalue()
+        res.close()
+
+        self.assertEqual(data1, data2)
+
+
+
+
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(HelperTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
