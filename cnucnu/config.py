@@ -46,6 +46,11 @@ bugzilla:
                            URL: %%(url)s
 
 
+                           Please consult the package update guidelines before
+                           you issue an update to a stable branch:
+                           https://fedoraproject.org/wiki/Package_update_guidelines
+
+
                            More information about the service that created this bug can be found at:
 
     %(explanation url)s'
