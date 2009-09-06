@@ -115,7 +115,7 @@ class Package(object):
 
     def set_regex(self, regex):
         if regex == "DEFAULT":
-            regex = "%s-([0-9.]*)\\.[tz][ai][rp]" % re.escape(self.name)
+            regex = r"\b%s[-_]([^-_\s]+?)\.(?:tar|t[bglx]z|tbz2|zip)\b" % re.escape(self.name)
         elif regex == "FM-DEFAULT":
             regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
         self.__regex = regex
