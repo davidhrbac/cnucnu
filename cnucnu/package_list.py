@@ -27,6 +27,7 @@ import re
 
 import errors as cc_errors
 import pycurl
+import urllib
 from helper import upstream_cmp, cmp_upstream_repo
 from config import global_config
 from cvs import CVS
@@ -145,6 +146,7 @@ class Package(object):
             if res:
                 url = res.group(1)
                 name = res.group(2)
+        name = urllib.quote(name, safe='')
         if url == "SF-DEFAULT":
             url = "https://sourceforge.net/projects/%s/files/" % name
         elif url == "FM-DEFAULT":
