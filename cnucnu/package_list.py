@@ -119,8 +119,15 @@ class Package(object):
     def set_regex(self, regex):
         self.raw_regex = regex
 
+        name = self.name
+        # allow name override with e.g. DEFAULT:othername
+        if regex:
+            res = re.match(r"^((?:FM-)?DEFAULT)(?::(.+))$", regex)
+            if res:
+                regex = res.group(1)
+                name = res.group(2)
         if regex == "DEFAULT":
-            regex = r"\b%s[-_]([^-_\s]+?)\.(?:tar|t[bglx]z|tbz2|zip)\b" % re.escape(self.name)
+            regex = r"\b%s[-_]([^-_\s]+?)\.(?:tar|t[bglx]z|tbz2|zip)\b" % re.escape(name)
         elif regex == "FM-DEFAULT":
             regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
         self.__regex = regex
@@ -131,10 +138,17 @@ class Package(object):
     def set_url(self, url):
         self.raw_url = url
 
+        name = self.name
+        # allow name override with e.g. SF-DEFAULT:othername
+        if url:
+            res = re.match(r"^((?:SF|FM)-DEFAULT)(?::(.+))$", url)
+            if res:
+                url = res.group(1)
+                name = res.group(2)
         if url == "SF-DEFAULT":
-            url = "https://sourceforge.net/projects/%s/files/" % self.name
+            url = "https://sourceforge.net/projects/%s/files/" % name
         elif url == "FM-DEFAULT":
-            url = "http://freshmeat.net/projects/%s" % self.name
+            url = "http://freshmeat.net/projects/%s" % name
 
         self.__url = url
         self._invalidate_caches()
