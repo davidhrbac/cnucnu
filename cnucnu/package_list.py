@@ -125,7 +125,7 @@ class Package(object):
     
     def set_url(self, url):
         if url == "SF-DEFAULT":
-            url = "http://prdownloads.sourceforge.net/%s" % self.name
+            url = "https://sourceforge.net/projects/%s/files/" % self.name
         elif url == "FM-DEFAULT":
             url = "http://freshmeat.net/projects/%s" % self.name
 
