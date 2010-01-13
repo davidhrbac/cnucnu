@@ -278,4 +278,10 @@ class PackageList:
             for p in self.packages:
                 if p.name == key:
                     return p
-            raise KeyError("Package %s not found" % key) 
+            raise KeyError("Package %s not found" % key)
+
+
+if __name__ == '__main__':
+    pl = PackageList()
+    p = pl.packages[0]
+    print p.upstream_versions
