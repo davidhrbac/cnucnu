@@ -86,7 +86,8 @@ class Package(object):
 
         self.regex = regex
         self.url = url
-        
+
+        self._html = None
         self._latest_upstream = None
         self._upstream_versions = None
         self._repo_version = None
@@ -133,12 +134,15 @@ class Package(object):
         self._invalidate_caches()
 
     url = property(lambda self:self.__url, set_url)
-  
-    @property
-    def upstream_versions(self):
-        if not self._upstream_versions:
+
+    def set_html(self, html):
+        self._html = html
+        self._invalidate_caches()
+
+    def get_html(self):
+        if not self._html:
             from cnucnu.helper import get_html
-            
+
             try:
                 html = get_html(self.url)
             # TODO: get_html should raise a generic retrieval error
@@ -146,8 +150,16 @@ class Package(object):
                 raise cc_errors.UpstreamVersionRetrievalError("%(name)s: IO error while retrieving upstream URL. - %(url)s - %(regex)s" % self)
             except pycurl.error, e:
                 raise cc_errors.UpstreamVersionRetrievalError("%(name)s: Pycurl while retrieving upstream URL. - %(url)s - %(regex)s" % self + " " + str(e))
+            self.html = html
+        return self._html
 
-            upstream_versions = re.findall(self.regex, html)
+    html = property(get_html, set_html)
+
+    @property
+    def upstream_versions(self):
+        if not self._upstream_versions:
+
+            upstream_versions = re.findall(self.regex, self.html)
             for version in upstream_versions:
                 if " " in version:
                     raise cc_errors.UpstreamVersionRetrievalError("%s: invalid upstream version:>%s< - %s - %s " % (self.name, version, self.url, self.regex))
