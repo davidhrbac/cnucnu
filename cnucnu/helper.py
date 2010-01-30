@@ -144,7 +144,10 @@ def split_rc(version):
     if rc:
         return (v, rc)
     else:
-        return (v, "")
+        # if version contains a dash, but no release candidate string is found, v != version, therfore use version here
+        # Example version: 1.8.23-20100128-r1100
+        # Then: v=1.8.23, but rc=""
+        return (version, "")
 
 def get_rc(release):
     import re

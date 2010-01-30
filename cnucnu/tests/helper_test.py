@@ -97,7 +97,6 @@ class HelperTest(unittest.TestCase):
         self.test_upstream_max_sorted(["1.2.1", "1.2b", "1.2a", "1.2", "1.2pre"])
         self.test_upstream_max_sorted(["1.3", "1.2"])
 
-
 #    def test_perl_versioning(self):
 #        """ 1.20 is newer than 1.902 """
 #        self.test_upstream_max_sorted(["1.20", "1.902", "1.901", "1.18"])
@@ -141,7 +140,9 @@ class HelperTest(unittest.TestCase):
 
         self.assertEqual(data1, data2)
 
-
+    def test_snapshot_version_with_dash(self):
+       # first newer
+        self.assertEqual(upstream_cmp("1.8.23-20100128-r1100", "1.8.23-20091230-r1079"), 1)
 
 
 if __name__ == "__main__":
