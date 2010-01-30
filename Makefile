@@ -1,3 +1,4 @@
+# Dependencies: epydoc python-docutils
 html: FORCE
 	rm -rf html
 	epydoc --html --no-private --output html -v cnucnu/
