@@ -16,6 +16,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
 # }}}
+""" :author: Till Maas
+    :contact: opensource@till.name
+    :license: GPLv2+
+"""
+__docformat__ = "restructuredtext"
 
 from twisted.web.client import getPage
 from twisted.internet import reactor
@@ -87,6 +92,22 @@ def rpm_max(list):
     return list[-1]
 
 def upstream_cmp(v1, v2):
+    """ Compare two upstream versions
+
+    :Parameters:
+        v1 : str
+            Upstream version string 1
+        v2 : str
+            Upstream version string 2
+
+    :return:
+        - -1 - second version newer
+        - 0  - both are the same
+        - 1  - first version newer
+
+    :rtype: int
+
+    """
     import rpm
 
     v1, rc1 = split_rc(v1)
@@ -112,6 +133,8 @@ def upstream_cmp(v1, v2):
         return diff
 
 def split_rc(version):
+    """ Split version into version and release candidate string if possible
+    """
     import re
     RC = re.compile("([^-rp]*)(-?(([Rr][Cc]|[Pp][Rr][Ee])[0-9]?))?")
     match = RC.match(version)
