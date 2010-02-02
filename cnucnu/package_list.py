@@ -84,6 +84,8 @@ class Package(object):
         # :TODO: add some sanity checks
         self.name = name
 
+        self.raw_regex = None
+        self.raw_url = None
         self.regex = regex
         self.url = url
 
@@ -115,6 +117,8 @@ class Package(object):
         return getattr(self, key)
 
     def set_regex(self, regex):
+        self.raw_regex = regex
+
         if regex == "DEFAULT":
             regex = r"\b%s[-_]([^-_\s]+?)\.(?:tar|t[bglx]z|tbz2|zip)\b" % re.escape(self.name)
         elif regex == "FM-DEFAULT":
@@ -125,6 +129,8 @@ class Package(object):
     regex = property(lambda self:self.__regex, set_regex)
     
     def set_url(self, url):
+        self.raw_url = url
+
         if url == "SF-DEFAULT":
             url = "https://sourceforge.net/projects/%s/files/" % self.name
         elif url == "FM-DEFAULT":
