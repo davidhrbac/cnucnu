@@ -128,7 +128,7 @@ class Package(object):
                 regex = res.group(1)
                 name = res.group(2)
         if regex == "DEFAULT":
-            regex = r"\b%s[-_]([^-_\s]+?)(?i)(?:[-_](?:src|source))?\.(?:tar|t[bglx]z|tbz2|zip)\b" % re.escape(name)
+            regex = r"\b%s[-_]([^-/_\s]+?)(?i)(?:[-_](?:src|source))?\.(?:tar|t[bglx]z|tbz2|zip)\b" % re.escape(name)
         elif regex == "FM-DEFAULT":
             regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
         self.__regex = regex
