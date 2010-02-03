@@ -130,8 +130,9 @@ class Package(object):
         if regex == "DEFAULT":
             regex = \
                 r"\b%s[-_]" % re.escape(name)    + \
-                r"([^-/_\s]+?)"                  + \
                 r"(?i)"                          + \
+                r"(?:(?:src|source)[-_])?"       + \
+                r"([^-/_\s]+?)"                  + \
                 r"(?:[-_](?:src|source))?"       + \
                 r"\.(?:tar|t[bglx]z|tbz2|zip)\b"
         elif regex == "FM-DEFAULT":
