@@ -156,7 +156,7 @@ class Package(object):
                 name = res.group(2)
         name = urllib.quote(name, safe='')
         if url == "SF-DEFAULT":
-            url = "https://sourceforge.net/projects/%s/files/" % name
+            url = "http://sourceforge.net/projects/%s/files/" % name
         elif url == "FM-DEFAULT":
             url = "http://freshmeat.net/projects/%s" % name
 
