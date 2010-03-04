@@ -150,7 +150,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            res = re.match(r"^((?:SF|FM)-DEFAULT)(?::(.+))$", url)
+            res = re.match(r"^((?:SF|FM|GNU)-DEFAULT)(?::(.+))$", url)
             if res:
                 url = res.group(1)
                 name = res.group(2)
@@ -159,6 +159,8 @@ class Package(object):
             url = "http://sourceforge.net/projects/%s/files/" % name
         elif url == "FM-DEFAULT":
             url = "http://freshmeat.net/projects/%s" % name
+        elif url == "GNU-DEFAULT":
+            url = "http://ftp.gnu.org/gnu/%s" % name
 
         self.__url = url
         self._invalidate_caches()
