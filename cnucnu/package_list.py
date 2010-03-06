@@ -301,16 +301,24 @@ class PackageList:
             page_text = w.get_pagesource(mediawiki["page"])
 
             import re
-            package_line = re.compile(' \\* ([^ ]*) (.*) ([^ \n]*)\n')
-
-            match = package_line.findall(page_text)
+            package_line = re.compile(' \\* ([^ ]*) (.*) ([^ ]*)')
 
             packages = []
             repo.package_list = self
-            
-            for package in match:
-                (name, regex, url) = package
-                packages.append(Package(name, regex, url, repo, cvs, br))
+
+            inside_package_list = False
+            for line in page_text.splitlines():
+                if not inside_package_list:
+                    if line == "== List Of Packages ==":
+                        inside_package_list = True
+                else:
+                    match = package_line.match(line)
+                    if match:
+                        (name, regex, url) = match.groups()
+                        packages.append(Package(name, regex, url, repo, cvs, br))
+                    elif line == "<!-- END LIST OF PACKAGES -->":
+                        inside_package_list = False
+                        break
 
         self.packages = packages
         self.append = self.packages.append
