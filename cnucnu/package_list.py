@@ -37,6 +37,7 @@ from helper import upstream_cmp, cmp_upstream_repo
 
 #extra modules
 import pycurl
+from fedora.client.pkgdb import PackageDB
 
 class Repository:
     def __init__(self, name="", path=""):
@@ -86,7 +87,7 @@ class Repository:
 
 class Package(object):
 
-    def __init__(self, name, regex, url, repo=Repository(), cvs=CVS(), br=BugzillaReporter()):
+    def __init__(self, name, regex, url, repo=Repository(), cvs=CVS(), br=BugzillaReporter(), nagging=True):
         # :TODO: add some sanity checks
         self.name = name
 
@@ -270,15 +271,19 @@ class Package(object):
         return self.br.get_open_outdated_bug(self)
 
     def report_outdated(self, dry_run=True):
-        if not self.upstream_newer:
-            print "Upstream of package not newer, report_outdated aborted!" + str(self)
-            return None
+        if nagging:
+            if not self.upstream_newer:
+                print "Upstream of package not newer, report_outdated aborted!" + str(self)
+                return None
 
-        if self.upstream_version_in_cvs:
-            print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
-            return None
+            if self.upstream_version_in_cvs:
+                print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
+                return None
 
-        return self.br.report_outdated(self, dry_run)
+            return self.br.report_outdated(self, dry_run)
+        else:
+            print "Nagging disabled for package: %s" % str(self)
+            return None
 
 
 
@@ -305,14 +310,26 @@ class PackageList:
             w = MediaWiki(base_url=mediawiki["base url"])
             page_text = w.get_pagesource(mediawiki["page"])
 
-            package_line = re.compile(' \\* ([^ ]*) (.*) ([^ ]*)')
+            ignore_owner_regex = re.compile('\\* ([^ ]*)')
+            owners = helper.match_interval(page_text, ignore_owner_regex, "== Package Owner Ignore List ==", "<!-- END PACKAGE OWNER IGNORE LIST -->")
+
+            pdb = PackageDB()
+            ignore_packages = []
+            for owner in owners:
+                pkgs = pdb.user_packages(owner, acls="owner")["pkgs"]
+                p_names = [p["name"] for p in pkgs]
+                ignore_packages.extend(p_names)
+            set(ignore_packages)
 
             packages = []
             repo.package_list = self
-
-            for package_data in helper.match_interval(page_text, package_line, "== List Of Packages ==", "<!-- END LIST OF PACKAGES -->"):
+            package_line_regex = re.compile(' \\* ([^ ]*) (.*) ([^ ]*)')
+            for package_data in helper.match_interval(page_text, package_line_regex, "== List Of Packages ==", "<!-- END LIST OF PACKAGES -->"):
                 (name, regex, url) = package_data
-                packages.append(Package(name, regex, url, repo, cvs, br))
+                nagging = True
+                if name in ignore_packages:
+                    nagging = False
+                packages.append(Package(name, regex, url, repo, cvs, br, nagging=nagging))
 
         self.packages = packages
         self.append = self.packages.append
