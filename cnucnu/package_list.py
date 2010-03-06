@@ -28,6 +28,7 @@ import re
 import errors as cc_errors
 import pycurl
 import urllib
+import helper
 from helper import upstream_cmp, cmp_upstream_repo
 from config import global_config
 from cvs import CVS
@@ -306,19 +307,9 @@ class PackageList:
             packages = []
             repo.package_list = self
 
-            inside_package_list = False
-            for line in page_text.splitlines():
-                if not inside_package_list:
-                    if line == "== List Of Packages ==":
-                        inside_package_list = True
-                else:
-                    match = package_line.match(line)
-                    if match:
-                        (name, regex, url) = match.groups()
-                        packages.append(Package(name, regex, url, repo, cvs, br))
-                    elif line == "<!-- END LIST OF PACKAGES -->":
-                        inside_package_list = False
-                        break
+            for package_data in helper.match_interval(page_text, package_line, "== List Of Packages ==", "<!-- END LIST OF PACKAGES -->"):
+                (name, regex, url) = package_data
+                packages.append(Package(name, regex, url, repo, cvs, br))
 
         self.packages = packages
         self.append = self.packages.append

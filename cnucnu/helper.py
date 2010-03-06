@@ -213,3 +213,21 @@ def secure_download(url, cainfo=""):
 
     return data
 
+def match_interval(text, regex, begin_marker, end_marker):
+    """ returns a list of match.groups() for all lines after a line
+    like begin_marker and before a line like end_marker
+    """
+
+    res = []
+    inside = False
+    for line in text.splitlines():
+        if not inside:
+            if line == begin_marker:
+                inside = True
+        else:
+            match = regex.match(line)
+            if match:
+                yield match.groups()
+            elif line == end_marker:
+                inside = False
+                break
