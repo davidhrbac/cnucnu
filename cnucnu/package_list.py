@@ -22,17 +22,21 @@
 """
 __docformat__ = "restructuredtext"
 
-import sys
+# python default modules
 import re
-
-import errors as cc_errors
-import pycurl
+import sys
 import urllib
-import helper
-from helper import upstream_cmp, cmp_upstream_repo
+
+# cnucnu modules
+from bugzilla_reporter import BugzillaReporter
 from config import global_config
 from cvs import CVS
-from bugzilla_reporter import BugzillaReporter
+import errors as cc_errors
+import helper
+from helper import upstream_cmp, cmp_upstream_repo
+
+#extra modules
+import pycurl
 
 class Repository:
     def __init__(self, name="", path=""):
@@ -301,7 +305,6 @@ class PackageList:
             w = MediaWiki(base_url=mediawiki["base url"])
             page_text = w.get_pagesource(mediawiki["page"])
 
-            import re
             package_line = re.compile(' \\* ([^ ]*) (.*) ([^ ]*)')
 
             packages = []
