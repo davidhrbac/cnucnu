@@ -108,6 +108,7 @@ class Package(object):
         self.repo_name = repo.name
         self.cvs = cvs
         self.br = br
+        self.nagging = nagging
 
     def _invalidate_caches(self):
         self._latest_upstream = None
@@ -271,7 +272,7 @@ class Package(object):
         return self.br.get_open_outdated_bug(self)
 
     def report_outdated(self, dry_run=True):
-        if nagging:
+        if self.nagging:
             if not self.upstream_newer:
                 print "Upstream of package not newer, report_outdated aborted!" + str(self)
                 return None
