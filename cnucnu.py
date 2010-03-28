@@ -51,6 +51,9 @@ if __name__ == '__main__':
         sys.stdout.write(global_config.yaml)
         sys.exit(0)
 
+
+    # default to ./cnucnu.yaml if it exists and no config file is specified on
+    # the commandline
     yaml_file = options.config_filename
     if not yaml_file:
         new_yaml_file = "./cnucnu.yaml"
