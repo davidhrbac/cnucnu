@@ -167,7 +167,7 @@ class Package(object):
         elif url == "FM-DEFAULT":
             url = "http://freshmeat.net/projects/%s" % name
         elif url == "GNU-DEFAULT":
-            url = "http://ftp.gnu.org/gnu/%s" % name
+            url = "http://ftp.gnu.org/gnu/%s/" % name
 
         self.__url = url
         self._invalidate_caches()
