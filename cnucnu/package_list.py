@@ -157,7 +157,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            res = re.match(r"^((?:SF|FM|GNU)-DEFAULT)(?::(.+))$", url)
+            res = re.match(r"^((?:SF|FM|GNU|CPAN)-DEFAULT)(?::(.+))$", url)
             if res:
                 url = res.group(1)
                 name = res.group(2)
@@ -168,6 +168,8 @@ class Package(object):
             url = "http://freshmeat.net/projects/%s" % name
         elif url == "GNU-DEFAULT":
             url = "http://ftp.gnu.org/gnu/%s/" % name
+        elif url == "CPAN-DEFAULT":
+            url = "http://search.cpan.org/dist/%s/" % name[len("perl-"):]
 
         self.__url = url
         self._invalidate_caches()
