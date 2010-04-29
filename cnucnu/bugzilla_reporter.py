@@ -57,8 +57,6 @@ class BugzillaReporter(object):
         if not self._bz:
             rpc_conf = filter_dict(self.config, ["url", "user", "password"])
             self._bz = Bugzilla(**rpc_conf)
-            if "password" in rpc_conf and rpc_conf["password"]:
-                self._bz.login()
         return self._bz
 
 
