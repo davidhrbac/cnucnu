@@ -169,7 +169,10 @@ class Package(object):
         elif url == "GNU-DEFAULT":
             url = "http://ftp.gnu.org/gnu/%s/" % name
         elif url == "CPAN-DEFAULT":
-            url = "http://search.cpan.org/dist/%s/" % name[len("perl-"):]
+            if not res and name.startswith("perl-"):
+                # strip "perl-" prefix only if name was not overridden
+                name = name[len("perl-"):]
+            url = "http://search.cpan.org/dist/%s/" % name
 
         self.__url = url
         self._invalidate_caches()
