@@ -130,10 +130,10 @@ class Package(object):
         name = self.name
         # allow name override with e.g. DEFAULT:othername
         if regex:
-            res = re.match(r"^((?:FM-)?DEFAULT)(?::(.+))$", regex)
-            if res:
-                regex = res.group(1)
-                name = res.group(2)
+            name_override = re.match(r"^((?:FM-)?DEFAULT)(?::(.+))$", regex)
+            if name_override:
+                regex = name_override.group(1)
+                name = name_override.group(2)
         if regex == "DEFAULT":
             regex = \
                 r"\b%s[-_]" % re.escape(name)    + \
@@ -150,17 +150,17 @@ class Package(object):
         self._invalidate_caches()
 
     regex = property(lambda self:self.__regex, set_regex)
-    
+
     def set_url(self, url):
         self.raw_url = url
 
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            res = re.match(r"^((?:SF|FM|GNU|CPAN)-DEFAULT)(?::(.+))$", url)
-            if res:
-                url = res.group(1)
-                name = res.group(2)
+            name_override = re.match(r"^((?:SF|FM|GNU|CPAN)-DEFAULT)(?::(.+))$", url)
+            if name_override:
+                url = name_override.group(1)
+                name = name_override.group(2)
         name = urllib.quote(name, safe='')
         if url == "SF-DEFAULT":
             url = "http://sourceforge.net/projects/%s/files/" % name
@@ -169,8 +169,8 @@ class Package(object):
         elif url == "GNU-DEFAULT":
             url = "http://ftp.gnu.org/gnu/%s/" % name
         elif url == "CPAN-DEFAULT":
-            if not res and name.startswith("perl-"):
-                # strip "perl-" prefix only if name was not overridden
+            # strip "perl-" prefix only if name was not overridden
+            if not name_override and name.startswith("perl-"):
                 name = name[len("perl-"):]
             url = "http://search.cpan.org/dist/%s/" % name
 
