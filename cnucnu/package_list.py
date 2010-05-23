@@ -146,6 +146,9 @@ class Package(object):
                 r"\.(?:tar|t[bglx]z|tbz2|zip)\b"
         elif regex == "FM-DEFAULT":
             regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
+        elif regex == "HACKAGE-DEFAULT":
+            regex = 'href="([0-9][0-9.]*)/"'
+
         self.__regex = regex
         self._invalidate_caches()
 
@@ -173,6 +176,11 @@ class Package(object):
             if not name_override and name.startswith("perl-"):
                 name = name[len("perl-"):]
             url = "http://search.cpan.org/dist/%s/" % name
+        elif url == "HACKAGE-DEFAULT":
+            # strip "ghc-" prefix only if name was not overridden
+            if not name_override and name.startswith("ghc-"):
+                name = name[len("ghc-"):]
+            url = "http://hackage.haskell.org/packages/archive/%s/" % name
 
         self.__url = url
         self._invalidate_caches()
