@@ -146,7 +146,7 @@ class Package(object):
                 r"\.(?:tar|t[bglx]z|tbz2|zip)\b"
         elif regex == "FM-DEFAULT":
             regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
-        elif regex == "HACKAGE-DEFAULT":
+        elif regex == "HACKAGE-DEFAULT" or regex== "DIR-LISTING-DEFAULT":
             regex = 'href="([0-9][0-9.]*)/"'
 
         self.__regex = regex
