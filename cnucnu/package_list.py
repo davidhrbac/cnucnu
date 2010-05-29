@@ -181,6 +181,8 @@ class Package(object):
             if not name_override and name.startswith("ghc-"):
                 name = name[len("ghc-"):]
             url = "http://hackage.haskell.org/packages/archive/%s/" % name
+        elif url == "DEBIAN-DEFAULT":
+            url = "http://ftp.debian.org/debian/pool/main/%s/%s/" % (name[0], name)
 
         self.__url = url
         self._invalidate_caches()
