@@ -142,7 +142,7 @@ class Package(object):
                 r"([^-/_\s]*?"                   + \
                 r"\d"                            + \
                 r"[^-/_\s]*?)"                   + \
-                r"(?:[-_](?:src|source))?"       + \
+                r"(?:[-_.](?:src|source|orig))?" + \
                 r"\.(?:tar|t[bglx]z|tbz2|zip)\b"
         elif regex == "FM-DEFAULT":
             regex = '<a href="/projects/[^/]*/releases/[0-9]*">([^<]*)</a>'
