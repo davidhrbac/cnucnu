@@ -183,6 +183,8 @@ class Package(object):
             url = "http://hackage.haskell.org/packages/archive/%s/" % name
         elif url == "DEBIAN-DEFAULT":
             url = "http://ftp.debian.org/debian/pool/main/%s/%s/" % (name[0], name)
+        elif url == "GOOGLE-DEFAULT":
+            url = "http://code.google.com/p/%s/downloads/list" % name
 
         self.__url = url
         self._invalidate_caches()
