@@ -160,7 +160,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            name_override = re.match(r"^((?:SF|FM|GNU|CPAN)-DEFAULT)(?::(.+))$", url)
+            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE)-DEFAULT)(?::(.+))$", url)
             if name_override:
                 url = name_override.group(1)
                 name = name_override.group(2)
