@@ -34,7 +34,7 @@ bugzilla:
     bug url prefix: "%(base url)s/show_bug.cgi?id="
     product: Fedora
     version: rawhide
-    keywords: FutureFeature
+    keywords: FutureFeature,Triaged
     bug status: ASSIGNED
     explanation url: 'https://fedoraproject.org/wiki/Upstream_Release_Monitoring'
 
