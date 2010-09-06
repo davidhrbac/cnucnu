@@ -294,9 +294,9 @@ class Package(object):
                 print "Upstream of package not newer, report_outdated aborted!" + str(self)
                 return None
 
-            if self.upstream_version_in_cvs:
-                print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
-                return None
+#            if self.upstream_version_in_cvs:
+#                print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
+#                return None
 
             return self.br.report_outdated(self, dry_run)
         else:
