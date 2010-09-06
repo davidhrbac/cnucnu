@@ -57,7 +57,7 @@ bugzilla:
 
 
 repo:
-    path: 'http://download.fedora.redhat.com/pub/fedora/linux/development/source/SRPMS'
+    path: 'http://kojipkgs.fedoraproject.org/mash/rawhide/source/SRPMS'
     name: Fedora Rawhide
 
 cvs:
