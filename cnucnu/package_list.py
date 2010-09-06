@@ -160,7 +160,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE)-DEFAULT)(?::(.+))$", url)
+            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PYPI)-DEFAULT)(?::(.+))$", url)
             if name_override:
                 url = name_override.group(1)
                 name = name_override.group(2)
@@ -185,6 +185,8 @@ class Package(object):
             url = "http://ftp.debian.org/debian/pool/main/%s/%s/" % (name[0], name)
         elif url == "GOOGLE-DEFAULT":
             url = "http://code.google.com/p/%s/downloads/list" % name
+        elif url == "PYPI-DEFAULT":
+            url = "http://pypi.python.org/packages/source/%s/%s" % (name[0], name)
 
         self.__url = url
         self._invalidate_caches()
