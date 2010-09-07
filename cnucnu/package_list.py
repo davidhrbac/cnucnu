@@ -134,6 +134,25 @@ class Package(object):
             if name_override:
                 regex = name_override.group(1)
                 name = name_override.group(2)
+
+        # use DEFAULT regex but alter the name
+        if regex == "CPAN-DEFAULT":
+            # strip "perl-" prefix only if name was not overridden
+            if not name_override and name.startswith("perl-"):
+                name = name[len("perl-"):]
+                regex = "DEFAULT"
+        elif regex == "PEAR-DEFAULT":
+            # strip "php-pear-" prefix only if name was not overridden
+            if not name_override and name.startswith("php-pear-"):
+                name = name[len("php-pear-"):].replace("-","_")
+                regex = "DEFAULT"
+        elif regex == "PECL-DEFAULT":
+            # strip "php-pecl-" prefix only if name was not overridden
+            if not name_override and name.startswith("php-pecl-"):
+                name = name[len("php-pecl-"):].replace("-","_")
+                regex = "DEFAULT"
+
+        # no elif here, because the previous regex aliases are only for name altering
         if regex == "DEFAULT":
             regex = \
                 r"\b%s[-_]" % re.escape(name)    + \
