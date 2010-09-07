@@ -160,7 +160,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PYPI)-DEFAULT)(?::(.+))$", url)
+            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PEAR|PECL|PYPI)-DEFAULT)(?::(.+))$", url)
             if name_override:
                 url = name_override.group(1)
                 name = name_override.group(2)
@@ -187,6 +187,16 @@ class Package(object):
             url = "http://code.google.com/p/%s/downloads/list" % name
         elif url == "PYPI-DEFAULT":
             url = "http://pypi.python.org/packages/source/%s/%s" % (name[0], name)
+        elif url == "PEAR-DEFAULT":
+            # strip "php-pear-" prefix only if name was not overridden
+            if not name_override and name.startswith("php-pear-"):
+                name = name[len("php-pear-"):].replace("-","_")
+            url = "http://pear.php.net/package/%s/download" % name
+        elif url == "PECL-DEFAULT":
+            # strip "php-pecl-" prefix only if name was not overridden
+            if not name_override and name.startswith("php-pecl-"):
+                name = name[len("php-pecl-"):].replace("-","_")
+            url = "http://pecl.php.net/package/%s/download" % name
 
         self.__url = url
         self._invalidate_caches()
