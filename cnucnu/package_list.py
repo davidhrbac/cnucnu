@@ -179,7 +179,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PEAR|PECL|PYPI)-DEFAULT)(?::(.+))$", url)
+            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PEAR|PECL|PYPI|LP)-DEFAULT)(?::(.+))$", url)
             if name_override:
                 url = name_override.group(1)
                 name = name_override.group(2)
@@ -216,6 +216,8 @@ class Package(object):
             if not name_override and name.startswith("php-pecl-"):
                 name = name[len("php-pecl-"):].replace("-","_")
             url = "http://pecl.php.net/package/%s/download" % name
+        elif url == "LP-DEFAULT":
+            url = "https://launchpad.net/%s/+download" % name
 
         self.__url = url
         self._invalidate_caches()
