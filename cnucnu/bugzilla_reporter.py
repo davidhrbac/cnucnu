@@ -20,7 +20,6 @@
 from bugzilla import Bugzilla
 from config import global_config
 from helper import filter_dict
-from helper import pprint
 
 class BugzillaReporter(object):
     base_query = {'query_format': ['advanced'], 'emailreporter1': ['1'], 'emailtype1': ['exact']}

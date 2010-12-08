@@ -24,7 +24,6 @@ __docformat__ = "restructuredtext"
 
 # python default modules
 import re
-import sys
 import urllib
 
 # cnucnu modules
@@ -33,7 +32,7 @@ from config import global_config
 from cvs import CVS
 import errors as cc_errors
 import helper
-from helper import upstream_cmp, cmp_upstream_repo
+from helper import cmp_upstream_repo
 
 #extra modules
 import pycurl

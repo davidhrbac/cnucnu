@@ -76,7 +76,6 @@ Eventually, there will be bugs filed for outdated packages, but this is not yet 
 
 
 if __name__ == "__main__":
-    import pickle
     mailer = Mailer(smtp_host="")
 
     data_file = open("../../data.pickle")

@@ -19,8 +19,6 @@
 
 # Options: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
-import pycurl
-import StringIO
 from helper import secure_download
 from config import global_config
 

@@ -31,9 +31,6 @@ pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
 
 if __name__ == '__main__':
-    import re
-    import cnucnu.errors as cc_errors
-
     from optparse import OptionParser
     parser = OptionParser()
      

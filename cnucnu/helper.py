@@ -23,7 +23,7 @@
 __docformat__ = "restructuredtext"
 
 from twisted.web.client import getPage
-from twisted.internet import reactor
+#from twisted.internet import reactor
 
 import pprint as pprint_module
 pp = pprint_module.PrettyPrinter(indent=4)
@@ -108,7 +108,6 @@ def upstream_cmp(v1, v2):
     :rtype: int
 
     """
-    import rpm
 
     v1, rc1 = split_rc(v1)
     v2, rc2 = split_rc(v2)
