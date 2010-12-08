@@ -63,7 +63,7 @@ class Mailer:
     def send(self, message):
 
         s = smtplib.SMTP(self.smtp_host)
-        s.sendmail(message.sender, [message.receipient], mesagge.as_string())
+        s.sendmail(message.sender, [message.receipient], message.as_string())
         s.quit()
 
 message_template_outdated = """ The latest upstream release for %(name)s is %(latest_upstream)s, but Fedora Rawhide only contains %(repo_version)s.
