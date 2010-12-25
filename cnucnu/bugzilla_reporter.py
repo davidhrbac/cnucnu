@@ -102,12 +102,11 @@ class BugzillaReporter(object):
         bug_dict.update(self.new_bug)
         if not dry_run:
             new_bug = self.bz.createbug(**bug_dict)
-            status = self.config['bug status']
             change_status = None
             print new_bug
-            # TODO: check which status the newly created bug has
-            if status != "ASSIGNED":
-                change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, status, self.config['user'], "", "", False, False, 1)
+
+            if new_bug.bug_status != self.config['bug status']:
+                change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, self.config['bug status'], self.config['user'], "", "", False, False, 1)
                 print "status changed", change_status
             return (new_bug, change_status)
         else:
