@@ -36,7 +36,7 @@ bugzilla:
     version: rawhide
     keywords: FutureFeature,Triaged
     bug status: ASSIGNED
-    explanation url: 'https://fedoraproject.org/wiki/Upstream_Release_Monitoring'
+    explanation url: 'https://fedoraproject.org/wiki/Upstream_release_monitoring'
 
     summary template: "%%(name)s-%%(latest_upstream)s is available"
     description template: 'Latest upstream release: %%(latest_upstream)s
@@ -67,7 +67,7 @@ cvs:
 package list:
     mediawiki:
         base url: 'https://fedoraproject.org/w/'
-        page: Upstream_Release_Monitoring
+        page: Upstream_release_monitoring
 
 
 # vim: filetype=yaml
