@@ -63,7 +63,7 @@ bz.login(user=username, password=getpass.getpass())
 #bug_id_list = [b.bug_id for b in bugs]
 #bz._update_bugs(bug_id_list, update)
 
-def set_summary(bug_id, short_desc):
+def set_short_desc(bug_id, short_desc):
     update = {'short_desc': short_desc}
     res = bz._update_bugs(bug_id, update)
     print res

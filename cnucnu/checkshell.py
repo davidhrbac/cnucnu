@@ -134,10 +134,10 @@ class CheckShell(cmd.Cmd):
                         print "Not Found in CVS"
                     bug = self.package.exact_outdated_bug
                     if bug:
-                        print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                        print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.short_desc)
                     bug = self.package.open_outdated_bug
                     if bug:
-                        print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.summary)
+                        print "Open Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.short_desc)
             except UpstreamVersionRetrievalError, uvre:
                 print "Cannot retrieve upstream Version:", uvre
         return stop

@@ -38,7 +38,7 @@ bugzilla:
     bug status: NEW
     explanation url: 'https://fedoraproject.org/wiki/Upstream_release_monitoring'
 
-    summary template: "%%(name)s-%%(latest_upstream)s is available"
+    short_desc template: "%%(name)s-%%(latest_upstream)s is available"
     description template: 'Latest upstream release: %%(latest_upstream)s
 
                            Current version in %%(repo_name)s: %%(repo_version)s

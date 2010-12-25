@@ -74,15 +74,15 @@ class BugzillaReporter(object):
                 new_bug, change_status = self.create_outdated_bug(package, dry_run)
             else:
                 open_bug = package.open_outdated_bug
-                summary = open_bug.summary
+                short_desc = open_bug.short_desc
 
-                # summary should be '<name>-<version> <some text>'
+                # short_desc should be '<name>-<version> <some text>'
                 # To extract the version get everything before the first space
                 # with split and then remove the name and '-' via slicing
-                bug_version = summary.split(" ")[0][len(package.name)+1:]
+                bug_version = short_desc.split(" ")[0][len(package.name)+1:]
 
                 if bug_version != package.latest_upstream:
-                    update = {'short_desc': self.config["summary template"] % package,
+                    update = {'short_desc': self.config["short_desc template"] % package,
                               'comment': self.config["description template"] % package
                              }
                     print repr(update)
@@ -96,7 +96,7 @@ class BugzillaReporter(object):
 
     def create_outdated_bug(self, package, dry_run=True):
         bug_dict = {'component': package.name,
-               'summary': self.config["summary template"] % package,
+               'short_desc': self.config["short_desc template"] % package,
                'description': self.config["description template"] % package
                 }
         bug_dict.update(self.new_bug)
@@ -114,10 +114,10 @@ class BugzillaReporter(object):
             return (bug_dict, None)
 
     def get_exact_outdated_bug(self, package):
-        summary_pattern = '%(name)s-%(latest_upstream)s ' % package
+        short_desc_pattern = '%(name)s-%(latest_upstream)s ' % package
         q = {'component': [package.name],
              'bug_status': self.bug_status_open + self.bug_status_closed,
-             'short_desc': [summary_pattern],
+             'short_desc': [short_desc_pattern],
              'short_desc_type': ['substring']
             }
        
@@ -129,9 +129,9 @@ class BugzillaReporter(object):
         else:
             return bugs
 
-        # The summary_pattern contains a space at the end, which is currently
+        # The short_desc_pattern contains a space at the end, which is currently
         # not recognized by bugzilla. Therefore this test is required:
-        if bug.summary.startswith(summary_pattern):
+        if bug.short_desc.startswith(short_desc_pattern):
             return bug
         else:
             return None
