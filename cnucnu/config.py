@@ -35,7 +35,7 @@ bugzilla:
     product: Fedora
     version: rawhide
     keywords: FutureFeature,Triaged
-    bug status: ASSIGNED
+    bug status: NEW
     explanation url: 'https://fedoraproject.org/wiki/Upstream_release_monitoring'
 
     summary template: "%%(name)s-%%(latest_upstream)s is available"
