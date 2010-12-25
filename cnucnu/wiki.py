@@ -46,4 +46,4 @@ class MediaWiki(fedora.client.Wiki):
 
 if __name__ == '__main__':
     wiki = MediaWiki(base_url='https://fedoraproject.org/w/')
-    print wiki.get_pagesource("Using_FEver_to_track_upstream_changes")
+    print wiki.get_pagesource("Upstream_release_monitoring")
