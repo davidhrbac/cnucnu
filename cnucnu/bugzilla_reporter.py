@@ -27,15 +27,7 @@ class BugzillaReporter(object):
     bug_status_open = ['NEW', 'ASSIGNED', 'MODIFIED', 'ON_DEV', 'ON_QA', 'VERIFIED', 'FAILS_QA', 'RELEASE_PENDING', 'POST']
     bug_status_closed = ['CLOSED']
 
-    new_bug = { 'status': 'ASSIGNED',
-# Using ASSIGNED returns an exception:
-# <Fault 32000: 'You are not allowed to file new bugs with the\n      ASSIGNED status.'>
-# if the account is in editbugs, fedora_bugs, fedora_contrib, setpriority
-# if not, then it is silently ignored
-#               'status': 'ASSIGNED',
-# Red Hat Bugzilla now supports filing bugs in state ASSIGNED:
-# https://bugzilla.redhat.com/show_bug.cgi?id=516208
-            }
+    new_bug = {}
             
     def __init__(self, config=global_config.bugzilla_config):
         self._bz = None
@@ -48,6 +40,14 @@ class BugzillaReporter(object):
         if "keywords" in config:
             self.new_bug['keywords'] = config['keywords']
         self.new_bug['version'] = config['version']
+        # Using ASSIGNED returns an exception:
+        # <Fault 32000: 'You are not allowed to file new bugs with the\n      ASSIGNED status.'>
+        # if the account is in editbugs, fedora_bugs, fedora_contrib, setpriority
+        # if not, then it is silently ignored
+        #               'status': 'ASSIGNED',
+        # Red Hat Bugzilla now supports filing bugs in state ASSIGNED:
+        # https://bugzilla.redhat.com/show_bug.cgi?id=516208
+        self.new_bug['status'] = self.config['bug status']
 
         self.bugzilla_username = config['user']
 
@@ -137,10 +137,8 @@ class BugzillaReporter(object):
             return None
 
     def get_open_outdated_bug(self, package):
-        # TODO: report only state of bug that is used for bug creation, to only update such bugs
         q = {'component': [package.name],
-             'bug_status': ['NEW', 'ASSIGNED']
-             #'bug_status': self.bug_status_open
+             'bug_status': [self.config['bug status']]
             }
 
         q.update(self.base_query)
