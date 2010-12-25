@@ -361,7 +361,7 @@ class PackageList:
             page_text = w.get_pagesource(mediawiki["page"])
 
             ignore_owner_regex = re.compile('\\* ([^ ]*)')
-            owners = helper.match_interval(page_text, ignore_owner_regex, "== Package Owner Ignore List ==", "<!-- END PACKAGE OWNER IGNORE LIST -->")
+            owners = [o[0].encode("UTF-8") for o in helper.match_interval(page_text, ignore_owner_regex, "== Package Owner Ignore List ==", "<!-- END PACKAGE OWNER IGNORE LIST -->")]
 
             pdb = PackageDB()
             ignore_packages = []
