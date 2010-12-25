@@ -127,11 +127,11 @@ class CheckShell(cmd.Cmd):
                 if self.package.name:
                     print "%(repo_name)s Version: %(repo_version)s %(repo_release)s %(status)s" % self.package
 
-                    sourcefile = self.package.upstream_version_in_cvs
-                    if sourcefile:
-                        print "Found in CVS:", sourcefile
-                    else:
-                        print "Not Found in CVS"
+#                    sourcefile = self.package.upstream_version_in_cvs
+#                    if sourcefile:
+#                        print "Found in CVS:", sourcefile
+#                    else:
+#                        print "Not Found in CVS"
                     bug = self.package.exact_outdated_bug
                     if bug:
                         print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.short_desc)
