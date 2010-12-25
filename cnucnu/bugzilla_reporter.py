@@ -88,6 +88,7 @@ class BugzillaReporter(object):
                     print repr(update)
                     res = self.bz._update_bugs(open_bug.bug_id, update)
                     print res
+                    print self.bug_url(open_bug)
                     return res
         else:
             bug = package.exact_outdated_bug
@@ -104,6 +105,7 @@ class BugzillaReporter(object):
             new_bug = self.bz.createbug(**bug_dict)
             change_status = None
             print new_bug
+            print self.bug_url(new_bug)
 
             if new_bug.bug_status != self.config['bug status']:
                 change_status = self.bz._proxy.bugzilla.changeStatus(new_bug.bug_id, self.config['bug status'], self.config['user'], "", "", False, False, 1)
