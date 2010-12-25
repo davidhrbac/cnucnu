@@ -24,7 +24,7 @@ from config import global_config
 
 class CVS(object):
     """ cainfo: filename :-/
-    """ 
+    """
     def __init__(self, viewvc_url="", cainfo=""):
         defaults = global_config.config["cvs"]
 

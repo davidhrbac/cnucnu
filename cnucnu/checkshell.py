@@ -55,7 +55,7 @@ class CheckShell(cmd.Cmd):
             bugzilla_config = self.config.bugzilla_config
             try:
                 self._br = BugzillaReporter(bugzilla_config)
-            
+
             except Exception, e:
                 print "Cannot query bugzilla, maybe config is faulty or missing", repr(e), dict(e), str(e)
         return self._br
@@ -91,7 +91,7 @@ class CheckShell(cmd.Cmd):
     def complete_inspect(self, text, line, begidx, endidx):
         package_names = [p.name for p in self.package_list if p.name.startswith(text)]
         return package_names
-    
+
     def do_regex(self, args):
         self.package.regex = args
 

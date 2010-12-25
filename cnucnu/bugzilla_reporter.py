@@ -28,7 +28,7 @@ class BugzillaReporter(object):
     bug_status_closed = ['CLOSED']
 
     new_bug = {}
-            
+
     def __init__(self, config=global_config.bugzilla_config):
         self._bz = None
 
@@ -121,7 +121,7 @@ class BugzillaReporter(object):
              'short_desc': [short_desc_pattern],
              'short_desc_type': ['substring']
             }
-       
+
         q.update(self.base_query)
         bugs = self.bz.query(q)
         if bugs:

@@ -79,7 +79,7 @@ class Repository:
 
     def package_version(self, package):
         return self.nvr_dict[package.name][0]
-    
+
     def package_release(self, package):
         return self.nvr_dict[package.name][1]
 
@@ -267,7 +267,7 @@ class Package(object):
         if not self._latest_upstream:
             from cnucnu.helper import upstream_max
             self._latest_upstream = upstream_max(self.upstream_versions)
-            
+
             # invalidate _rpm_diff cache
             self._rpm_diff = None
 
@@ -278,7 +278,7 @@ class Package(object):
         if not self._repo_version:
             self._repo_version  = self.repo.package_version(self)
         return self._repo_version
-    
+
     @property
     def repo_release(self):
         if not self._repo_release:
@@ -294,7 +294,7 @@ class Package(object):
     @property
     def upstream_newer(self):
         return self.rpm_diff == 1
-    
+
     @property
     def repo_newer(self):
         return self.rpm_diff == -1

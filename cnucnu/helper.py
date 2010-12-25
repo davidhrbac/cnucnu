@@ -71,7 +71,7 @@ def get_html(url, callback=None, errback=None):
 
             c.perform()
             c.close()
-            
+
             # this causes a hangug if reactor.run() was already called once
             #df = getPage(url)
             #df.addCallback(res.write)

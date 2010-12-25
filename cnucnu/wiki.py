@@ -1,4 +1,4 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 # vim: fileencoding=utf8 foldmethod=marker
 # {{{ License header: GPLv2+
 #    This file is part of cnucnu.

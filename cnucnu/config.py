@@ -85,7 +85,7 @@ class Config(object):
 
         # TODO?
         self.__getitem__ = self.config.__getitem__
-        
+
         if load_default:
             self.update_yaml(DEFAULT_YAML)
         if yaml_file:
@@ -170,7 +170,7 @@ if __name__ == '__main__':
     print cf.yaml
 
     cf.update_yaml_file('../cnucnu.yaml')
-    
+
     print "Global config"
     pprint(cf.config)
 

@@ -33,7 +33,7 @@ pprint = pp.pprint
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser()
-     
+
     parser.add_option("", "--shell", dest="action", help="Interactive shell", action="store_const", const="shell")
     parser.add_option("", "--config", dest="config_filename", help="config_filename, e.g. for bugzilla credentials")
     parser.add_option("", "--create-bugs", dest="action", help="file bugs for outdated packages", action="store_const", const="create-bugs")
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     if yaml_file:
         global_config.update_yaml_file(yaml_file)
-    
+
     if options.action == "dump-config":
         sys.stdout.write(global_config.yaml)
         sys.exit(0)
