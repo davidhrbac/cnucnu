@@ -41,6 +41,7 @@ if __name__ == '__main__':
     parser.add_option("", "--dump-config", dest="action", help="dumps dconfig to stdout", action="store_const", const="dump-config")
     parser.add_option("", "--dump-default-config", dest="action", help="dumps default config to stdout", action="store_const", const="dump-default-config")
     parser.add_option("", "--dry-run", dest="dry_run", help="Do not file or change bugs", default=False)
+    parser.add_option("", "--start-with", dest="start_with", help="Start with this package when reporting bugs", metavar="PACKAGE", default="")
 
     (options, args) = parser.parse_args()
 
@@ -79,12 +80,15 @@ if __name__ == '__main__':
 
         pl = PackageList(repo=repo, cvs=cvs, br=br, **global_config.config["package list"])
         for p in pl:
-            print "testing: %s" % p.name
-            try:
-                if p.upstream_newer:
-                   pprint(p.report_outdated(dry_run=options.dry_run))
-            except Exception, e:
-                pprint(e)
+            if p.name >= options.start_with:
+                print "testing: %s" % p.name
+                try:
+                    if p.upstream_newer:
+                       pprint(p.report_outdated(dry_run=options.dry_run))
+                except Exception, e:
+                    pprint(e)
+            else:
+                print "skipping: %s" % p.name
 
 
     elif options.action == "fm-outdated-all":
