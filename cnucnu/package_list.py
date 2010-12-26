@@ -219,7 +219,7 @@ class Package(object):
             url = "https://launchpad.net/%s/+download" % name
 
         self.__url = url
-        self._invalidate_caches()
+        self.html = None
 
     url = property(lambda self:self.__url, set_url)
 
