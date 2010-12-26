@@ -22,7 +22,6 @@
 """
 __docformat__ = "restructuredtext"
 
-from twisted.web.client import getPage
 #from twisted.internet import reactor
 
 import pprint as pprint_module
@@ -43,6 +42,7 @@ def get_html(url, callback=None, errback=None):
         return data
     else:
         if callback:
+            from twisted.web.client import getPage
             df = getPage(url)
             try:
                 for cb in callback:
