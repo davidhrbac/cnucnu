@@ -178,7 +178,7 @@ class Package(object):
         name = self.name
         # allow name override with e.g. SF-DEFAULT:othername
         if url:
-            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PEAR|PECL|PYPI|LP)-DEFAULT)(?::(.+))$", url)
+            name_override = re.match(r"^((?:SF|FM|GNU|CPAN|HACKAGE|DEBIAN|GOOGLE|PEAR|PECL|PYPI|LP|GNOME)-DEFAULT)(?::(.+))$", url)
             if name_override:
                 url = name_override.group(1)
                 name = name_override.group(2)
@@ -217,6 +217,8 @@ class Package(object):
             url = "http://pecl.php.net/package/%s/download" % name
         elif url == "LP-DEFAULT":
             url = "https://launchpad.net/%s/+download" % name
+        elif url == "GNOME-DEFAULT":
+            url = "http://download.gnome.org/sources/%s/^/" % name
 
         self.__url = url
         self.html = None
