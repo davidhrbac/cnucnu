@@ -24,9 +24,33 @@ __docformat__ = "restructuredtext"
 
 #from twisted.internet import reactor
 
+import re
 import pprint as pprint_module
 pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
+
+__html_regex = re.compile(r'\bhref\s*=\s*["\']([^"\'/]+)/["\']', re.I)
+__text_regex = re.compile(r'^d.+\s(\S+)\s*$', re.I|re.M)
+
+def expand_subdirs(url):
+    """ Expand all /^/'s in the given URL with the latest dir at that level """
+    ix = url.find("/^/")
+    while ix != -1:
+        ls = get_html(url[0:ix+1])
+        if not ls:
+            break
+        subdirs = []
+        regex = url.startswith("ftp://") and __text_regex or __html_regex
+        for match in regex.finditer(ls):
+            subdir = match.group(1)
+            if subdir not in (".", ".."):
+                subdirs.append(subdir)
+        if not subdirs:
+            break
+        latest = upstream_max(subdirs)
+        url = "%s/%s/%s" % (url[0:ix], latest, url[ix+len("/^/"):])
+        ix = url.find("/^/", ix + len(latest) + 1)
+    return url
 
 def get_html(url, callback=None, errback=None):
     if url.startswith("ftp://"):

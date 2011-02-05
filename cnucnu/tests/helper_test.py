@@ -22,7 +22,7 @@ import unittest
 import sys
 sys.path.insert(0, '../..')
 
-from cnucnu.helper import upstream_cmp, upstream_max, split_rc, cmp_upstream_repo, get_rc, get_html
+from cnucnu.helper import upstream_cmp, upstream_max, split_rc, cmp_upstream_repo, get_rc, get_html, expand_subdirs
 
 class HelperTest(unittest.TestCase):
 
@@ -130,6 +130,7 @@ class HelperTest(unittest.TestCase):
         http_url = ("http://www.fedoraproject.org")
         res = StringIO.StringIO()
 
+        http_url = expand_subdirs(http_url)
         data1 = get_html(http_url)
 
         callback = [res.write, lambda ignore: reactor.stop()]

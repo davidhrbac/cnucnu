@@ -229,9 +229,10 @@ class Package(object):
 
     def get_html(self):
         if not self._html:
-            from cnucnu.helper import get_html
+            from cnucnu.helper import get_html, expand_subdirs
 
             try:
+                self.__url = expand_subdirs(self.url)
                 html = get_html(self.url)
             # TODO: get_html should raise a generic retrieval error
             except IOError, ioe:
