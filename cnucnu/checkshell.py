@@ -64,8 +64,33 @@ class CheckShell(cmd.Cmd):
         self.prompt = "%(name)s %(regex)s %(url)s " % self.package
         self.prompt += "%s> " % self.prompt_default
 
-    def do_url(self, args):
-        self.package.url = args
+    def default(self, line):
+        if not self.package.url:
+            self.do_url(line)
+        else:
+            self.do_regex(line)
+
+    def do_EOF(self, args):
+        self.emptyline()
+
+    def do_fm(self, args):
+        self.package.name = args
+        self.package.regex = "FM-DEFAULT"
+        self.package.url = "FM-DEFAULT"
+
+    def do_html(self, args):
+        print self.package.url
+        print self.package.html
+
+    def complete_inspect(self, text, line, begidx, endidx):
+        package_names = [p.name for p in self.package_list if p.name.startswith(text)]
+        return package_names
+
+    def do_inspect(self, args):
+        try:
+            self.package = self.package_list[args]
+        except KeyError, ke:
+            print ke
 
     def do_name(self, args):
         self.package = Package(args, self.package.regex, self.package.url, self.repo)
@@ -74,33 +99,14 @@ class CheckShell(cmd.Cmd):
         if not self.package.url:
             self.package.url = "SF-DEFAULT"
 
-    def do_fm(self, args):
-        self.package.name = args
-        self.package.regex = "FM-DEFAULT"
-        self.package.url = "FM-DEFAULT"
+    def do_regex(self, args):
+        self.package.regex = args
 
     def do_report(self, args):
         pprint(self.package.report_outdated(dry_run=False))
 
-    def do_inspect(self, args):
-        try:
-            self.package = self.package_list[args]
-        except KeyError, ke:
-            print ke
-
-    def complete_inspect(self, text, line, begidx, endidx):
-        package_names = [p.name for p in self.package_list if p.name.startswith(text)]
-        return package_names
-
-    def do_regex(self, args):
-        self.package.regex = args
-
-    def do_EOF(self, args):
-        self.emptyline()
-
-    def do_html(self, args):
-        print self.package.url
-        print self.package.html
+    def do_url(self, args):
+        self.package.url = args
 
     def emptyline(self):
         if self.package.url:
@@ -108,12 +114,6 @@ class CheckShell(cmd.Cmd):
         else:
             print
             sys.exit(0)
-
-    def default(self, line):
-        if not self.package.url:
-            self.do_url(line)
-        else:
-            self.do_regex(line)
 
     def postcmd(self, stop, line):
         if not self.package.url:
