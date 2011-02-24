@@ -98,6 +98,9 @@ class CheckShell(cmd.Cmd):
     def do_EOF(self, args):
         self.emptyline()
 
+    def do_html(self, args):
+        print self.package.url
+        print self.package.html
 
     def emptyline(self):
         if self.package.url:
