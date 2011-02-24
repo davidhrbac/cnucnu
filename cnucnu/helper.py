@@ -32,24 +32,37 @@ pprint = pp.pprint
 __html_regex = re.compile(r'\bhref\s*=\s*["\']([^"\'/]+)/["\']', re.I)
 __text_regex = re.compile(r'^d.+\s(\S+)\s*$', re.I|re.M)
 
-def expand_subdirs(url):
-    """ Expand all /^/'s in the given URL with the latest dir at that level """
-    ix = url.find("/^/")
-    while ix != -1:
-        ls = get_html(url[0:ix+1])
-        if not ls:
-            break
+def expand_subdirs(url, glob_char="*"):
+    """ Expand glob_char in the given URL with the latest dir at that level
+        Example URL: http://www.example.com/foo/*/
+
+        The globbing char needs to be enclosed by slashes like "/*/".
+    """
+    glob_pattern = "/%s/" % glob_char
+    glob_pos = url.find(glob_pattern)
+
+    # url until first slash before glob_char
+    url_prefix = url[0:glob_pos+1]
+
+    # everything after the slash after glob_char
+    url_suffix = url[glob_pos+len(glob_pattern):]
+
+    if url_prefix != "":
+        dir_listing = get_html(url_prefix)
+        if not dir_listing:
+            return url
         subdirs = []
         regex = url.startswith("ftp://") and __text_regex or __html_regex
-        for match in regex.finditer(ls):
+        for match in regex.finditer(dir_listing):
             subdir = match.group(1)
             if subdir not in (".", ".."):
                 subdirs.append(subdir)
         if not subdirs:
-            break
+            return url
         latest = upstream_max(subdirs)
-        url = "%s/%s/%s" % (url[0:ix], latest, url[ix+len("/^/"):])
-        ix = url.find("/^/", ix + len(latest) + 1)
+
+        url = "%s%s/%s" % (url_prefix, latest, url_suffix)
+        return expand_subdirs(url, glob_char)
     return url
 
 def get_html(url, callback=None, errback=None):
