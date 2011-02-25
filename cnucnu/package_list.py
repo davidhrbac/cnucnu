@@ -218,7 +218,7 @@ class Package(object):
         elif url == "LP-DEFAULT":
             url = "https://launchpad.net/%s/+download" % name
         elif url == "GNOME-DEFAULT":
-            url = "http://download.gnome.org/sources/%s/^/" % name
+            url = "http://download.gnome.org/sources/%s/*/" % name
 
         self.__url = url
         self.html = None
