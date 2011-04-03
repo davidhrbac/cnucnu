@@ -154,7 +154,7 @@ def upstream_cmp(v1, v2):
     if diff == 0:
         # both are rc, higher rc is newer
         if rc1 and rc2:
-            return cmp(rc1, rc2)
+            return cmp(rc1.lower(), rc2.lower())
         # only first is rc, then second is newer
         elif rc1:
             return -1

@@ -61,7 +61,7 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(upstream_cmp("4.0.0-rc2", "4.0.0-rc1"), 1)
         self.assertEqual(upstream_cmp("4.0.0-rc2", "4.0.0rc1"), 1)
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0-rc2"), 1)
-
+        self.assertEqual(upstream_cmp("1.0.0rc3", "1.0.0RC3"), 0)
         self.assertEqual(upstream_cmp("1.0.0", "1.0.0-rc1"), 1)
 
     def test_upstream_cmp_pre(self):
@@ -79,6 +79,7 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0-pre2"), 1)
 
         self.assertEqual(upstream_cmp("1.0.0", "1.0.0-pre1"), 1)
+        self.assertEqual(upstream_cmp("1.0.0PRE1", "1.0.0pre1"), 0)
 
     def test_upstream_max_rc(self):
         versions = ["4.0.1", "4.0.0", "4.0.0-rc2", "4.0.0rc1"]
