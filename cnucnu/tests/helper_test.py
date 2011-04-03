@@ -35,15 +35,15 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(upstream_cmp("0", "1"), -1)
 
     def test_split_rc(self):
-        self.assertEqual(split_rc("4.0.0-rc1"), ("4.0.0", "rc1"))
-        self.assertEqual(split_rc("4.0.0-pre2"), ("4.0.0", "pre2"))
-        self.assertEqual(split_rc("4.0.0"), ("4.0.0", ""))
-        self.assertEqual(split_rc("0"), ("0", ""))
-        self.assertEqual(split_rc("1"), ("1", ""))
-        self.assertEqual(split_rc("1.2pre"), ("1.2", "pre"))
-        self.assertEqual(split_rc("4.0.0RC1"), ("4.0.0", "RC1"))
-        self.assertEqual(split_rc("4.0.0-PRE2"), ("4.0.0", "PRE2"))
-        self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "rc1"))
+        self.assertEqual(split_rc("4.0.0-rc1"), ("4.0.0", "rc", "1"))
+        self.assertEqual(split_rc("4.0.0-pre2"), ("4.0.0", "pre", "2"))
+        self.assertEqual(split_rc("4.0.0"), ("4.0.0", "", ""))
+        self.assertEqual(split_rc("0"), ("0", "", ""))
+        self.assertEqual(split_rc("1"), ("1", "", ""))
+        self.assertEqual(split_rc("1.2pre"), ("1.2", "pre", ""))
+        self.assertEqual(split_rc("4.0.0RC1"), ("4.0.0", "RC", "1"))
+        self.assertEqual(split_rc("4.0.0-PRE2"), ("4.0.0", "PRE", "2"))
+        self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "rc", "1"))
 
     def test_upstream_cmp_rc(self):
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0"), 0)
@@ -63,6 +63,8 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0-rc2"), 1)
         self.assertEqual(upstream_cmp("1.0.0rc3", "1.0.0RC3"), 0)
         self.assertEqual(upstream_cmp("1.0.0", "1.0.0-rc1"), 1)
+        self.assertEqual(upstream_cmp("1.0.0rc3", "1.0.0-RC21"), -1)
+        self.assertEqual(upstream_cmp("1.0.0rc10", "1.0.0-rc0010"), 0)
 
     def test_upstream_cmp_pre(self):
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0"), 0)
@@ -80,6 +82,8 @@ class HelperTest(unittest.TestCase):
 
         self.assertEqual(upstream_cmp("1.0.0", "1.0.0-pre1"), 1)
         self.assertEqual(upstream_cmp("1.0.0PRE1", "1.0.0pre1"), 0)
+        self.assertEqual(upstream_cmp("1.0.0pre15", "1.0.0pre2"), 1)
+        self.assertEqual(upstream_cmp("1.0pre5", "1.0pre05"), 0)
 
     def test_upstream_max_rc(self):
         versions = ["4.0.1", "4.0.0", "4.0.0-rc2", "4.0.0rc1"]
@@ -99,6 +103,9 @@ class HelperTest(unittest.TestCase):
         self.test_upstream_max_sorted(["1.2.1", "1.2b", "1.2a", "1.2", "1.2pre"])
         self.test_upstream_max_sorted(["1.3", "1.2"])
 
+    def test_upstream_max_allrc(self):
+        self.test_upstream_max_sorted(["1.0.1pre0", "1.0", "1.0-rc11", "1.0RC3", "1.0RC", "1.0-PRE10", "1.0pre1", "1.0pre0", "1.0pre"])
+
 #    def test_perl_versioning(self):
 #        """ 1.20 is newer than 1.902 """
 #        self.test_upstream_max_sorted(["1.20", "1.902", "1.901", "1.18"])
@@ -108,8 +115,9 @@ class HelperTest(unittest.TestCase):
 #        self.test_upstream_max_sorted(["1.2", "1.2a", "1.2b", "1.1"])
 
     def test_get_rc(self):
-        self.assertEqual(get_rc("0.4.pre2.fc11"), "pre2")
-        self.assertEqual(get_rc("0.4.RC1.fc15"), "RC1")
+        self.assertEqual(get_rc("0.4.pre2.fc11"), ("pre", "2"))
+        self.assertEqual(get_rc("0.4.RC1.fc15"), ("RC", "1"))
+        self.assertEqual(get_rc("0.11.rc15.el5"), ("rc", "15"))
 
     def test_cmp_upstream_repo(self):
         self.assertEqual(cmp_upstream_repo("0.1.0", ("0.1.0", "5.fc10")), 0)

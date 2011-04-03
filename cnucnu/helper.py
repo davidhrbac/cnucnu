@@ -146,54 +146,70 @@ def upstream_cmp(v1, v2):
 
     """
 
-    v1, rc1 = split_rc(v1)
-    v2, rc2 = split_rc(v2)
+    v1, rc1, rcn1 = split_rc(v1)
+    v2, rc2, rcn2 = split_rc(v2)
 
     diff = rpm_cmp(v1, v2)
-    # base versions are the same, check for rc-status
-    if diff == 0:
-        # both are rc, higher rc is newer
-        if rc1 and rc2:
-            return cmp(rc1.lower(), rc2.lower())
-        # only first is rc, then second is newer
-        elif rc1:
-            return -1
-        # only second is rc, then first is newer
-        elif rc2:
-            return 1
-        # none is rc, both are the same
-        else:
-            return 0
-    # base versions are different, ignore rc-status
-    else:
+    if diff != 0:
+        # base versions are different, ignore rc-status
         return diff
 
-__rc_ups_regex = re.compile("([^-rp]*)(-?((rc|pre)[0-9]?))?", re.I)
-__rc_rel_regex = re.compile(r'0\.[0-9]*\.((rc|pre)[0-9])', re.I)
+    if rc1 and rc2:
+        # both are rc, higher rc is newer
+        diff = cmp(rc1.lower(), rc2.lower())
+        if diff != 0:
+            # rc is newer than pre etc
+            return diff
+        if rcn1 and rcn2:
+            # both have rc number
+            return cmp(int(rcn1), int(rcn2))
+        if rcn1:
+            # only first has rc number, then it is newer
+            return 1
+        if rcn2:
+            # only second has rc number, then it is newer
+            return -1
+        # both rc numbers are missing or same
+        return 0
+
+    if rc1:
+        # only first is rc, then second is newer
+        return -1
+    if rc2:
+        # only second is rc, then first is newer
+        return 1
+
+    # neither is a rc
+    return 0
+
+
+__rc_ups_regex = re.compile("(.*?)(-?(rc|pre)([0-9]*))", re.I)
+__rc_rel_regex = re.compile(r'0\.[0-9]+\.(rc|pre)([0-9]*)', re.I)
 
 def split_rc(version):
-    """ Split version into version and release candidate string if possible
+    """ Split version into version and release candidate string +
+        release candidate number if possible
     """
     match = __rc_ups_regex.match(version)
+    if not match:
+        return (version, "", "")
 
-    v = match.groups()[0]
-    rc = match.groups()[2]
+    rc = match.group(3)
     if rc:
-        return (v, rc)
+        return (match.group(1), rc, match.group(4))
     else:
         # if version contains a dash, but no release candidate string is found, v != version, therefore use version here
         # Example version: 1.8.23-20100128-r1100
         # Then: v=1.8.23, but rc=""
-        return (version, "")
+        return (version, "", "")
 
 def get_rc(release):
     match = __rc_rel_regex.match(release)
 
     if match:
-        rc = match.groups()[0]
-        return rc
+        return (match.group(1), match.group(2))
     else:
-        return ""
+        return ("", "")
 
 def upstream_max(list):
     list.sort(cmp=upstream_cmp)
@@ -202,7 +218,7 @@ def upstream_max(list):
 def cmp_upstream_repo(upstream_v, repo_vr):
     repo_rc = get_rc(repo_vr[1])
 
-    repo_version = "%s%s" % (repo_vr[0], repo_rc)
+    repo_version = "%s%s%s" % (repo_vr[0], repo_rc[0], repo_rc[1])
 
     return upstream_cmp(upstream_v, repo_version)
 
