@@ -44,6 +44,9 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(split_rc("4.0.0RC1"), ("4.0.0", "RC", "1"))
         self.assertEqual(split_rc("4.0.0-PRE2"), ("4.0.0", "PRE", "2"))
         self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "rc", "1"))
+        self.assertEqual(split_rc("0.1-beta3"), ("0.1", "beta", "3"))
+        self.assertEqual(split_rc("20110404beta0"), ("20110404", "beta", "0"))
+        self.assertEqual(split_rc("123alpha05"), ("123", "alpha", "05"))
 
     def test_upstream_cmp_rc(self):
         self.assertEqual(upstream_cmp("4.0.0", "4.0.0"), 0)
@@ -104,7 +107,7 @@ class HelperTest(unittest.TestCase):
         self.test_upstream_max_sorted(["1.3", "1.2"])
 
     def test_upstream_max_allrc(self):
-        self.test_upstream_max_sorted(["1.0.1pre0", "1.0", "1.0-rc11", "1.0RC3", "1.0RC", "1.0-PRE10", "1.0pre1", "1.0pre0", "1.0pre"])
+        self.test_upstream_max_sorted(["1.0.1pre0", "1.0", "1.0-rc11", "1.0RC3", "1.0RC", "1.0-PRE10", "1.0pre1", "1.0pre0", "1.0pre", "1.0BETA1", "1.0alpha"])
 
 #    def test_perl_versioning(self):
 #        """ 1.20 is newer than 1.902 """

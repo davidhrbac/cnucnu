@@ -158,7 +158,7 @@ def upstream_cmp(v1, v2):
         # both are rc, higher rc is newer
         diff = cmp(rc1.lower(), rc2.lower())
         if diff != 0:
-            # rc is newer than pre etc
+            # rc > pre > beta > alpha
             return diff
         if rcn1 and rcn2:
             # both have rc number
@@ -183,8 +183,8 @@ def upstream_cmp(v1, v2):
     return 0
 
 
-__rc_ups_regex = re.compile("(.*?)(-?(rc|pre)([0-9]*))", re.I)
-__rc_rel_regex = re.compile(r'0\.[0-9]+\.(rc|pre)([0-9]*)', re.I)
+__rc_ups_regex = re.compile("(.*?)(-?(rc|pre|beta|alpha)([0-9]*))", re.I)
+__rc_rel_regex = re.compile(r'0\.[0-9]+\.(rc|pre|beta|alpha)([0-9]*)', re.I)
 
 def split_rc(version):
     """ Split version into version and release candidate string +
