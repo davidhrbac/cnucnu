@@ -180,7 +180,7 @@ def split_rc(version):
     if rc:
         return (v, rc)
     else:
-        # if version contains a dash, but no release candidate string is found, v != version, therfore use version here
+        # if version contains a dash, but no release candidate string is found, v != version, therefore use version here
         # Example version: 1.8.23-20100128-r1100
         # Then: v=1.8.23, but rc=""
         return (version, "")
@@ -207,11 +207,9 @@ def cmp_upstream_repo(upstream_v, repo_vr):
 
     return upstream_cmp(upstream_v, repo_version)
 
-
-
-""" return a dict that only contains keys that are in key_list
-"""
 def filter_dict(d, key_list):
+    """ return a dict that only contains keys that are in key_list
+    """
     return dict([v for v in d.items() if v[0] in key_list])
 
 def secure_download(url, cainfo=""):
