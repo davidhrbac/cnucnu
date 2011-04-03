@@ -168,8 +168,8 @@ def upstream_cmp(v1, v2):
     else:
         return diff
 
-__rc_ups_regex = re.compile("([^-rp]*)(-?(([Rr][Cc]|[Pp][Rr][Ee])[0-9]?))?")
-__rc_rel_regex = re.compile(r'0\.[0-9]*\.(([Rr][Cc]|[Pp][Rr][Ee])[0-9])')
+__rc_ups_regex = re.compile("([^-rp]*)(-?((rc|pre)[0-9]?))?", re.I)
+__rc_rel_regex = re.compile(r'0\.[0-9]*\.((rc|pre)[0-9])', re.I)
 
 def split_rc(version):
     """ Split version into version and release candidate string if possible

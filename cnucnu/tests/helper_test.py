@@ -41,7 +41,8 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(split_rc("0"), ("0", ""))
         self.assertEqual(split_rc("1"), ("1", ""))
         self.assertEqual(split_rc("1.2pre"), ("1.2", "pre"))
-
+        self.assertEqual(split_rc("4.0.0RC1"), ("4.0.0", "RC1"))
+        self.assertEqual(split_rc("4.0.0-PRE2"), ("4.0.0", "PRE2"))
         self.assertEqual(split_rc("4.0.0rc1"), ("4.0.0", "rc1"))
 
     def test_upstream_cmp_rc(self):
@@ -107,6 +108,7 @@ class HelperTest(unittest.TestCase):
 
     def test_get_rc(self):
         self.assertEqual(get_rc("0.4.pre2.fc11"), "pre2")
+        self.assertEqual(get_rc("0.4.RC1.fc15"), "RC1")
 
     def test_cmp_upstream_repo(self):
         self.assertEqual(cmp_upstream_repo("0.1.0", ("0.1.0", "5.fc10")), 0)
