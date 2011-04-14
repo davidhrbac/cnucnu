@@ -137,23 +137,24 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr_older), 1)
         self.assertEqual(cmp_upstream_repo(upstream_v, repo_vr_newer), -1)
 
-    def test_get_html(self):
-        import StringIO
-        from cnucnu.helper import reactor
-
-        http_url = ("http://www.fedoraproject.org")
-        res = StringIO.StringIO()
-
-        http_url = expand_subdirs(http_url)
-        data1 = get_html(http_url)
-
-        callback = [res.write, lambda ignore: reactor.stop()]
-        get_html(http_url, callback=callback)
-        reactor.run()
-        data2 = res.getvalue()
-        res.close()
-
-        self.assertEqual(data1, data2)
+# Ignore, because twisted is not used, yet.
+#    def test_get_html(self):
+#        import StringIO
+#        from cnucnu.helper import reactor
+#
+#        http_url = ("http://www.fedoraproject.org")
+#        res = StringIO.StringIO()
+#
+#        http_url = expand_subdirs(http_url)
+#        data1 = get_html(http_url)
+#
+#        callback = [res.write, lambda ignore: reactor.stop()]
+#        get_html(http_url, callback=callback)
+#        reactor.run()
+#        data2 = res.getvalue()
+#        res.close()
+#
+#        self.assertEqual(data1, data2)
 
     def test_snapshot_version_with_dash(self):
        # first newer
