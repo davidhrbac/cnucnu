@@ -22,23 +22,23 @@
 from helper import secure_download
 from config import global_config
 
-class CVS(object):
+class SCM(object):
     """ cainfo: filename :-/
     """
-    def __init__(self, viewvc_url="", cainfo=""):
-        defaults = global_config.config["cvs"]
+    def __init__(self, view_scm_url="", cainfo=""):
+        defaults = global_config.config["scm"]
 
-        if not viewvc_url:
-            viewvc_url = defaults["viewvc_url"]
+        if not view_scm_url:
+            view_scm_url = defaults["view_scm_url"]
 
         if not cainfo:
             cainfo = defaults["cainfo"]
 
-        self.viewvc_url = viewvc_url
+        self.view_scm_url = view_scm_url
         self.cainfo = cainfo
 
     def get_sources(self, package):
-        return secure_download(self.viewvc_url % package, cainfo=self.cainfo)
+        return secure_download(self.view_scm_url % package, cainfo=self.cainfo)
 
     def get_sourcefiles(self, package):
         sources = self.get_sources(package)
@@ -60,7 +60,7 @@ class CVS(object):
 
 
 if __name__ == '__main__':
-    cvs = CVS(**{"viewvc_url": "https://cvs.fedoraproject.org/viewvc/rpms/%(name)s/devel/sources?revision=HEAD", "cainfo": "fedora-server-ca.cert"})
+    scm = SCM(**{"view_scm_url": "https://pkgs.fedoraproject.org/gitweb/?p=%(name)s.git;a=blob_plain;f=sources;hb=refs/heads/master", "cainfo": "fedora-server-ca.cert"})
 
     from package_list import Package, Repository
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     package = Package("crossvc", "", "", Repository())
     package._latest_upstream = "1.5.2-0"
 
-    print cvs.get_sources({"name": "crossvc"})
-    print cvs.get_sourcefiles({"name": "crossvc"})
-    print cvs.has_upstream_version(package)
+    print scm.get_sources({"name": "crossvc"})
+    print scm.get_sourcefiles({"name": "crossvc"})
+    print scm.has_upstream_version(package)
 

@@ -60,8 +60,8 @@ repo:
     path: 'http://kojipkgs.fedoraproject.org/mash/rawhide/source/SRPMS'
     name: Fedora Rawhide
 
-cvs:
-    viewvc_url: https://cvs.fedoraproject.org/viewvc/rpms/%(name)s/devel/sources?revision=HEAD
+scm:
+    view_scm_url: https://pkgs.fedoraproject.org/gitweb/?p=%(name)s.git;a=blob_plain;f=sources;hb=refs/heads/master
     cainfo: "fedora-server-ca.cert"
 
 package list:

@@ -29,7 +29,7 @@ import urllib
 # cnucnu modules
 from bugzilla_reporter import BugzillaReporter
 from config import global_config
-from cvs import CVS
+from scm import SCM
 import errors as cc_errors
 import helper
 from helper import cmp_upstream_repo
@@ -86,7 +86,7 @@ class Repository:
 
 class Package(object):
 
-    def __init__(self, name, regex, url, repo=Repository(), cvs=CVS(), br=BugzillaReporter(), nagging=True):
+    def __init__(self, name, regex, url, repo=Repository(), scm=SCM(), br=BugzillaReporter(), nagging=True):
         # :TODO: add some sanity checks
         self.name = name
 
@@ -105,7 +105,7 @@ class Package(object):
 
         self.repo = repo
         self.repo_name = repo.name
-        self.cvs = cvs
+        self.scm = scm
         self.br = br
         self.nagging = nagging
 
@@ -312,8 +312,8 @@ class Package(object):
             return ""
 
     @property
-    def upstream_version_in_cvs(self):
-        return self.cvs.has_upstream_version(self)
+    def upstream_version_in_scm(self):
+        return self.scm.has_upstream_version(self)
 
     @property
     def exact_outdated_bug(self):
@@ -329,9 +329,9 @@ class Package(object):
                 print "Upstream of package not newer, report_outdated aborted!" + str(self)
                 return None
 
-#            if self.upstream_version_in_cvs:
-#                print "Upstream Version found in CVS, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
-#                return None
+            if self.upstream_version_in_scm:
+                print "Upstream Version found in SCM, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
+                return None
 
             return self.br.report_outdated(self, dry_run)
         else:
@@ -341,14 +341,14 @@ class Package(object):
 
 
 class PackageList:
-    def __init__(self, repo=Repository(), cvs=CVS(), br=BugzillaReporter(), mediawiki=False, packages=None):
+    def __init__(self, repo=Repository(), scm=SCM(), br=BugzillaReporter(), mediawiki=False, packages=None):
         """ A list of packages to be checked.
 
         :Parameters:
             repo : `cnucnu.Repository`
                 Repository to compare with upstream
-            cvs : `cnucnu.CVS`
-                CVS to compares sources files with upstream version
+            scm : `cnucnu.SCM`
+                SCM to compares sources files with upstream version
             mediawiki : dict
                 Get a list of package names, urls and regexes from a mediawiki page defined in the dict.
             packages : [cnucnu.Package]
@@ -382,7 +382,7 @@ class PackageList:
                 nagging = True
                 if name in ignore_packages:
                     nagging = False
-                packages.append(Package(name, regex, url, repo, cvs, br, nagging=nagging))
+                packages.append(Package(name, regex, url, repo, scm, br, nagging=nagging))
 
         self.packages = packages
         self.append = self.packages.append

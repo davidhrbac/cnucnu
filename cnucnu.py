@@ -24,7 +24,7 @@ from cnucnu.config import global_config
 from cnucnu.package_list import Repository, PackageList, Package
 from cnucnu.checkshell import CheckShell
 from cnucnu.bugzilla_reporter import BugzillaReporter
-from cnucnu.cvs import CVS
+from cnucnu.scm import SCM
 
 import pprint as pprint_module
 pp = pprint_module.PrettyPrinter(indent=4)
@@ -74,11 +74,11 @@ if __name__ == '__main__':
     elif options.action == "create-bugs":
         br = BugzillaReporter(global_config.bugzilla_config)
         repo = Repository(**global_config.config["repo"])
-        cvs = CVS(**global_config.config["cvs"])
+        scm = SCM(**global_config.config["scm"])
 
         outdated = []
 
-        pl = PackageList(repo=repo, cvs=cvs, br=br, **global_config.config["package list"])
+        pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
         for p in pl:
             if p.name >= options.start_with:
                 print "testing: %s" % p.name

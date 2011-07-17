@@ -24,7 +24,7 @@ import readline
 from package_list import Package, PackageList, Repository
 from bugzilla_reporter import BugzillaReporter
 from helper import pprint
-from cvs import CVS
+from scm import SCM
 from errors import UpstreamVersionRetrievalError
 
 class CheckShell(cmd.Cmd):
@@ -39,7 +39,7 @@ class CheckShell(cmd.Cmd):
         self.update_prompt()
         self.config = config
         self._br = None
-        self.cvs = CVS()
+        self.scm = SCM()
 
     @property
     def package_list(self):
@@ -130,11 +130,11 @@ class CheckShell(cmd.Cmd):
                 if self.package.name:
                     print "%(repo_name)s Version: %(repo_version)s %(repo_release)s %(status)s" % self.package
 
-#                    sourcefile = self.package.upstream_version_in_cvs
-#                    if sourcefile:
-#                        print "Found in CVS:", sourcefile
-#                    else:
-#                        print "Not Found in CVS"
+                    sourcefile = self.package.upstream_version_in_scm
+                    if sourcefile:
+                        print "Found in SCM:", sourcefile
+                    else:
+                        print "Not Found in SCM"
                     bug = self.package.exact_outdated_bug
                     if bug:
                         print "Exact Bug:", "%s %s:%s" % (self.br.bug_url(bug), bug.bug_status, bug.short_desc)
