@@ -22,7 +22,7 @@
 # to be done by a more privileged account
 
 # Bugzilla webservice docs:
-# https://bugzilla.redhat.com/docs/en/html/api/extensions/compat_xmlrpc/code/webservice.html
+# https://bugzilla.redhat.com/docs/en/html/api/extensions/RedHat/lib/WebService/CompatBugzilla.html
 
 import getpass
 import sys
