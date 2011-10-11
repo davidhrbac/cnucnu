@@ -65,11 +65,14 @@ if __name__ == '__main__':
     from package_list import Package, Repository
 
 
+    import sys
+    package_name = len(sys.argv) > 1 and sys.argv[1] or "crossvc"
 
-    package = Package("crossvc", "", "", Repository())
-    package._latest_upstream = "1.5.2-0"
+    package = Package(package_name, "", "", Repository())
+    upstream_version = len(sys.argv) > 2 and sys.argv[1] or "1.5.2-0"
+    package._latest_upstream = upstream_version
 
-    print scm.get_sources({"name": "crossvc"})
-    print scm.get_sourcefiles({"name": "crossvc"})
+    print scm.get_sources({"name": package_name})
+    print scm.get_sourcefiles({"name": package_name})
     print scm.has_upstream_version(package)
 
