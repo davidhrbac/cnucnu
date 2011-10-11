@@ -21,6 +21,8 @@ from bugzilla import Bugzilla
 from config import global_config
 from helper import filter_dict
 
+import logging
+
 class BugzillaReporter(object):
     base_query = {'query_format': ['advanced'], 'emailreporter1': ['1'], 'emailtype1': ['exact']}
 
@@ -123,6 +125,7 @@ class BugzillaReporter(object):
             }
 
         q.update(self.base_query)
+        logging.debug("get_exact_outdated_bug: Bugzilla query: %s", q)
         bugs = self.bz.query(q)
         if bugs:
             # TODO if more than one bug, manual intervention is required

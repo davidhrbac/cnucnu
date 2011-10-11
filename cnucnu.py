@@ -17,6 +17,7 @@
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
 #}}}
 
+import logging
 import sys
 import os
 
@@ -40,7 +41,8 @@ if __name__ == '__main__':
     parser.add_option("", "--fm-outdated-all", dest="action", help="compare all packages in rawhide with freshmeat", action="store_const", const="fm-outdated-all")
     parser.add_option("", "--dump-config", dest="action", help="dumps dconfig to stdout", action="store_const", const="dump-config")
     parser.add_option("", "--dump-default-config", dest="action", help="dumps default config to stdout", action="store_const", const="dump-default-config")
-    parser.add_option("", "--dry-run", dest="dry_run", help="Do not file or change bugs", default=False)
+    parser.add_option("", "--dry-run", dest="dry_run", help="Do not file or change bugs", default=False, action="store_true")
+    parser.add_option("", "--debug", dest="debug", help="Show debug output", default=False, action="store_true")
     parser.add_option("", "--start-with", dest="start_with", help="Start with this package when reporting bugs", metavar="PACKAGE", default="")
 
     (options, args) = parser.parse_args()
@@ -49,6 +51,8 @@ if __name__ == '__main__':
         sys.stdout.write(global_config.yaml)
         sys.exit(0)
 
+    if options.debug:
+        logging.basicConfig(level=logging.DEBUG)
 
     # default to ./cnucnu.yaml if it exists and no config file is specified on
     # the commandline
@@ -81,14 +85,14 @@ if __name__ == '__main__':
         pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
         for p in pl:
             if p.name >= options.start_with:
-                print "testing: %s" % p.name
+                logging.info("testing: %s", p.name)
                 try:
                     if p.upstream_newer:
                        pprint(p.report_outdated(dry_run=options.dry_run))
                 except Exception, e:
                     pprint(e)
             else:
-                print "skipping: %s" % p.name
+                logging.info("skipping: %s", p.name)
 
 
     elif options.action == "fm-outdated-all":
