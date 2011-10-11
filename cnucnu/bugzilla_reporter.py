@@ -128,17 +128,15 @@ class BugzillaReporter(object):
         logging.debug("get_exact_outdated_bug: Bugzilla query: %s", q)
         bugs = self.bz.query(q)
         if bugs:
-            # TODO if more than one bug, manual intervention is required
-            bug = bugs[0]
-        else:
-            return bugs
+            # TODO if more than one bug, manual intervention might be required
+            for bug in bugs:
+                # The short_desc_pattern contains a space at the end, which is currently
+                # not recognized by bugzilla. Therefore this test is required:
+                if bug.short_desc.startswith(short_desc_pattern):
+                    return bug
 
-        # The short_desc_pattern contains a space at the end, which is currently
-        # not recognized by bugzilla. Therefore this test is required:
-        if bug.short_desc.startswith(short_desc_pattern):
-            return bug
-        else:
-            return None
+        # not matching bug found
+        return None
 
     def get_open_outdated_bug(self, package):
         q = {'component': [package.name],
