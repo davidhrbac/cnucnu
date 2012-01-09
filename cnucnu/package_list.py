@@ -40,6 +40,7 @@ from fedora.client.pkgdb import PackageDB
 
 class Repository:
     def __init__(self, name="", path=""):
+        #print "Repository HERE"
         if not (name and path):
             c = global_config.config["repo"]
             name = c["name"]
@@ -63,18 +64,36 @@ class Repository:
     def repoquery(self, package_names=[]):
         import subprocess as sp
         # TODO: get rid of repofrompath message even with --quiet
-        cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}\t%{release}"]
+        #cmdline = ["/usr/bin/repoquery", "--quiet", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}\t%{release}\n"]
+        cmdline = ["/usr/bin/repoquery", "--archlist=src", "--all", "--repoid", self.repoid, "--qf", "%{name}\t%{version}\t%{release}\n"]
         if self.repofrompath:
             cmdline.extend(['--repofrompath', self.repofrompath])
         cmdline.extend(package_names)
-
+        #print "Packages_names:",package_names
+        #print "cmdline Here:",cmdline
+        #repoquery = sp.Popen(cmdline, close_fds=True, stdout=sp.PIPE)
         repoquery = sp.Popen(cmdline, stdout=sp.PIPE)
-        (list, stderr) = repoquery.communicate()
+        (list2, stderr) = repoquery.communicate()
         new_nvr_dict = {}
-        for line in list.split("\n"):
-            if line != "":
-                name, version, release = line.split("\t")
-                new_nvr_dict[name] = (version, release)
+#        list = """razor-agents\t1.34\t1.rf
+##postgresql-relay\t1.3\t2.2.rf"""
+        #print "stderr:",stderr
+        #print "type:",type(list2)
+        #print "type:",type(list2.split("\n"))
+        for d in list2.split("\n"):
+            if d !="":
+                if len(d.split("\t"))>=3:
+                    #print d
+                    name, version, release = d.split("\t")
+                    new_nvr_dict[name] = (version, release)
+            #    print len(na)
+
+        #for line in list2.split("\n"):
+        #    if line != "":
+        #        name, version, release = line.split("\t")
+        #        new_nvr_dict[name] = (version, release)
+        #        print "Name:", name, version, release
+
         return new_nvr_dict
 
     def package_version(self, package):
@@ -271,6 +290,8 @@ class Package(object):
             from cnucnu.helper import upstream_max
             self._latest_upstream = upstream_max(self.upstream_versions)
 
+            #print "self.upstream_versions", self.upstream_versions
+            #print "self._latest_upstream", self._latest_upstream
             # invalidate _rpm_diff cache
             self._rpm_diff = None
 
@@ -278,6 +299,7 @@ class Package(object):
 
     @property
     def repo_version(self):
+        #print "self._repo_version", self._repo_version
         if not self._repo_version:
             self._repo_version  = self.repo.package_version(self)
         return self._repo_version
@@ -286,6 +308,7 @@ class Package(object):
     def repo_release(self):
         if not self._repo_release:
             self._repo_release  = self.repo.package_release(self)
+        #print self._repo_release
         return self._repo_release
 
     @property
@@ -355,36 +378,141 @@ class PackageList:
                 List of packages to populate the package_list with
 
         """
-        if not mediawiki:
-            mediawiki = global_config.config["package list"]["mediawiki"]
+#        if not mediawiki:
+#            mediawiki = global_config.config["package list"]["mediawiki"]
+#            print "EEE"
         if not packages and mediawiki:
 
-            from wiki import MediaWiki
-            w = MediaWiki(base_url=mediawiki["base url"])
-            page_text = w.get_pagesource(mediawiki["page"])
-
-            ignore_owner_regex = re.compile('\\* ([^ ]*)')
-            owners = [o[0].encode("UTF-8") for o in helper.match_interval(page_text, ignore_owner_regex, "== Package Owner Ignore List ==", "<!-- END PACKAGE OWNER IGNORE LIST -->")]
-
+#           from wiki import MediaWiki
+#           w = MediaWiki(base_url=mediawiki["base url"])
+#           page_text = w.get_pagesource(mediawiki["page"])
+#
+#           ignore_owner_regex = re.compile('\\* ([^ ]*)')
+#           owners = [o[0].encode("UTF-8") for o in helper.match_interval(page_text, ignore_owner_regex, "== Package Owner Ignore List ==", "<!-- END PACKAGE OWNER IGNORE LIST -->")]
+#
             pdb = PackageDB()
             ignore_packages = []
-            for owner in owners:
-                pkgs = pdb.user_packages(owner, acls="owner")["pkgs"]
-                p_names = [p["name"] for p in pkgs]
-                ignore_packages.extend(p_names)
-            set(ignore_packages)
+#           for owner in owners:
+#               pkgs = pdb.user_packages(owner, acls="owner")["pkgs"]
+#               p_names = [p["name"] for p in pkgs]
+#               ignore_packages.extend(p_names)
+#           set(ignore_packages)
 
             packages = []
             repo.package_list = self
             package_line_regex = re.compile(' \\* ([^ ]*) (.*) ([^ ]*)')
-            for package_data in helper.match_interval(page_text, package_line_regex, "== List Of Packages ==", "<!-- END LIST OF PACKAGES -->"):
+            page_text = """
+== List Of Packages ==
+ * htop DEFAULT SF-DEFAULT
+ * razor-agents razor-agents-(.*?).tar.bz2 http://sourceforge.net/projects/razor/files/
+ * nmon DEFAULT SF-DEFAULT
+ * tig DEFAULT http://jonas.nitro.dk/tig/releases/
+ * icinga DEFAULT SF-DEFAULT
+ * amavisd-new amavisd-new-(2\.\d\.\d).tar.gz http://www.amavis.org/
+ * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
+ * altermime DEFAULT http://www.pldaniels.com/altermime/
+ * arc DEFAULT SF-DEFAULT
+ * arj DEFAULT SF-DEFAULT
+ * cabextract DEFAULT  http://www.cabextract.org.uk/
+ * clamav DEFAULT SF-DEFAULT
+ * freeze DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * lha DEFAULT DEFAULT
+ * lzo DEFAULT http://www.oberhumer.com/opensource/lzo/
+ * lzop DEFAULT http://www.lzop.org/download/
+ * nomarch DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * p7zip p7zip_([\d\.]+)_src_all.tar.bz SF-DEFAULT
+ * perl-Archive-Zip CPAN-DEFAULT CPAN-DEFAULT
+ * perl-BerkeleyDB CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Compress-Raw-Bzip2 CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Compress-Raw-Zlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Compress-Zlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Convert-BinHex CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Convert-TNEF CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Convert-UUlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Crypt-OpenSSL-RSA CPAN-DEFAULT CPAN-DEFAULT
+ * perl-DB_File CPAN-DEFAULT CPAN-DEFAULT
+ * perl-DBI CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Digest-MD5 CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Digest-SHA CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Digest-SHA1 CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Email-Date-Format CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Encode-Detect CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Error CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Geography-Countries CPAN-DEFAULT CPAN-DEFAULT
+ * perl-HTML-Parser CPAN-DEFAULT CPAN-DEFAULT
+ * perl-HTML-Parser CPAN-DEFAULT CPAN-DEFAULT
+ * perl-HTML-Tagset CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-Compress CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-Socket-SSL CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-stringy CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-stringy CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-Zlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IP-Country CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Mail-DKIM CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Mail-SPF CPAN-DEFAULT CPAN-DEFAULT
+ * perl-MailTools CPAN-DEFAULT CPAN-DEFAULT
+ * perl-MIME-Base64 CPAN-DEFAULT CPAN-DEFAULT
+ * perl-MIME-Lite CPAN-DEFAULT CPAN-DEFAULT
+ * perl-MIME-tools CPAN-DEFAULT CPAN-DEFAULT
+ * perl-NetAddr-IP CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Net-DNS CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Net-Ident CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Net-Server CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Net-SSLeay CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Pod-Escapes CPAN-DEFAULT CPAN-DEFAULT
+ * re2c DEFAULT SF-DEFAULT
+ * ripole DEFAULT http://www.pldaniels.com/ripole
+ * spamassassin Mail-SpamAssassin-(.*?).tar.bz2 http://www.apache.org/dist/spamassassin/source/
+ * unarj DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
+ * zoo DEFAULT DEFAULT
+ * rkhunter DEFAULT SF-DEFAULT
+ * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
+ * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * phpmyadmin3 phpMyAdmin-(3.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * perl-Math-Fibonacci-Phi CPAN-DEFAULT CPAN-DEFAULT
+ * syslinux DEFAULT http://www.kernel.org/pub/linux/utils/boot/syslinux/
+ * perl-Data-Dumper-Concise CPAN-DEFAULT CPAN-DEFAULT
+ * nagios DEFAULT SF-DEFAULT
+ * perl-Math-BigInt-FastCalc CPAN-DEFAULT CPAN-DEFAULT
+ * proftpd DEFAULT ftp://ftp.proftpd.org/distrib/source/
+ * monit DEFAULT http://mmonit.com/monit/dist/
+ * mercurial DEFAULT http://mercurial.selenic.com/release/
+ * awstats DEFAULT SF-DEFAULT
+ * iftop DEFAULT http://www.ex-parrot.com/~pdw/iftop/download/
+ * htop DEFAULT SF-DEFAULT
+ * nmap DEFAULT http://nmap.org/dist/
+ * subversion DEFAULT http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=260&expandFolder=260&folderID=260
+ * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
+ * tmux DEFAULT SF-DEFAULT
+ * nmon DEFAULT SF-DEFAULT
+ * tig DEFAULT http://jonas.nitro.dk/tig/releases/
+ * icinga DEFAULT SF-DEFAULT
+ * amavisd-new amavisd-new-(2\.\d\.\d).tar.gz http://www.amavis.org/
+ * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
+<!-- END LIST OF PACKAGES -->
+            """
+            #print page_text
+            for package_data in sorted(helper.match_interval(page_text, package_line_regex, "== List Of Packages ==", "<!-- END LIST OF PACKAGES -->")):
+#                print package_data
                 (name, regex, url) = package_data
-                nagging = True
-                if name in ignore_packages:
-                    nagging = False
+                nagging = True 
+#                print "(name, regex, url)"
+#                print name
+#                print regex
+#                print url
+#                print repo
+#                print scm
+#                print br
+#                print nagging
+#               if name in ignore_packages:
+#                   nagging = False
                 packages.append(Package(name, regex, url, repo, scm, br, nagging=nagging))
 
         self.packages = packages
+        #print "Packages"
+        #print packages
+        #print "Packages"
         self.append = self.packages.append
 
     def __getitem__(self, key):

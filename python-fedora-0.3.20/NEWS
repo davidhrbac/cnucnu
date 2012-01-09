@@ -1,0 +1,416 @@
+====
+NEWS
+====
+
+:Authors: Toshio Kuratomi, Luke Macken
+:Date: 22 Apr 2010
+:Version: 0.3.x
+
+------
+0.3.20
+------
+* Fix Django auth provider so it times out when the auth provider is used in a
+  django + djblets app.
+
+------
+0.3.19
+------
+* Fix DJango Auth Provider to use a cookie shared with the TG apps
+* Fix DJango Auth Provider to timeout with the fas session
+* Optimize group lookup in DJango auth provider for ReviewBoard
+* Add absolute_url() and tg_absolute_url() functions to tg1utils
+* Attempt to stop tracebacks in tg.visit code
+* Don't crash DJango auth if the user is hiding their Real Name.
+
+------
+0.3.18
+------
+* Fixes for Django auth provider tracebacks and session not being cleared between users.
+* Revert the connection pool for ProxyClient.  It was part of the reason that
+  Django auth (and the other auth providers although no one noticed) were
+  failing.
+
+------
+0.3.17
+------
+* Add a connection pool to ProxyClient.  Reusing the curl objects from the pool
+  speeds up requests that go to the same server.
+* New class FasProxyClient that is used to implement thread-safe communication
+  with the Fedora Account System.  Our authentication plugins that talk to
+  FAS have been ported to use this internally.
+* For all clients, remove tg_format=json from the requests that are sent.  The
+  Accept header that we send has been serving this purpose for a long time.
+* New PackageDB methods
+  - get_collection_list() that returns the list of collections that are
+    registered in the pkgdb.
+  - orphan_packages() that returns the list of packages orphaned in non-EOL
+    releases.
+  - get_critpath_pkgs(): Return the packages marked for the critical path
+  - set_critpath(): Mark pkgs as critical path
+* In fedora.client.pkgdb, Wherever a collection is asked for, have the API take
+  params named collctn_* for consistency.  Using the old names as keyword
+  arguments will yield a deprecation warning.
+* fedora.client.PackageDB now works with pkgdb server 0.5.x rather than 0.4.x
+* fedora.client.wiki: add ignore_wikibot and callback kwargs to
+  Wiki.fetch_all_revisions() and minor bug fixes
+* New functions:
+  - fedora.iterutils.isiterable(): Can tell whether an object is an iterable.
+    Can also exclude strings if desired.
+  - fedora.urlutils.update_qs(): Updates a http query string.
+  - fedora.textutils.to_unicode(): Converts a byte string to unicode string.
+  - fedora.textutils.to_bytes(): Converts a unicode string into a byte string.
+* Fix fedora.tg.tg1utils.request_format() to return a symbolic name for the
+  data format requested whether using the Accept header or tg_format query
+  parameter.
+* fedora.tg.tg2utils module added with some of the functions from
+  fedora.tg.tg1utils ported to TG2.
+* faswho and csrf middleware that allow TG2 apps to authenticate against FAS
+* Documentation on how to use faswho and CSRF in a TG2 app.
+* Fix some bugs in the Django auth layer.
+
+------
+0.3.16
+------
+* Update paver-minilib.zip to pull in more of paver.  Fixes a bug when used
+  with easy_install
+* Fix a bug in fedora.tg.util.url that was creating more than one _csrf_token
+  entry.
+
+------
+0.3.15
+------
+* Relicense to LGPLv2+
+* Fix user_gencert URL
+
+------
+0.3.14
+------
+* Save the original tg.url() function as fedora.tg.tg_url().  That allows us
+  to change the url to have the base_url without adding the csrf token.
+* Update fedora.client.AccountSystem for compatibility with the next FAS
+  server update (backwards compatible).
+* Add fedora.client.PackageDB.user_packages() method that retrieves the packages
+  that a particular user owns.
+* Add a function for fetching all revisions of the wiki (fetch_all_revisions)
+* Add a function for seeing if we have the wiki API high limits right
+  (check_api_limits)
+* Add an identity provider, sqlobjectcsrf, to implement csrf_token protection
+  for applications that use sqlobject for database interaction and don't want
+  to use FAS for auth.
+
+--------
+0.3.13.1
+--------
+* Merge the 0.3.13 and 0.3.12.1 release together.
+* Bugfix for Django Auth provider and new fas server.
+
+------
+0.3.13
+------
+* Add new pkgdb methods: add_package() to add a new package and edit_package()
+  to edit an existing one.  add_edit_package() was removed.
+* More translations.
+* Change from 401 response code to 403.  401 was causing problems for konqueror
+  and webkit and our usage wasn't http spec compliant.
+* New fedora.compat25 that has python-2.5 features for older releases.
+  - fedora.compat25.defaultdict a defaultdict implementation for older python
+    releases.
+
+--------
+0.3.12.1
+--------
+
+* Add people_query method
+* Rename group_by_id and person_by_id request parameters
+* Add force_refresh parameter to group_data
+
+------
+0.3.12
+------
+
+* Bugfix to django auth to allow login
+* Bugfix to jsonfas2 that allows login when using json calls with Cherrypy 2.3+
+* Get i18n infrastructure ready and take translations from transifex
+* Include a setup.py so easy_install works
+* Update build to work with paver 1.0 and somewhat with 0.8
+* Add remove_user() to pkgdb client module.
+
+--------
+0.3.11.1
+--------
+
+* Fix a bug with django auth and redirects
+
+------
+0.3.11
+------
+
+Re-add the old jsonfasprovider and jsonfasvisit plugins until we get everything
+ported over to CSRF protection.  To use the new providers, change your app.cfg::
+
+  -visit.manager="jsonfas"
+  -identity.provider="jsonfas"
+  +visit.manager="jsonfas2"
+  +identity.provider="jsonfas2"
+
+------
+0.3.10
+------
+
+CSRF
+====
+CSRF is a vulnerability that can allow malicious web sites to execute server
+methods on behalf of an authenticated user.  This update has some methods to
+help deal with that:
+
+* Added helpers for enabling CSRF protection to services.  For information on
+  adding support to your app, read doc/CSRF.rst or the html version:
+  https://fedorahosted.org/releases/p/y/python-fedora/doc/CSRF.html
+* Update client code to use CSRF tokens when needed.
+
+Other Feature Changes
+=====================
+* Add Django Authentication provider.
+* Undeprecate AccountSystem.people_by_id() for now -- we need a fas server
+  update before we can use people_by_key().
+* Correct loggers to show messages originate from jsonfasprovider and
+  jsonfasvisit.
+* Add parameter to client classes to allow not checking server certificates.
+  This is **only** intended for use when running test servers with bad certs.
+
+Bugfixes
+========
+* python-2.4 compatibility fix when an http error is received in ProxyClient
+* Fix fedora.client.ServerError to print information about the error in the
+  traceback.
+
+0.3.9.1
+-------
+* Fix to the mediawiki client for python-2.4 compatibility.
+
+-----
+0.3.9
+-----
+* Minor fix for traceback when the session file is unreadable.
+* Fix so that ProxyClient follows redirects.
+* Fix a bug where fas2.py::AccountSystem::verify_password() always returns
+  True.
+* Add task to publish documentation to the website.  Publish documentation to
+  the website at: https://fedorahosted.org/releases/p/y/python-fedora/doc/
+
+-----
+0.3.8
+-----
+* Port the client module to use pycurl instead of urllib2.  This prepares the
+  way for SSL authentication and fixes a problem with https proxying.
+* Fix bug in BodhiClient.testable()
+* Update proxyclient to accept either 403 or 401 as http status codes raising
+  AuthErrors.
+* New client.fas2.AccountSystem methods to make fasClient more efficient:
+  - group_data(): returns mapping group names to group type and the userids of
+    the administrator, sponsors, and users of the group.
+  - user_data(): returns mapping of userids to a username, password hash,
+    SSH pub key, email address, and status.
+* Fix AppError exception on python-2.4
+
+-----
+0.3.7
+-----
+* Update to bugzilla email addresses.
+* Add documentation for working with translations.
+* add username argument for BodhiClient.
+* Update PackageDB.clone_branch() command for new server method.
+* Allow exceptions passed back by the server to contain extra information.
+* New fedora.tg.util.json_or_redirect() decorator that allows server methods to
+  either return a dict per normal or redirect to another URL.
+
+-----
+0.3.6
+-----
+* fedora.client.pkgdb merge with pkgdb-client from Mike Watters and Toshio
+  Kuratomi.
+* Generate documentation for json and util modules.
+* Delay import of koji, yum, and iniparse in the bodhi client libraries so
+  they're not strict dependencies for now.
+
+-----
+0.3.5
+-----
+* Fix client.AccountSystem.person_by_username() to not traceback when given an
+  unknown username.
+* Deprecate cookie auth in favor of session_id auth (but maintain compatibility)
+* Internally, use session_id instead of cookie.
+* Change the session file from ~/.fedora_session to ~/.fedora/.fedora_session
+* Switch from using setuptools to build the package to paver_.
+* Generate html documentation using sphinx_.
+* Bodhi update template parsing improvements, thanks to Ricky.
+
+.. _paver:: http://www.blueskyonmars.com/projects/paver/
+.. _sphix:: http://sphinx.pocoo.org/
+
+-----
+0.3.4
+-----
+* Fix to proxyclient allow sending sequence types via send_request().
+* New fedora.client.fas2.AccountSystem method people_by_groupname()
+
+-----
+0.3.3
+-----
+* Allow json_props in SABase to follow class inheritance.
+* Remove 0.2 compatibility variable jsonProps.  This was broken and everything
+  that was using it has been ported to use json_props instead.
+* Misc bugfixes with the jsonfas provider.
+
+-----
+0.3.2
+-----
+* Bodhi API parameter 'type' renamed to 'type_'
+* Added BodhiClient.latest_builds method
+* New FAS group_members() method to return people's status in a group.
+* Fixed the default fas.url value in the jsonfas visit manager
+* Creation of a new FedoraClientError base Exception class
+* Better i18n support
+* Added all clients to the base of the fedora.client module
+* Various other bugfixes
+
+-----
+0.3.1
+-----
+* Fix an unported portion of the jsonfasvisit manager.
+* Make validation errors set a flash message for both html and json
+* Create a function to jsonify sets.
+* Make sure we don't log a user's password.
+* Bugfixes in the bodhi update template parsing code
+
+---
+0.3
+---
+* New fedora.client.bodhi API
+* Lots of bugfixes
+* New fedora.client.ProxyClient class that can be used for writing proxies and
+  lower level clients that talk to Fedora Services.
+  - BaseClient rewritten to run on top of ProxyClient.
+* Rearranging of many modules.  The old names should still work but issue a
+  DeprecationWarning and the new location to import the module from.
+* Documentation on how to build a Fedora Service that will work well with
+  BaseClient and documentation on building apps with BaseClient.
+  - Note that present Fedora Services (Bodhi, PackageDB, MirrorManager, FAS2)
+    will need to be updated to conform to this spec.  Until that happens, not
+    everything (notably, error handling) will work 100% correctly.
+
+Incompatibilities
+=================
+* Removal of camelCase.  Rename keyword arguments and public instance variables:
+  * client.BaseClient
+    *Note* that changes to this class propogate out to the same variable in
+    derived classes like fas2.AccountSystem and the BaseClient used in
+    JsonFasIdentity.
+    * __init__(): baseURL => base_url
+    * _sessionCookie => _session_cookie: this is a private variable but some
+      users use this anyway.  For users needing to access this, there's now
+      a more appropriate class for doing so (ProxyClient).
+  * accounts.fas2.AccountSystem
+    * group_by_id(): groupId => group_id
+    * person_by_id(): personId => person_id
+  * tg.widgets
+    * All widgets had widgetId => widget_id
+    * Also means accessing the variable is done via self.widget_id
+  * tg.json.SABase
+    * self.jsonProps => self.json_props
+      *Note*: jsonProps will still work but is Deprecated.  Please update your
+      code as we will be removing jsonProps in 0.4.x.
+* The input keyword argument to BaseClient.send_request has been
+  deprecated in favor of req_params.
+  *Note*: Using input will still work in 0.3.  Please update your code as we
+  will be removing input in 0.4.x.
+* Restructuring of Exceptions in BaseClient
+  * New base exception is FedoraServiceError if you want to catch that.
+* Movement of fedora.tg.client to fedora.client
+* Movement of fedora.accounts.fas2 to fedora.client.fas2
+* Rename fedora.client.fas2.AccountSystem.authenticate() to verify_password()
+
+-----------
+0.2.99.11.1
+-----------
+Brown paper bag the previous release.  Fix a crasher bug.
+
+---------
+0.2.99.11
+---------
+Hopefully the last in this line of API.
+
+* Fix handling of tg_format=json asa query param when the server uses
+  tg.util.request_format()
+* Add a default jsonify method for SA ResultProxys
+* Don't traceback if there's a corrupted session file
+* Set permissions on the session file so only the user can read it.
+* Add a default BaseURL for fas2.AccountSystem
+
+---------
+0.2.99.10
+---------
+* Minor update that:
+
+  1) Adds bugzilla email to the return from people_by_id().
+
+  2) Adds several more users whose bugzilla address don't match their fas email.
+
+--------
+0.2.99.9
+--------
+* This is what 0.2.99.9 was supposed to be.  The last release compatible with
+  0.2.99.7 and less.  Unfortunately, some incompatibilities snuck in.
+  Reverting those changes here.
+
+--------
+0.2.99.8
+--------
+* Fix a bug involving bugzilla_email addresses.
+* Fix a bug where an expired session cookie will cause send_request to complete
+  successfully but report failure.
+
+--------
+0.2.99.7
+--------
+* Fixes to json.py for JSON output with SA-0.4
+* Add bugzila_email to output of fas2 methods
+* Add people_by_id() method to fas2.AccountSystem that returns a dict of people
+  indexed by ID.  The people structure contains username, email, and
+  human_name... what we need for most of our lookups.
+
+--------
+0.2.99.6
+--------
+Remove fas1 code.
+Document how BaseClient interacts with a server
+Move client code.
+Change BaseClient to work with Accept headers.
+
+--------
+0.2.99.5
+--------
+fas2.py shim to connect to fas2 via json for certain information.
+BaseClient bugfixes.
+
+--------
+0.2.99.4
+--------
+Enhancement to jsonfasprovider to provide both user.human_name and
+user['human_name'].
+
+--------
+0.2.99.3
+--------
+Bugfixes to BaseClient
+
+--------
+0.2.99.2
+--------
+Integrate a first working json fas identity provider and visit manager.
+
+--------
+0.2.99.0
+--------
+This release is the first to offer TG-1.0.4 and SA-0.4 compatibility.  When
+this is considered stable we will release as 0.3.

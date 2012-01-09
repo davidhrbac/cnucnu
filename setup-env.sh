@@ -1,3 +1,5 @@
+echo "new PYTHONPATH: ${PYTHONPATH}"
+
 if test -z "${BASH_SOURCE%*/*}"
 then
     CNUCNU_BASEDIR="${BASH_SOURCE%/*}"
@@ -7,4 +9,4 @@ fi
 
 export PYTHONPATH=${CNUCNU_BASEDIR:-${PWD}}
 
-#echo "new PYTHONPATH: ${PYTHONPATH}"
+echo "new PYTHONPATH: ${PYTHONPATH}"

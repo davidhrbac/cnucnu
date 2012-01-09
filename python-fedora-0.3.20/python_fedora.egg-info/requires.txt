@@ -1,0 +1,11 @@
+simplejson
+
+[tg]
+TurboGears >= 1.0.4
+SQLAlchemy
+decorator
+
+[wsgi]
+repoze.who
+Beaker
+Paste

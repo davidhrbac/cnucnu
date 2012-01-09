@@ -1,0 +1,21 @@
+Metadata-Version: 1.0
+Name: python-fedora
+Version: 0.3.20
+Summary: Python modules for interacting with Fedora Services
+Home-page: https://fedorahosted.org/python-fedora
+Author: Toshio Kuratomi, Luke Macken
+Author-email: tkuratom@redhat.com
+License: LGPLv2+
+Download-URL: https://fedorahosted.org/releases/p/y/python-fedora/
+Description: UNKNOWN
+Keywords: Fedora Python Modules
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: TurboGears
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v2+ (LGPLv2+)
+Classifier: Programming Language :: Python :: 2.4
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

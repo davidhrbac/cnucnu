@@ -17,10 +17,10 @@
 #    along with cnucnu.  If not, see <http://www.gnu.org/licenses/>.
 # }}}
 
-import smtplib
-from email.mime.text import MIMEText
-from email.header import Header
-from email.utils import parseaddr, formataddr
+import smtplib, email
+from email import MIMEText
+from email import Header
+#from email import _parseaddr, _formataddr
 
 
 def encode_addr(addr):

@@ -57,7 +57,7 @@ bugzilla:
 
 
 repo:
-    path: 'http://kojipkgs.fedoraproject.org/mash/rawhide/source/SRPMS'
+    path: 'http://repository.vsb.cz/'
     name: Fedora Rawhide
 
 scm:
@@ -66,7 +66,7 @@ scm:
 
 package list:
     mediawiki:
-        base url: 'https://fedoraproject.org/w/'
+        base url: 'http://repository.vsb.cz/'
         page: Upstream_release_monitoring
 
 

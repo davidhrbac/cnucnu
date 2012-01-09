@@ -81,18 +81,37 @@ if __name__ == '__main__':
         scm = SCM(**global_config.config["scm"])
 
         outdated = []
-
+        
+        current=0
+        packages=0
+        v=False
         pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
+        #pl = PackageList(repo=repo, scm=scm, br=br, false)
         for p in pl:
             if p.name >= options.start_with:
                 logging.info("testing: %s", p.name)
+                #print "testing:",p.name
+                #print "testing: %s" % p.name
+                sys.stdout.write('\r' + ' ' * 80)
+                sys.stdout.write("\r%s/%d %s %s " % (current, packages, "*", p.name))
+                sys.stdout.flush()
                 try:
                     if p.upstream_newer:
-                       pprint(p.report_outdated(dry_run=options.dry_run))
+                        sys.stdout.write('\r' + ' ' * 80)
+                        sys.stdout.write("\r%d/%d %s %s\n" % (current , packages, "*", str(p)))
+                        sys.stdout.flush()
+                       #print "Name",p.name
+                       #pprint(p.report_outdated(dry_run=options.dry_run))
                 except Exception, e:
-                    pprint(e)
+                       #pprint(e)
+                       #print "Exc"
+                    if v:
+                       pprint(e)
+
             else:
                 logging.info("skipping: %s", p.name)
+        sys.stdout.write('\r')
+        sys.stdout.flush()
 
 
     elif options.action == "fm-outdated-all":
