@@ -1,1 +1,3 @@
 # Cnucnu fork
+
+*This is my fork of original cnucnu. I use it to check upstream releases for my repo/repoforge packaging.*
