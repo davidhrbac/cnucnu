@@ -83,11 +83,14 @@ if __name__ == '__main__':
         outdated = []
         
         current=0
-        packages=0
+        exceptions = 0
+        outdated = 0
         v=False
         pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
+        packages=len(pl.packages)
         #pl = PackageList(repo=repo, scm=scm, br=br, false)
         for p in pl:
+            current+=1
             if p.name >= options.start_with:
                 logging.info("testing: %s", p.name)
                 #print "testing:",p.name
@@ -100,11 +103,13 @@ if __name__ == '__main__':
                         sys.stdout.write('\r' + ' ' * 80)
                         sys.stdout.write("\r%d/%d %s %s\n" % (current , packages, "*", str(p)))
                         sys.stdout.flush()
+                        outdated+=1
                        #print "Name",p.name
                        #pprint(p.report_outdated(dry_run=options.dry_run))
                 except Exception, e:
                        #pprint(e)
                        #print "Exc"
+                    exceptions+=1
                     if v:
                        pprint(e)
 
@@ -112,6 +117,11 @@ if __name__ == '__main__':
                 logging.info("skipping: %s", p.name)
         sys.stdout.write('\r')
         sys.stdout.flush()
+        print "%s %s %s" % ('=' * 20, "Results", '=' * 20)
+        fmt = "%%-%ds %%6s (%%3d%%%%)" % (len("Unresolved")*2)
+        print(fmt % ("Total" , str(packages), 100))
+        print(fmt % ("Outdated" , str(outdated), 100*outdated/packages))
+        print(fmt % ("Unresolved", str(exceptions), 100*exceptions/packages))
 
 
     elif options.action == "fm-outdated-all":
