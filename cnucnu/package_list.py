@@ -403,22 +403,28 @@ class PackageList:
             package_line_regex = re.compile(' \\* ([^ ]*) (.*) ([^ ]*)')
             page_text = """
 == List Of Packages ==
- * htop DEFAULT SF-DEFAULT
- * razor-agents razor-agents-(.*?).tar.bz2 http://sourceforge.net/projects/razor/files/
- * nmon DEFAULT SF-DEFAULT
- * tig DEFAULT http://jonas.nitro.dk/tig/releases/
- * icinga DEFAULT SF-DEFAULT
- * amavisd-new amavisd-new-(2\.\d\.\d).tar.gz http://www.amavis.org/
- * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
  * altermime DEFAULT http://www.pldaniels.com/altermime/
+ * amavisd-new amavisd-new-(2\.\d\.\d).tar.gz http://www.amavis.org/
  * arc DEFAULT SF-DEFAULT
  * arj DEFAULT SF-DEFAULT
+ * awstats DEFAULT SF-DEFAULT
  * cabextract DEFAULT  http://www.cabextract.org.uk/
+ * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
  * clamav DEFAULT SF-DEFAULT
+ * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
+ * etckeeper DEFAULT http://ftp.debian.org/debian/pool/main/e/etckeeper/
  * freeze DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * htop DEFAULT SF-DEFAULT
+ * icinga DEFAULT SF-DEFAULT
+ * iftop DEFAULT http://www.ex-parrot.com/~pdw/iftop/download/
  * lha DEFAULT DEFAULT
  * lzo DEFAULT http://www.oberhumer.com/opensource/lzo/
  * lzop DEFAULT http://www.lzop.org/download/
+ * mercurial DEFAULT http://mercurial.selenic.com/release/
+ * monit DEFAULT http://mmonit.com/monit/dist/
+ * nagios DEFAULT SF-DEFAULT
+ * nmap DEFAULT http://nmap.org/dist/
+ * nmon DEFAULT SF-DEFAULT
  * nomarch DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * p7zip p7zip_([\d\.]+)_src_all.tar.bz SF-DEFAULT
  * perl-Archive-Zip CPAN-DEFAULT CPAN-DEFAULT
@@ -430,8 +436,9 @@ class PackageList:
  * perl-Convert-TNEF CPAN-DEFAULT CPAN-DEFAULT
  * perl-Convert-UUlib CPAN-DEFAULT CPAN-DEFAULT
  * perl-Crypt-OpenSSL-RSA CPAN-DEFAULT CPAN-DEFAULT
- * perl-DB_File CPAN-DEFAULT CPAN-DEFAULT
  * perl-DBI CPAN-DEFAULT CPAN-DEFAULT
+ * perl-DB_File CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Data-Dumper-Concise CPAN-DEFAULT CPAN-DEFAULT
  * perl-Digest-MD5 CPAN-DEFAULT CPAN-DEFAULT
  * perl-Digest-SHA CPAN-DEFAULT CPAN-DEFAULT
  * perl-Digest-SHA1 CPAN-DEFAULT CPAN-DEFAULT
@@ -440,56 +447,43 @@ class PackageList:
  * perl-Error CPAN-DEFAULT CPAN-DEFAULT
  * perl-Geography-Countries CPAN-DEFAULT CPAN-DEFAULT
  * perl-HTML-Parser CPAN-DEFAULT CPAN-DEFAULT
- * perl-HTML-Parser CPAN-DEFAULT CPAN-DEFAULT
  * perl-HTML-Tagset CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-Compress CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-Socket-SSL CPAN-DEFAULT CPAN-DEFAULT
- * perl-IO-stringy CPAN-DEFAULT CPAN-DEFAULT
- * perl-IO-stringy CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-Zlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-stringy CPAN-DEFAULT CPAN-DEFAULT
  * perl-IP-Country CPAN-DEFAULT CPAN-DEFAULT
- * perl-Mail-DKIM CPAN-DEFAULT CPAN-DEFAULT
- * perl-Mail-SPF CPAN-DEFAULT CPAN-DEFAULT
- * perl-MailTools CPAN-DEFAULT CPAN-DEFAULT
  * perl-MIME-Base64 CPAN-DEFAULT CPAN-DEFAULT
  * perl-MIME-Lite CPAN-DEFAULT CPAN-DEFAULT
  * perl-MIME-tools CPAN-DEFAULT CPAN-DEFAULT
- * perl-NetAddr-IP CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Mail-DKIM CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Mail-SPF CPAN-DEFAULT CPAN-DEFAULT
+ * perl-MailTools CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Math-BigInt-FastCalc CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Math-Fibonacci-Phi CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-DNS CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-Ident CPAN-DEFAULT CPAN-DEFAULT
- * perl-Net-Server CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-SSLeay CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Net-Server CPAN-DEFAULT CPAN-DEFAULT
+ * perl-NetAddr-IP CPAN-DEFAULT CPAN-DEFAULT
  * perl-Pod-Escapes CPAN-DEFAULT CPAN-DEFAULT
+ * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * phpmyadmin3 phpMyAdmin-(3.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
+ * proftpd DEFAULT ftp://ftp.proftpd.org/distrib/source/
+ * razor-agents razor-agents-(.*?).tar.bz2 http://sourceforge.net/projects/razor/files/
  * re2c DEFAULT SF-DEFAULT
  * ripole DEFAULT http://www.pldaniels.com/ripole
+ * rkhunter DEFAULT SF-DEFAULT
  * spamassassin Mail-SpamAssassin-(.*?).tar.bz2 http://www.apache.org/dist/spamassassin/source/
+ * subversion DEFAULT http://subversion.apache.org/download/
+ * syslinux DEFAULT http://www.kernel.org/pub/linux/utils/boot/syslinux/
+ * tig DEFAULT http://jonas.nitro.dk/tig/releases/
+ * tmux DEFAULT SF-DEFAULT
  * unarj DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
  * zoo DEFAULT DEFAULT
- * rkhunter DEFAULT SF-DEFAULT
- * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
- * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
- * phpmyadmin3 phpMyAdmin-(3.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
- * perl-Math-Fibonacci-Phi CPAN-DEFAULT CPAN-DEFAULT
- * syslinux DEFAULT http://www.kernel.org/pub/linux/utils/boot/syslinux/
- * perl-Data-Dumper-Concise CPAN-DEFAULT CPAN-DEFAULT
- * nagios DEFAULT SF-DEFAULT
- * perl-Math-BigInt-FastCalc CPAN-DEFAULT CPAN-DEFAULT
- * proftpd DEFAULT ftp://ftp.proftpd.org/distrib/source/
- * monit DEFAULT http://mmonit.com/monit/dist/
- * mercurial DEFAULT http://mercurial.selenic.com/release/
- * awstats DEFAULT SF-DEFAULT
- * iftop DEFAULT http://www.ex-parrot.com/~pdw/iftop/download/
- * htop DEFAULT SF-DEFAULT
- * nmap DEFAULT http://nmap.org/dist/
- * subversion DEFAULT http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=260&expandFolder=260&folderID=260
- * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
- * tmux DEFAULT SF-DEFAULT
- * nmon DEFAULT SF-DEFAULT
- * tig DEFAULT http://jonas.nitro.dk/tig/releases/
- * icinga DEFAULT SF-DEFAULT
- * amavisd-new amavisd-new-(2\.\d\.\d).tar.gz http://www.amavis.org/
- * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
+ * cacti DEFAULT http://www.cacti.net/downloads/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text

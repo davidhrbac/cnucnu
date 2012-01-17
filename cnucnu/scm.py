@@ -67,8 +67,8 @@ if __name__ == '__main__':
 
     import sys
     package_name = len(sys.argv) > 1 and sys.argv[1] or "crossvc"
-
-    package = Package(package_name, "", "", Repository())
+    br = BugzillaReporter(global_config.bugzilla_config)
+    package = Package(package_name, "", br, Repository())
     upstream_version = len(sys.argv) > 2 and sys.argv[1] or "1.5.2-0"
     package._latest_upstream = upstream_version
 
