@@ -118,10 +118,10 @@ if __name__ == '__main__':
         sys.stdout.write('\r')
         sys.stdout.flush()
         print "%s %s %s" % ('=' * 20, "Results", '=' * 20)
-        fmt = "%%-%ds %%6s (%%3d%%%%)" % (len("Unresolved")*2)
-        print(fmt % ("Total" , str(packages), 100))
-        print(fmt % ("Outdated" , str(outdated), 100*outdated/packages))
-        print(fmt % ("Unresolved", str(exceptions), 100*exceptions/packages))
+        fmt = "%%-%ds %%6s (%%3d%%%%)" % (len("Unresolved")*3)
+        print(fmt % ("     Total" , str(packages), 100))
+        print(fmt % ("     Outdated" , str(outdated), 100*outdated/packages))
+        print(fmt % ("     Unresolved", str(exceptions), 100*exceptions/packages))
 
 
     elif options.action == "fm-outdated-all":
