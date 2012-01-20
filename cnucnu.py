@@ -105,10 +105,10 @@ if __name__ == '__main__':
                         sys.stdout.flush()
                         outdated+=1
                        #print "Name",p.name
-                       #pprint(p.report_outdated(dry_run=options.dry_run))
+                        pprint(p.report_outdated(dry_run=options.dry_run))
                 except Exception, e:
-                       #pprint(e)
-                       #print "Exc"
+#                    pprint(e)
+#                    print "Exc"
                     exceptions+=1
                     if v:
                        pprint(e)

@@ -21,6 +21,7 @@
 
 from helper import secure_download
 from config import global_config
+import re
 
 class SCM(object):
     """ cainfo: filename :-/
@@ -40,12 +41,25 @@ class SCM(object):
     def get_sources(self, package):
         return secure_download(self.view_scm_url % package, cainfo=self.cainfo)
 
-    def get_sourcefiles(self, package):
+    def get_sourcefiles_o(self, package):
         sources = self.get_sources(package)
+        print sources
         sourcefiles = []
         for line in sources.split("\n"):
             if line != "":
                 file = line.split(" ")[2]
+                print file
+                sourcefiles.append(file)
+
+        return sourcefiles
+
+    def get_sourcefiles(self, package):
+        sources = self.get_sources(package)
+        sourcefiles = []
+        sources = re.findall('Version:\s*(.*?)\n',sources)
+        for line in sources:
+            if line != "":
+                file = "%s-%s-tar.gz" % (package.name, line)
                 sourcefiles.append(file)
 
         return sourcefiles

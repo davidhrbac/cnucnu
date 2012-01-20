@@ -353,8 +353,8 @@ class Package(object):
                 return None
 
             if self.upstream_version_in_scm:
-                print "Upstream Version found in SCM, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
-                return None
+                print "\tUpstream Version found in SCM, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
+                return 
 
             return self.br.report_outdated(self, dry_run)
         else:
@@ -409,6 +409,7 @@ class PackageList:
  * arj DEFAULT SF-DEFAULT
  * awstats DEFAULT SF-DEFAULT
  * cabextract DEFAULT  http://www.cabextract.org.uk/
+ * cacti DEFAULT http://www.cacti.net/downloads/
  * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
  * clamav DEFAULT SF-DEFAULT
  * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
@@ -483,7 +484,6 @@ class PackageList:
  * unarj DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
  * zoo DEFAULT DEFAULT
- * cacti DEFAULT http://www.cacti.net/downloads/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text

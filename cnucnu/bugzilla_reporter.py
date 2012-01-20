@@ -94,7 +94,7 @@ class BugzillaReporter(object):
                     return res
         else:
             bug = package.exact_outdated_bug
-            print "bug already filed:%s %s" % (self.bug_url(bug), bug.bug_status)
+            print "\tBug already filed:%s %s" % (self.bug_url(bug), bug.bug_status)
 
 
     def create_outdated_bug(self, package, dry_run=True):

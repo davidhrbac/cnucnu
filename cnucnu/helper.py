@@ -237,10 +237,10 @@ def secure_download(url, cainfo=""):
     c.setopt(pycurl.URL, url.encode("ascii"))
 
     # -k / --insecure
-    # c.setopt(pycurl.SSL_VERIFYPEER, 0)
+    c.setopt(pycurl.SSL_VERIFYPEER, 0)
 
     # Verify certificate
-    c.setopt(pycurl.SSL_VERIFYPEER, 1)
+    #c.setopt(pycurl.SSL_VERIFYPEER, 1)
 
     # Verify CommonName or Subject Alternate Name
     c.setopt(pycurl.SSL_VERIFYHOST, 2)
