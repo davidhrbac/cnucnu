@@ -410,6 +410,7 @@ class PackageList:
  * awstats DEFAULT SF-DEFAULT
  * cabextract DEFAULT  http://www.cabextract.org.uk/
  * cacti DEFAULT http://www.cacti.net/downloads/
+ * cacti-spine DEFAULT http://www.cacti.net/downloads/spine/
  * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
  * clamav DEFAULT SF-DEFAULT
  * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
