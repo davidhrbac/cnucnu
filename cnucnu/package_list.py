@@ -404,7 +404,7 @@ class PackageList:
             page_text = """
 == List Of Packages ==
  * altermime DEFAULT http://www.pldaniels.com/altermime/
- * amavisd-new amavisd-new-(2\.\d\.\d).tar.gz http://www.amavis.org/
+ * amavisd-new amavisd-new-(2\.[0-9.]*?).tar.gz http://www.amavis.org/
  * arc DEFAULT SF-DEFAULT
  * arj DEFAULT SF-DEFAULT
  * awstats DEFAULT SF-DEFAULT
@@ -425,7 +425,7 @@ class PackageList:
  * mercurial DEFAULT http://mercurial.selenic.com/release/
  * monit DEFAULT http://mmonit.com/monit/dist/
  * nagios DEFAULT SF-DEFAULT
- * nmap DEFAULT http://nmap.org/dist/
+ * nmap nmap-([0-9.]*?).tgz http://nmap.org/dist/
  * nmon DEFAULT SF-DEFAULT
  * nomarch DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * p7zip p7zip_([\d\.]+)_src_all.tar.bz SF-DEFAULT
