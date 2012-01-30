@@ -203,7 +203,7 @@ class Package(object):
                 name = name_override.group(2)
         name = urllib.quote(name, safe='')
         if url == "SF-DEFAULT":
-            url = "http://sourceforge.net/api/file/index/project-name/%s/mtime/desc/limit/20/rss" % name
+            url = "http://sourceforge.net/api/file/index/project-name/%s/mtime/desc/limit/40/rss" % name
         elif url == "FM-DEFAULT":
             url = "http://freshmeat.net/projects/%s" % name
         elif url == "GNU-DEFAULT":
@@ -238,7 +238,7 @@ class Package(object):
             url = "https://launchpad.net/%s/+download" % name
         elif url == "GNOME-DEFAULT":
             url = "http://download.gnome.org/sources/%s/*/" % name
-
+        
         self.__url = url
         self.html = None
 
@@ -405,6 +405,7 @@ class PackageList:
 == List Of Packages ==
  * altermime DEFAULT http://www.pldaniels.com/altermime/
  * amavisd-new amavisd-new-(2\.[0-9.]*?).tar.gz http://www.amavis.org/
+ * apcupsd DEFAULT http://sourceforge.net/api/file/index/project-name/apcupsd/mtime/desc/limit/30/rss
  * arc DEFAULT SF-DEFAULT
  * arj DEFAULT SF-DEFAULT
  * awstats DEFAULT SF-DEFAULT
@@ -413,9 +414,11 @@ class PackageList:
  * cacti-spine DEFAULT http://www.cacti.net/downloads/spine/
  * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
  * clamav DEFAULT SF-DEFAULT
+ * clusterssh DEFAULT SF-DEFAULT
  * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
  * etckeeper DEFAULT http://ftp.debian.org/debian/pool/main/e/etckeeper/
  * freeze DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * ganglia DEFAULT SF-DEFAULT
  * htop DEFAULT SF-DEFAULT
  * icinga DEFAULT SF-DEFAULT
  * iftop DEFAULT http://www.ex-parrot.com/~pdw/iftop/download/
@@ -477,6 +480,7 @@ class PackageList:
  * re2c DEFAULT SF-DEFAULT
  * ripole DEFAULT http://www.pldaniels.com/ripole
  * rkhunter DEFAULT SF-DEFAULT
+ * rrdtool DEFAULT http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/
  * spamassassin Mail-SpamAssassin-(.*?).tar.bz2 http://www.apache.org/dist/spamassassin/source/
  * subversion DEFAULT http://subversion.apache.org/download/
  * syslinux DEFAULT http://www.kernel.org/pub/linux/utils/boot/syslinux/
