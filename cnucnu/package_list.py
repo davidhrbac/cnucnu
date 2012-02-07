@@ -489,6 +489,9 @@ class PackageList:
  * unarj DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
  * zoo DEFAULT DEFAULT
+ * mirmon DEFAULT http://people.cs.uu.nl/henkp/mirmon/
+ * tinc tinc-([\d.]*?).tar.gz http://www.tinc-vpn.org/packages/
+ * apt-dater DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text

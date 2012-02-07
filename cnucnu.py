@@ -27,6 +27,8 @@ from cnucnu.checkshell import CheckShell
 from cnucnu.bugzilla_reporter import BugzillaReporter
 from cnucnu.scm import SCM
 
+from cnucnu.errors import UpstreamVersionRetrievalError
+
 import pprint as pprint_module
 pp = pprint_module.PrettyPrinter(indent=4)
 pprint = pp.pprint
@@ -85,6 +87,9 @@ if __name__ == '__main__':
         current=0
         exceptions = 0
         outdated = 0
+        upstream = 0
+        nopackage = 0
+
         v=False
         pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
         packages=len(pl.packages)
@@ -106,6 +111,14 @@ if __name__ == '__main__':
                         outdated+=1
                        #print "Name",p.name
                         pprint(p.report_outdated(dry_run=options.dry_run))
+                except UpstreamVersionRetrievalError:
+#                    print "URL"
+                    upstream+=1
+
+                except KeyError:
+#                    print "URL"
+                    nopackage+=1
+
                 except Exception, e:
 #                    pprint(e)
 #                    print "Exc"
@@ -122,6 +135,9 @@ if __name__ == '__main__':
         print(fmt % ("     Total" , str(packages), 100))
         print(fmt % ("     Outdated" , str(outdated), 100*outdated/packages))
         print(fmt % ("     Unresolved", str(exceptions), 100*exceptions/packages))
+        print(fmt % ("          Upstream URL", str(upstream), 100*upstream/packages))
+        print(fmt % ("          Missing RPM", str(nopackage), 100*nopackage/packages))
+        print(fmt % ("          Other", str(exceptions - upstream - nopackage), 100*(exceptions - upstream - nopackage)/packages))
 
 
     elif options.action == "fm-outdated-all":
