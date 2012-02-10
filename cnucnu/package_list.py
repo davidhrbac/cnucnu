@@ -492,6 +492,9 @@ class PackageList:
  * mirmon DEFAULT http://people.cs.uu.nl/henkp/mirmon/
  * tinc tinc-([\d.]*?).tar.gz http://www.tinc-vpn.org/packages/
  * apt-dater DEFAULT SF-DEFAULT
+ * augeas DEFAULT http://augeas.net/download/
+ * perl-SVN-Access CPAN-DEFAULT CPAN-DEFAULT
+ * discount DEFAULT http://www.pell.portland.or.us/~orc/Code/discount/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text

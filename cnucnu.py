@@ -96,16 +96,17 @@ if __name__ == '__main__':
         #pl = PackageList(repo=repo, scm=scm, br=br, false)
         for p in pl:
             current+=1
+            tty_rows, tty_columns = map(int, os.popen('stty size', 'r').read().split())
             if p.name >= options.start_with:
                 logging.info("testing: %s", p.name)
                 #print "testing:",p.name
                 #print "testing: %s" % p.name
-                sys.stdout.write('\r' + ' ' * 80)
+                sys.stdout.write('\r' + ' ' * tty_rows)
                 sys.stdout.write("\r%s/%d %s %s " % (current, packages, "*", p.name))
                 sys.stdout.flush()
                 try:
                     if p.upstream_newer:
-                        sys.stdout.write('\r' + ' ' * 80)
+                        sys.stdout.write('\r' + ' ' * tty_rows)
                         sys.stdout.write("\r%d/%d %s %s\n" % (current , packages, "*", str(p)))
                         sys.stdout.flush()
                         outdated+=1
