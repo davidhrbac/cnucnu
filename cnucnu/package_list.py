@@ -495,6 +495,11 @@ class PackageList:
  * augeas DEFAULT http://augeas.net/download/
  * perl-SVN-Access CPAN-DEFAULT CPAN-DEFAULT
  * discount DEFAULT http://www.pell.portland.or.us/~orc/Code/discount/
+ * snappy DEFAULT GOOGLE-DEFAULT
+ * fuse-rdiff-backup-fs DEFAULT:rdiff-backup-fs GOOGLE-DEFAULT
+ * siege DEFAULT http://www.joedog.org/pub/siege/
+ * pianobar DEFAULT http://6xq.net/static/projects/pianobar/
+ * unhide DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
