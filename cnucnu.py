@@ -113,7 +113,7 @@ if __name__ == '__main__':
                        #print "Name",p.name
                         pprint(p.report_outdated(dry_run=options.dry_run))
                 except UpstreamVersionRetrievalError:
-#                    print "URL"
+                    print "Missing URL"
                     upstream+=1
 
                 except KeyError:

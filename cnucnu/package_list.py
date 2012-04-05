@@ -406,37 +406,53 @@ class PackageList:
  * altermime DEFAULT http://www.pldaniels.com/altermime/
  * amavisd-new amavisd-new-(2\.[0-9.]*?).tar.gz http://www.amavis.org/
  * apcupsd DEFAULT http://sourceforge.net/api/file/index/project-name/apcupsd/mtime/desc/limit/30/rss
+ * apt-dater DEFAULT SF-DEFAULT
  * arc DEFAULT SF-DEFAULT
  * arj DEFAULT SF-DEFAULT
+ * augeas DEFAULT http://augeas.net/download/
  * awstats DEFAULT SF-DEFAULT
- * cabextract DEFAULT  http://www.cabextract.org.uk/
+ * cabextract DEFAULT http://www.cabextract.org.uk/
  * cacti DEFAULT http://www.cacti.net/downloads/
  * cacti-spine DEFAULT http://www.cacti.net/downloads/spine/
  * chkrootkit DEFAULT ftp://ftp.pangeia.com.br/pub/seg/pac/
  * clamav DEFAULT SF-DEFAULT
  * clusterssh DEFAULT SF-DEFAULT
  * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
+ * discount DEFAULT http://www.pell.portland.or.us/~orc/Code/discount/
  * etckeeper DEFAULT http://ftp.debian.org/debian/pool/main/e/etckeeper/
+ * fdupes fdupes-(.*?).tar.gz GOOGLE-DEFAULT
  * freeze DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * fuse-rdiff-backup-fs DEFAULT:rdiff-backup-fs GOOGLE-DEFAULT:rdiff-backup-fs
  * ganglia DEFAULT SF-DEFAULT
+ * git git-([0-9.]*?).tar.gz GOOGLE-DEFAULT:git-core
  * htop DEFAULT SF-DEFAULT
  * icinga DEFAULT SF-DEFAULT
  * iftop DEFAULT http://www.ex-parrot.com/~pdw/iftop/download/
+ * ldns DEFAULT http://www.nlnetlabs.nl/downloads/ldns/
  * lha DEFAULT DEFAULT
- * lzo DEFAULT http://www.oberhumer.com/opensource/lzo/
+ * lshw lshw-B.([\d.]*?).tar.gz http://ezix.org/software/files/
+ * lzo DEFAULT http://www.oberhumer.com/opensource/lzo/download/
  * lzop DEFAULT http://www.lzop.org/download/
  * mercurial DEFAULT http://mercurial.selenic.com/release/
+ * mfs DEFAULT http://www.moosefs.org/download.html
+ * mirmon DEFAULT http://people.cs.uu.nl/henkp/mirmon/
  * monit DEFAULT http://mmonit.com/monit/dist/
  * nagios DEFAULT SF-DEFAULT
+ * netperf DEFAULT ftp://ftp.netperf.org/netperf/
+ * nload DEFAULT http://www.roland-riegel.de/nload/
  * nmap nmap-([0-9.]*?).tgz http://nmap.org/dist/
  * nmon DEFAULT SF-DEFAULT
  * nomarch DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * openvpn DEFAULT http://swupdate.openvpn.org/community/releases/
  * p7zip p7zip_([\d\.]+)_src_all.tar.bz SF-DEFAULT
+ * perl-Apache2-AuthenNIS CPAN-DEFAULT CPAN-DEFAULT
  * perl-Archive-Zip CPAN-DEFAULT CPAN-DEFAULT
  * perl-BerkeleyDB CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Class-Accessor-Grouped CPAN-DEFAULT CPAN-DEFAULT
  * perl-Compress-Raw-Bzip2 CPAN-DEFAULT CPAN-DEFAULT
  * perl-Compress-Raw-Zlib CPAN-DEFAULT CPAN-DEFAULT
  * perl-Compress-Zlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Config-Any CPAN-DEFAULT CPAN-DEFAULT
  * perl-Convert-BinHex CPAN-DEFAULT CPAN-DEFAULT
  * perl-Convert-TNEF CPAN-DEFAULT CPAN-DEFAULT
  * perl-Convert-UUlib CPAN-DEFAULT CPAN-DEFAULT
@@ -468,38 +484,40 @@ class PackageList:
  * perl-Math-Fibonacci-Phi CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-DNS CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-Ident CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Net-SPF CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-SSLeay CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-Server CPAN-DEFAULT CPAN-DEFAULT
  * perl-NetAddr-IP CPAN-DEFAULT CPAN-DEFAULT
  * perl-Pod-Escapes CPAN-DEFAULT CPAN-DEFAULT
+ * perl-SVN-Access CPAN-DEFAULT CPAN-DEFAULT
+ * perl-VCS-Lite CPAN-DEFAULT CPAN-DEFAULT
+ * perl-WWW-Mediawiki-Client CPAN-DEFAULT CPAN-DEFAULT
  * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
  * phpmyadmin3 phpMyAdmin-(3.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * pianobar DEFAULT http://6xq.net/static/projects/pianobar/
  * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
  * proftpd DEFAULT ftp://ftp.proftpd.org/distrib/source/
+ * python-webpy DEFAULT:web.py http://webpy.org/static/
  * razor-agents razor-agents-(.*?).tar.bz2 http://sourceforge.net/projects/razor/files/
  * re2c DEFAULT SF-DEFAULT
  * ripole DEFAULT http://www.pldaniels.com/ripole
  * rkhunter DEFAULT SF-DEFAULT
- * rrdtool DEFAULT http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/
+ * rrdtool DEFAULT http://oss.oetiker.ch/rrdtool/pub/
+ * siege DEFAULT http://www.joedog.org/pub/siege/
+ * snappy DEFAULT GOOGLE-DEFAULT
  * spamassassin Mail-SpamAssassin-(.*?).tar.bz2 http://www.apache.org/dist/spamassassin/source/
  * subversion DEFAULT http://subversion.apache.org/download/
+ * swish-e DEFAULT http://swish-e.org/download/index.html
  * syslinux DEFAULT http://www.kernel.org/pub/linux/utils/boot/syslinux/
  * tig DEFAULT http://jonas.nitro.dk/tig/releases/
+ * tinc tinc-([\d.]*?).tar.gz http://www.tinc-vpn.org/packages/
  * tmux DEFAULT SF-DEFAULT
+ * udpxy udpxy\.(.*?)-[\d]-prod.tgz SF-DEFAULT
  * unarj DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * unbound DEFAULT http://unbound.net/downloads/
+ * unhide DEFAULT SF-DEFAULT
  * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
  * zoo DEFAULT DEFAULT
- * mirmon DEFAULT http://people.cs.uu.nl/henkp/mirmon/
- * tinc tinc-([\d.]*?).tar.gz http://www.tinc-vpn.org/packages/
- * apt-dater DEFAULT SF-DEFAULT
- * augeas DEFAULT http://augeas.net/download/
- * perl-SVN-Access CPAN-DEFAULT CPAN-DEFAULT
- * discount DEFAULT http://www.pell.portland.or.us/~orc/Code/discount/
- * snappy DEFAULT GOOGLE-DEFAULT
- * fuse-rdiff-backup-fs DEFAULT:rdiff-backup-fs GOOGLE-DEFAULT
- * siege DEFAULT http://www.joedog.org/pub/siege/
- * pianobar DEFAULT http://6xq.net/static/projects/pianobar/
- * unhide DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
