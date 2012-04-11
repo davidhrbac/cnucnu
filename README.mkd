@@ -40,5 +40,65 @@ root@specs2:1449:447:~/cnucnu.new$ ./cnucnu.py --shell
  None http://search.cpan.org/dist/Plack/  Regex:> DEFAULT:Plack
 Upstream Versions: ['0.9986']
 Latest: 0.9986
- \bPlack[-_](?i)(?:(?:src|source)[-_])?([^-/_\s]*?\d[^-/_\s]*?)(?:[-_.](?:src|source|orig))?\.(?:tar|t[bglx]z|tbz2|zip)\b http://search.cpan.org/dist/Plack/  Regex:>```
-M
+ \bPlack[-_](?i)(?:(?:src|source)[-_])?([^-/_\s]*?\d[^-/_\s]*?)(?:[-_.](?:src|source|orig))?\.(?:tar|t[bglx]z|tbz2|zip)\b http://search.cpan.org/dist/Plack/  Regex:>
+```
+
+### Typical output
+
+```bash
+root@specs2:1005:6:~/cnucnu.new$ ./cnucnu.py --create-bugs
+2/118 * amavisd-new: repo=2.6.6 upstream=2.7.0
+12/118 * chkrootkit Missing URL
+19/118 * fdupes: repo=1.40 upstream=1.50-PR2
+        Bug already filed:https://bugzilla.redhat.com/show_bug.cgi?id=630694 NEW
+None
+22/118 * ganglia: repo=3.1.7 upstream=3.3.5
+26/118 * iftop: repo=0.17 upstream=1.0pre2
+        Bug already filed:https://bugzilla.redhat.com/show_bug.cgi?id=743535 CLOSED
+None
+28/118 * lha Missing URL
+34/118 * mirmon: repo=2.4 upstream=2.5
+36/118 * nagios: repo=3.2.3 upstream=3.3.1
+37/118 * netperf: repo=2.4.5 upstream=2.5.0
+        Upstream Version found in SCM, skipping bug report: netperf U:2.5.0 R:2.4.5
+None
+40/118 * nmon Missing URL
+46/118 * perl-BerkeleyDB: repo=0.43 upstream=0.51
+47/118 * perl-Class-Accessor-Grouped: repo=0.10003 upstream=0.10006
+48/118 * perl-Compress-Raw-Bzip2: repo=2.037 upstream=2.049
+49/118 * perl-Compress-Raw-Zlib: repo=2.037 upstream=2.051
+        Bug already filed:https://bugzilla.redhat.com/show_bug.cgi?id=796643 CLOSED
+None
+51/118 * perl-Config-Any: repo=0.21 upstream=0.23
+57/118 * perl-DB_File: repo=1.822 upstream=1.826
+58/118 * perl-Dancer: repo=1.3091 upstream=1.3095
+        Upstream Version found in SCM, skipping bug report: perl-Dancer U:1.3095 R:1.3091
+None
+59/118 * perl-Data-Dumper-Concise: repo=1.100 upstream=2.020
+60/118 * perl-Digest-MD5: repo=2.39 upstream=2.51
+61/118 * perl-Digest-SHA: repo=5.50 upstream=5.71
+        Bug already filed:https://bugzilla.redhat.com/show_bug.cgi?id=802987 CLOSED
+None
+69/118 * perl-IO-Compress: repo=2.037 upstream=2.049
+70/118 * perl-IO-Socket-SSL: repo=1.44 upstream=1.64
+80/118 * perl-Math-BigInt-FastCalc: repo=0.19 upstream=0.30
+84/118 * perl-Net-SPF Missing URL
+85/118 * perl-Net-SSLeay: repo=1.36 upstream=1.47
+88/118 * perl-Plack: repo=0.9979 upstream=0.9986
+        Upstream Version found in SCM, skipping bug report: perl-Plack U:0.9986 R:0.9979
+None
+93/118 * phpmyadmin Missing URL
+98/118 * python-webpy: repo=0.35 upstream=0.36
+114/118 * unarj: repo=2.63 upstream=2.63a
+116/118 * unhide: repo=0.0.20110113 upstream=20110113
+        Upstream Version found in SCM, skipping bug report: unhide U:20110113 R:0.0.20110113
+None
+118/118 * zoo Missing URL
+==================== Results ====================
+     Total                        118 (100%)
+     Outdated                      25 ( 21%)
+     Unresolved                    17 ( 14%)
+          Upstream URL              6 (  5%)
+          Missing RPM               7 (  5%)
+          Other                     4 (  3%)
+```
