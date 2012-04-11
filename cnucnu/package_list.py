@@ -521,6 +521,7 @@ class PackageList:
  * dnsmasq DEFAULT http://www.thekelleys.org.uk/dnsmasq/
  * perl-Plack CPAN-DEFAULT CPAN-DEFAULT
  * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
+ * rsync DEFAULT http://rsync.samba.org/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
