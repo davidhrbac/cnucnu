@@ -518,6 +518,9 @@ class PackageList:
  * unhide DEFAULT SF-DEFAULT
  * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
  * zoo DEFAULT DEFAULT
+ * dnsmasq DEFAULT http://www.thekelleys.org.uk/dnsmasq/
+ * perl-Plack CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
