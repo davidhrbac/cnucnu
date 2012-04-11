@@ -1,3 +1,44 @@
 # Cnucnu fork
 
 *This is my fork of original cnucnu. I use it to check upstream releases for my repo/repoforge packaging.*
+
+
+### Package definition
+Package definitions comes with format like this:
+
+* package-name regex upstream-url
+* cacti DEFAULT http://www.cacti.net/downloads/
+* awstats DEFAULT SF-DEFAULT
+* perl-Plack CPAN-DEFAULT CPAN-DEFAULT
+
+
+### How to test package definition - common
+```bash
+root@specs2:1451:449:~/cnucnu.new$ ./cnucnu.py --shell
+ None None  URL:> http://www.cacti.net/downloads/
+ None http://www.cacti.net/downloads/  Regex:> DEFAULT
+Upstream Versions: ['0.8.1', '0.8.1', '0.8.1', '0.8.1', '0.8.2', '0.8.2', '0.8.2', '0.8.2', '0.8.2a', '0.8.2a', '0.8.2a', '0.8.2a', '0.8.3', '0.8.3', '0.8.3', '0.8.3', '0.8.3a', '0.8.3a', '0.8.3a', '0.8.3a', '0.8.4', '0.8.4', '0.8.4', '0.8.4', '0.8.5', '0.8.5', '0.8.5', '0.8.5', '0.8.5a', '0.8.5a', '0.8.5a', '0.8.5a', '0.8.6', '0.8.6', '0.8.6', '0.8.6', '0.8.6a', '0.8.6a', '0.8.6a', '0.8.6a', '0.8.6b', '0.8.6b', '0.8.6b', '0.8.6b', '0.8.6c', '0.8.6c', '0.8.6c', '0.8.6c', '0.8.6d', '0.8.6d', '0.8.6d', '0.8.6d', '0.8.6e', '0.8.6e', '0.8.6e', '0.8.6e', '0.8.6f', '0.8.6f', '0.8.6f', '0.8.6f', '0.8.6g', '0.8.6g', '0.8.6g', '0.8.6g', '0.8.6h', '0.8.6h', '0.8.6h', '0.8.6h', '0.8.6i', '0.8.6i', '0.8.6i', '0.8.6i', '0.8.6j', '0.8.6j', '0.8.6j', '0.8.6j', '0.8.6k', '0.8.6k', '0.8.6k', '0.8.6k', '0.8.7', '0.8.7', '0.8.7', '0.8.7', '0.8.7a', '0.8.7a', '0.8.7a', '0.8.7a', '0.8.7b', '0.8.7b', '0.8.7b', '0.8.7b', '0.8.7c', '0.8.7c', '0.8.7c', '0.8.7c', '0.8.7d', '0.8.7d', '0.8.7d', '0.8.7d', '0.8.7e', '0.8.7e', '0.8.7e', '0.8.7e', '0.8.7f', '0.8.7f', '0.8.7f', '0.8.7f', '0.8.7g', '0.8.7g', '0.8.7g', '0.8.7g', '0.8.7h', '0.8.7h', '0.8.7h', '0.8.7h', '3.1', '3.1', '3.1', '3.1', '0.8.7i', '0.8.7i', '0.8.7i', '0.8.7i', '0.8.8', '0.8.8', '0.8.8', '0.8.8', '0.8', '0.8', '0.8', '0.8']
+Latest: 3.1
+ \b[-_](?i)(?:(?:src|source)[-_])?([^-/_\s]*?\d[^-/_\s]*?)(?:[-_.](?:src|source|orig))?\.(?:tar|t[bglx]z|tbz2|zip)\b http://www.cacti.net/downloads/  Regex:>
+
+```
+### How to test package definition - SourceForge
+```bash
+root@specs2:1450:448:~/cnucnu.new$ ./cnucnu.py --shell
+ None None  URL:> SF-DEFAULT:awstats
+ None http://sourceforge.net/api/file/index/project-name/awstats/mtime/desc/limit/40/rss  Regex:> DEFAULT
+Upstream Versions: ['7.0', '7.0', '7.0', '7.0', '7.0', '7.0', '7.0', '7.0', '7.0', '7.0', '2.9', '2.9', '2.9', '2.9', '2.9', '6.95', '6.95', '6.95', '6.95', '6.95', '6.95', '6.95', '6.95', '6.95', '6.95', '6.9', '6.9', '6.9', '6.9', '6.9', '6.9', '6.9', '6.9', '6.9', '6.9', '6.8', '6.8', '6.8', '6.8', '6.8', '6.8', '6.8', '6.8', '6.8', '6.8', '6.7', '6.7', '6.7', '6.7', '6.7', '6.7', '6.7', '6.7', '6.7', '6.7', '6.6', '6.6', '6.6', '6.6', '6.6']
+Latest: 7.0
+ \b[-_](?i)(?:(?:src|source)[-_])?([^-/_\s]*?\d[^-/_\s]*?)(?:[-_.](?:src|source|orig))?\.(?:tar|t[bglx]z|tbz2|zip)\b http://sourceforge.net/api/file/index/project-name/awstats/mtime/desc/limit/40/rss  Regex:>
+```
+### How to test package definition - perl
+
+
+```bash
+root@specs2:1449:447:~/cnucnu.new$ ./cnucnu.py --shell
+ None None  URL:> CPAN-DEFAULT:Plack
+ None http://search.cpan.org/dist/Plack/  Regex:> DEFAULT:Plack
+Upstream Versions: ['0.9986']
+Latest: 0.9986
+ \bPlack[-_](?i)(?:(?:src|source)[-_])?([^-/_\s]*?\d[^-/_\s]*?)(?:[-_.](?:src|source|orig))?\.(?:tar|t[bglx]z|tbz2|zip)\b http://search.cpan.org/dist/Plack/  Regex:>```
+M
