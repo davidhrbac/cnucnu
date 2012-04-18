@@ -419,7 +419,7 @@ class PackageList:
  * clusterssh DEFAULT SF-DEFAULT
  * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
  * discount DEFAULT http://www.pell.portland.or.us/~orc/Code/discount/
- * etckeeper DEFAULT http://ftp.debian.org/debian/pool/main/e/etckeeper/
+ * etckeeper DEFAULT http://joey.kitenet.net/code/etckeeper/
  * fdupes fdupes-(.*?).tar.gz GOOGLE-DEFAULT
  * freeze DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * fuse-rdiff-backup-fs DEFAULT:rdiff-backup-fs GOOGLE-DEFAULT:rdiff-backup-fs
@@ -522,6 +522,7 @@ class PackageList:
  * perl-Plack CPAN-DEFAULT CPAN-DEFAULT
  * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
  * rsync DEFAULT http://rsync.samba.org/
+ * pnp4nagios DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
