@@ -523,6 +523,7 @@ class PackageList:
  * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
  * rsync DEFAULT http://rsync.samba.org/
  * pnp4nagios DEFAULT SF-DEFAULT
+ * perl-Perl-Critic CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
