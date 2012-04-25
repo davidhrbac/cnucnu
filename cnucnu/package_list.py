@@ -524,6 +524,10 @@ class PackageList:
  * rsync DEFAULT http://rsync.samba.org/
  * pnp4nagios DEFAULT SF-DEFAULT
  * perl-Perl-Critic CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Digest-HMAC CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-Multiplex CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Parse-Syslog CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Tie-IxHash CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
