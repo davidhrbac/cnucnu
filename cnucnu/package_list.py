@@ -537,6 +537,7 @@ class PackageList:
  * mod_fastcgi DEFAULT http://www.fastcgi.com/dist/
  * denyhosts DEFAULT SF-DEFAULT
  * opendkim opendkim-([\d.]*?).tar.gz SF-DEFAULT
+ * remind DEFAULT http://www.roaringpenguin.com/files/download/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
