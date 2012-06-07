@@ -536,6 +536,7 @@ class PackageList:
  * spinner DEFAULT http://downloads.laffeycomputer.com/current_builds/spinner/
  * mod_fastcgi DEFAULT http://www.fastcgi.com/dist/
  * denyhosts DEFAULT SF-DEFAULT
+ * opendkim opendkim-([\d.]*?).tar.gz SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
