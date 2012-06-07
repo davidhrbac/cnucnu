@@ -530,6 +530,7 @@ class PackageList:
  * perl-Tie-IxHash CPAN-DEFAULT CPAN-DEFAULT
  * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
  * ungifsicle DEFAULT http://www.lcdf.org/gifsicle/
+ * enma DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
