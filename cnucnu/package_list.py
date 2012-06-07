@@ -534,6 +534,7 @@ class PackageList:
  * libspf2 DEFAULT http://www.libspf2.org/spf/
  * xmlrpc-c DEFAULT SF-DEFAULT
  * spinner DEFAULT http://downloads.laffeycomputer.com/current_builds/spinner/
+ * mod_fastcgi DEFAULT http://www.fastcgi.com/dist/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
