@@ -539,6 +539,7 @@ class PackageList:
  * opendkim opendkim-([\d.]*?).tar.gz SF-DEFAULT
  * remind DEFAULT http://www.roaringpenguin.com/files/download/
  * xournal DEFAULT SF-DEFAULT
+ * tor DEFAULT http://tor.eff.org/dist/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
