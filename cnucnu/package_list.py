@@ -531,6 +531,7 @@ class PackageList:
  * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
  * ungifsicle DEFAULT http://www.lcdf.org/gifsicle/
  * enma DEFAULT SF-DEFAULT
+ * libspf2 DEFAULT http://www.libspf2.org/spf/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
