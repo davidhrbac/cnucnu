@@ -538,6 +538,7 @@ class PackageList:
  * denyhosts DEFAULT SF-DEFAULT
  * opendkim opendkim-([\d.]*?).tar.gz SF-DEFAULT
  * remind DEFAULT http://www.roaringpenguin.com/files/download/
+ * xournal DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
