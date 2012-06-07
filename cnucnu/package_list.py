@@ -535,6 +535,7 @@ class PackageList:
  * xmlrpc-c DEFAULT SF-DEFAULT
  * spinner DEFAULT http://downloads.laffeycomputer.com/current_builds/spinner/
  * mod_fastcgi DEFAULT http://www.fastcgi.com/dist/
+ * denyhosts DEFAULT SF-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
