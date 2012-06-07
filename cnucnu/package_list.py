@@ -533,6 +533,7 @@ class PackageList:
  * enma DEFAULT SF-DEFAULT
  * libspf2 DEFAULT http://www.libspf2.org/spf/
  * xmlrpc-c DEFAULT SF-DEFAULT
+ * spinner DEFAULT http://downloads.laffeycomputer.com/current_builds/spinner/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
