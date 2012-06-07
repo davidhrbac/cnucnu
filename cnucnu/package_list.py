@@ -528,6 +528,8 @@ class PackageList:
  * perl-IO-Multiplex CPAN-DEFAULT CPAN-DEFAULT
  * perl-Parse-Syslog CPAN-DEFAULT CPAN-DEFAULT
  * perl-Tie-IxHash CPAN-DEFAULT CPAN-DEFAULT
+ * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
+ * ungifsicle DEFAULT http://www.lcdf.org/gifsicle/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
