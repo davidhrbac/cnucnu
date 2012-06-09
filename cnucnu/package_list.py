@@ -540,6 +540,7 @@ class PackageList:
  * remind DEFAULT http://www.roaringpenguin.com/files/download/
  * xournal DEFAULT SF-DEFAULT
  * tor DEFAULT http://tor.eff.org/dist/
+ * freetds DEFAULT ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable/
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
