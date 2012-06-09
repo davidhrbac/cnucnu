@@ -541,6 +541,7 @@ class PackageList:
  * xournal DEFAULT SF-DEFAULT
  * tor DEFAULT http://tor.eff.org/dist/
  * freetds DEFAULT ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable/
+ * perl-DBD-Sybase CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
