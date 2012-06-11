@@ -542,6 +542,10 @@ class PackageList:
  * tor DEFAULT http://tor.eff.org/dist/
  * freetds DEFAULT ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable/
  * perl-DBD-Sybase CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-Tester CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-NoWarnings CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-Deep CPAN-DEFAULT CPAN-DEFAULT
+ * perl-WWW-Mechanize CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
