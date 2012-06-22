@@ -547,6 +547,8 @@ class PackageList:
  * perl-Test-Deep CPAN-DEFAULT CPAN-DEFAULT
  * perl-WWW-Mechanize CPAN-DEFAULT CPAN-DEFAULT
  * eggdrop eggdrop([0-9.]*?).tar.gz ftp://ftp.eggheads.org/pub/eggdrop/GNU/stable/
+ * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
+ * perl-WebService-Pushover CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
