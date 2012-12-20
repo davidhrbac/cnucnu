@@ -411,6 +411,7 @@ class PackageList:
  * arj DEFAULT SF-DEFAULT
  * augeas DEFAULT http://augeas.net/download/
  * awstats DEFAULT SF-DEFAULT
+ * bashdb DEFAULT SF-DEFAULT
  * cabextract DEFAULT http://www.cabextract.org.uk/
  * cacti DEFAULT http://www.cacti.net/downloads/
  * cacti-spine DEFAULT http://www.cacti.net/downloads/spine/
@@ -418,35 +419,54 @@ class PackageList:
  * clamav DEFAULT SF-DEFAULT
  * clusterssh DEFAULT SF-DEFAULT
  * crossroads DEFAULT http://crossroads.e-tunity.com/downloads/versions/
+ * denyhosts DEFAULT SF-DEFAULT
  * discount DEFAULT http://www.pell.portland.or.us/~orc/Code/discount/
+ * dnsmasq DEFAULT http://www.thekelleys.org.uk/dnsmasq/
+ * eggdrop eggdrop([0-9.]*?).tar.gz ftp://ftp.eggheads.org/pub/eggdrop/GNU/stable/
+ * enma DEFAULT SF-DEFAULT
  * etckeeper DEFAULT http://ftp.debian.org/debian/pool/main/e/etckeeper/
+ * fail2ban DEFAULT https://github.com/fail2ban/fail2ban/downloads
  * fdupes fdupes-(.*?).tar.gz GOOGLE-DEFAULT
+ * freetds DEFAULT ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable/
  * freeze DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * fuse-rdiff-backup-fs DEFAULT:rdiff-backup-fs GOOGLE-DEFAULT
  * fuse-rdiff-backup-fs DEFAULT:rdiff-backup-fs GOOGLE-DEFAULT:rdiff-backup-fs
  * ganglia DEFAULT SF-DEFAULT
+ * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
  * git git-([0-9.]*?).tar.gz GOOGLE-DEFAULT:git-core
  * htop DEFAULT SF-DEFAULT
  * icinga DEFAULT SF-DEFAULT
+ * icinga-web DEFAULT http://sourceforge.net/projects/icinga/files/icinga-web/
  * iftop DEFAULT http://www.ex-parrot.com/~pdw/iftop/download/
+ * lambdamoo DEFAULT SF-DEFAULT
  * ldns DEFAULT http://www.nlnetlabs.nl/downloads/ldns/
  * lha DEFAULT DEFAULT
+ * libspf2 DEFAULT http://www.libspf2.org/spf/
+ * libtorrent DEFAULT http://libtorrent.rakshasa.no/downloads/
  * lshw lshw-B.([\d.]*?).tar.gz http://ezix.org/software/files/
  * lzo DEFAULT http://www.oberhumer.com/opensource/lzo/download/
  * lzop DEFAULT http://www.lzop.org/download/
  * mercurial DEFAULT http://mercurial.selenic.com/release/
  * mfs DEFAULT http://www.moosefs.org/download.html
+ * milter-greylist DEFAULT http://ftp.espci.fr/pub/milter-greylist/
  * mirmon DEFAULT http://people.cs.uu.nl/henkp/mirmon/
+ * mk-configure DEFAULT SF-DEFAULT
+ * mod_fastcgi DEFAULT http://www.fastcgi.com/dist/
  * monit DEFAULT http://mmonit.com/monit/dist/
+ * monitorix DEFAULT http://www.monitorix.org/
  * nagios DEFAULT SF-DEFAULT
+ * nagios-plugins DEFAULT http://sourceforge.net/projects/nagiosplug/files/nagiosplug/
  * netperf DEFAULT ftp://ftp.netperf.org/netperf/
  * nload DEFAULT http://www.roland-riegel.de/nload/
  * nmap nmap-([0-9.]*?).tgz http://nmap.org/dist/
  * nmon DEFAULT SF-DEFAULT
  * nomarch DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
+ * opendkim opendkim-([\d.]*?).tar.gz SF-DEFAULT
  * openvpn DEFAULT http://swupdate.openvpn.org/community/releases/
  * p7zip p7zip_([\d\.]+)_src_all.tar.bz SF-DEFAULT
  * perl-Apache2-AuthenNIS CPAN-DEFAULT CPAN-DEFAULT
  * perl-Archive-Zip CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Array-Columnize CPAN-DEFAULT CPAN-DEFAULT
  * perl-BerkeleyDB CPAN-DEFAULT CPAN-DEFAULT
  * perl-Class-Accessor-Grouped CPAN-DEFAULT CPAN-DEFAULT
  * perl-Compress-Raw-Bzip2 CPAN-DEFAULT CPAN-DEFAULT
@@ -457,9 +477,12 @@ class PackageList:
  * perl-Convert-TNEF CPAN-DEFAULT CPAN-DEFAULT
  * perl-Convert-UUlib CPAN-DEFAULT CPAN-DEFAULT
  * perl-Crypt-OpenSSL-RSA CPAN-DEFAULT CPAN-DEFAULT
+ * perl-DBD-Sybase CPAN-DEFAULT CPAN-DEFAULT
  * perl-DBI CPAN-DEFAULT CPAN-DEFAULT
  * perl-DB_File CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
  * perl-Data-Dumper-Concise CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Digest-HMAC CPAN-DEFAULT CPAN-DEFAULT
  * perl-Digest-MD5 CPAN-DEFAULT CPAN-DEFAULT
  * perl-Digest-SHA CPAN-DEFAULT CPAN-DEFAULT
  * perl-Digest-SHA1 CPAN-DEFAULT CPAN-DEFAULT
@@ -467,13 +490,16 @@ class PackageList:
  * perl-Encode-Detect CPAN-DEFAULT CPAN-DEFAULT
  * perl-Error CPAN-DEFAULT CPAN-DEFAULT
  * perl-Geography-Countries CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Getopt-Long-Descriptive CPAN-DEFAULT CPAN-DEFAULT
  * perl-HTML-Parser CPAN-DEFAULT CPAN-DEFAULT
  * perl-HTML-Tagset CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-Compress CPAN-DEFAULT CPAN-DEFAULT
+ * perl-IO-Multiplex CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-Socket-SSL CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-Zlib CPAN-DEFAULT CPAN-DEFAULT
  * perl-IO-stringy CPAN-DEFAULT CPAN-DEFAULT
  * perl-IP-Country CPAN-DEFAULT CPAN-DEFAULT
+ * perl-List-Cycle CPAN-DEFAULT CPAN-DEFAULT
  * perl-MIME-Base64 CPAN-DEFAULT CPAN-DEFAULT
  * perl-MIME-Lite CPAN-DEFAULT CPAN-DEFAULT
  * perl-MIME-tools CPAN-DEFAULT CPAN-DEFAULT
@@ -488,68 +514,68 @@ class PackageList:
  * perl-Net-SSLeay CPAN-DEFAULT CPAN-DEFAULT
  * perl-Net-Server CPAN-DEFAULT CPAN-DEFAULT
  * perl-NetAddr-IP CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Parse-Syslog CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Perl-Critic CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Plack CPAN-DEFAULT CPAN-DEFAULT
  * perl-Pod-Escapes CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Pod-Simple CPAN-DEFAULT CPAN-DEFAULT
+ * perl-SQL-Abstract CPAN-DEFAULT CPAN-DEFAULT
  * perl-SVN-Access CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-Deep CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-Exception CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-NoWarnings CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-Pod CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Test-Tester CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Tie-IxHash CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Time-HiRes CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Unix-PID CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Unix-Syslog CPAN-DEFAULT CPAN-DEFAULT
  * perl-VCS-Lite CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Variable-Magic CPAN-DEFAULT CPAN-DEFAULT
+ * perl-WWW-Mechanize CPAN-DEFAULT CPAN-DEFAULT
  * perl-WWW-Mediawiki-Client CPAN-DEFAULT CPAN-DEFAULT
- * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * perl-WebService-Pushover CPAN-DEFAULT CPAN-DEFAULT
+ * perl-rlib CPAN-DEFAULT CPAN-DEFAULT
+ * perl-version CPAN-DEFAULT CPAN-DEFAULT
  * phpMyAdmin phpMyAdmin-([\d.]*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
  * pianobar DEFAULT http://6xq.net/static/projects/pianobar/
+ * pnp4nagios DEFAULT SF-DEFAULT
  * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
  * proftpd DEFAULT ftp://ftp.proftpd.org/distrib/source/
+ * pure-ftpd DEFAULT http://download.pureftpd.org/pub/pure-ftpd/releases/
+ * pydb DEFAULT http://bashdb.sourceforge.net/pydb/
  * python-webpy DEFAULT:web.py http://webpy.org/static/
  * razor-agents razor-agents-(.*?).tar.bz2 http://sourceforge.net/projects/razor/files/
  * re2c DEFAULT SF-DEFAULT
+ * remake DEFAULT http://bashdb.sourceforge.net/remake/
+ * remind DEFAULT http://www.roaringpenguin.com/files/download/
  * ripole DEFAULT http://www.pldaniels.com/ripole
  * rkhunter DEFAULT SF-DEFAULT
  * rrdtool DEFAULT http://oss.oetiker.ch/rrdtool/pub/
+ * rsync DEFAULT http://rsync.samba.org/
+ * rtorrent DEFAULT http://libtorrent.rakshasa.no/downloads/
  * siege DEFAULT http://www.joedog.org/pub/siege/
  * snappy DEFAULT GOOGLE-DEFAULT
  * spamassassin Mail-SpamAssassin-(.*?).tar.bz2 http://www.apache.org/dist/spamassassin/source/
+ * spinner DEFAULT http://downloads.laffeycomputer.com/current_builds/spinner/
  * subversion DEFAULT http://subversion.apache.org/download/
  * swish-e DEFAULT http://swish-e.org/download/index.html
  * syslinux DEFAULT http://www.kernel.org/pub/linux/utils/boot/syslinux/
  * tig DEFAULT http://jonas.nitro.dk/tig/releases/
  * tinc tinc-([\d.]*?).tar.gz http://www.tinc-vpn.org/packages/
  * tmux DEFAULT SF-DEFAULT
+ * tor DEFAULT http://tor.eff.org/dist/
+ * ucarp DEFAULT http://download.pureftpd.org/pub/ucarp/
  * udpxy udpxy\.(.*?)-[\d]-prod.tgz SF-DEFAULT
  * unarj DEFAULT http://www.ibiblio.org/pub/Linux/utils/compress/
  * unbound DEFAULT http://unbound.net/downloads/
+ * ungifsicle DEFAULT http://www.lcdf.org/gifsicle/
  * unhide DEFAULT SF-DEFAULT
  * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
- * zoo DEFAULT DEFAULT
- * dnsmasq DEFAULT http://www.thekelleys.org.uk/dnsmasq/
- * perl-Plack CPAN-DEFAULT CPAN-DEFAULT
- * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
- * rsync DEFAULT http://rsync.samba.org/
- * pnp4nagios DEFAULT SF-DEFAULT
- * perl-Perl-Critic CPAN-DEFAULT CPAN-DEFAULT
- * perl-Digest-HMAC CPAN-DEFAULT CPAN-DEFAULT
- * perl-IO-Multiplex CPAN-DEFAULT CPAN-DEFAULT
- * perl-Parse-Syslog CPAN-DEFAULT CPAN-DEFAULT
- * perl-Tie-IxHash CPAN-DEFAULT CPAN-DEFAULT
- * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
- * ungifsicle DEFAULT http://www.lcdf.org/gifsicle/
- * enma DEFAULT SF-DEFAULT
- * libspf2 DEFAULT http://www.libspf2.org/spf/
  * xmlrpc-c DEFAULT SF-DEFAULT
- * spinner DEFAULT http://downloads.laffeycomputer.com/current_builds/spinner/
- * mod_fastcgi DEFAULT http://www.fastcgi.com/dist/
- * denyhosts DEFAULT SF-DEFAULT
- * opendkim opendkim-([\d.]*?).tar.gz SF-DEFAULT
- * remind DEFAULT http://www.roaringpenguin.com/files/download/
  * xournal DEFAULT SF-DEFAULT
- * tor DEFAULT http://tor.eff.org/dist/
- * freetds DEFAULT ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable/
- * perl-DBD-Sybase CPAN-DEFAULT CPAN-DEFAULT
- * perl-Test-Tester CPAN-DEFAULT CPAN-DEFAULT
- * perl-Test-NoWarnings CPAN-DEFAULT CPAN-DEFAULT
- * perl-Test-Deep CPAN-DEFAULT CPAN-DEFAULT
- * perl-WWW-Mechanize CPAN-DEFAULT CPAN-DEFAULT
- * eggdrop eggdrop([0-9.]*?).tar.gz ftp://ftp.eggheads.org/pub/eggdrop/GNU/stable/
- * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
- * perl-WebService-Pushover CPAN-DEFAULT CPAN-DEFAULT
- * fail2ban DEFAULT https://github.com/fail2ban/fail2ban/downloads
+ * zoo DEFAULT DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
