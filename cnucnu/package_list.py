@@ -493,7 +493,7 @@ class PackageList:
  * perl-VCS-Lite CPAN-DEFAULT CPAN-DEFAULT
  * perl-WWW-Mediawiki-Client CPAN-DEFAULT CPAN-DEFAULT
  * phpmyadmin phpMyAdmin-(2.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
- * phpmyadmin3 phpMyAdmin-(3.*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
+ * phpMyAdmin phpMyAdmin-([\d.]*?)-all-languages.tar.bz2 http://www.phpmyadmin.net/home_page/downloads.php
  * pianobar DEFAULT http://6xq.net/static/projects/pianobar/
  * postgrey DEFAULT http://postgrey.schweikert.ch/pub/
  * proftpd DEFAULT ftp://ftp.proftpd.org/distrib/source/
@@ -549,6 +549,7 @@ class PackageList:
  * eggdrop eggdrop([0-9.]*?).tar.gz ftp://ftp.eggheads.org/pub/eggdrop/GNU/stable/
  * perl-Dancer CPAN-DEFAULT CPAN-DEFAULT
  * perl-WebService-Pushover CPAN-DEFAULT CPAN-DEFAULT
+ * fail2ban DEFAULT https://github.com/fail2ban/fail2ban/downloads
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
