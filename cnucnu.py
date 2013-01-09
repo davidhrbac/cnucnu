@@ -78,7 +78,7 @@ if __name__ == '__main__':
                 break
 
     elif options.action == "create-bugs":
-        br = BugzillaReporter(global_config.bugzilla_config)
+        #br = BugzillaReporter(global_config.bugzilla_config)
         repo = Repository(**global_config.config["repo"])
         scm = SCM(**global_config.config["scm"])
 
@@ -91,7 +91,8 @@ if __name__ == '__main__':
         nopackage = 0
 
         v=False
-        pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
+        #pl = PackageList(repo=repo, scm=scm, br=br, **global_config.config["package list"])
+        pl = PackageList(repo=repo, scm=scm, **global_config.config["package list"])
         packages=len(pl.packages)
         #pl = PackageList(repo=repo, scm=scm, br=br, false)
         for p in pl:

@@ -576,6 +576,15 @@ class PackageList:
  * xmlrpc-c DEFAULT SF-DEFAULT
  * xournal DEFAULT SF-DEFAULT
  * zoo DEFAULT DEFAULT
+ * pv DEFAULT http://www.ivarch.com/programs/pv.shtml
+ * task DEFAULT http://www.taskwarrior.org/ 
+<!-- END LIST OF PACKAGES -->
+            """
+            page_text = """
+== List Of Packages ==
+ * task DEFAULT http://taskwarrior.org/projects/show/taskwarrior
+ * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
+ * perl-MailTools CPAN-DEFAULT CPAN-DEFAULT
 <!-- END LIST OF PACKAGES -->
             """
             #print page_text
