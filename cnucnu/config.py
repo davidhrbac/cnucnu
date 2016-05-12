@@ -57,7 +57,7 @@ bugzilla:
 
 
 repo:
-    path: 'http://repository.vsb.cz/'
+    path: 'http://repository-cit.it4i.cz/'
     name: Fedora Rawhide
 
 scm:

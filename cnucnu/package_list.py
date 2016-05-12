@@ -270,6 +270,9 @@ class Package(object):
         if not self._upstream_versions:
 
             upstream_versions = re.findall(self.regex, self.html)
+            print "HRB33" 
+            print self.regex 
+            print "HRB33" 
             for version in upstream_versions:
                 if " " in version:
                     raise cc_errors.UpstreamVersionRetrievalError("%s: invalid upstream version:>%s< - %s - %s " % (self.name, version, self.url, self.regex))
@@ -356,7 +359,8 @@ class Package(object):
                 print "\tUpstream Version found in SCM, skipping bug report: %(name)s U:%(latest_upstream)s R:%(repo_version)s" % self
                 return 
 
-            return self.br.report_outdated(self, dry_run)
+            #return self.br.report_outdated(self, dry_run)
+            return None
         else:
             print "Nagging disabled for package: %s" % str(self)
             return None
@@ -577,16 +581,30 @@ class PackageList:
  * xournal DEFAULT SF-DEFAULT
  * zoo DEFAULT DEFAULT
  * pv DEFAULT http://www.ivarch.com/programs/pv.shtml
- * task DEFAULT http://www.taskwarrior.org/ 
-<!-- END LIST OF PACKAGES -->
-            """
-            page_text = """
-== List Of Packages ==
  * task DEFAULT http://taskwarrior.org/projects/show/taskwarrior
- * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
- * perl-MailTools CPAN-DEFAULT CPAN-DEFAULT
+ * gocr DEFAULT http://jocr.sourceforge.net/download.html
+ * gscan2pdf DEFAULT SF-DEFAULT
+ * jailkit DEFAULT http://olivier.sessink.nl/jailkit/
+ * perl-MIME-EncWords CPAN-DEFAULT CPAN-DEFAULT
+ * perl-I18N-Charset CPAN-DEFAULT CPAN-DEFAULT
+ * perl-MIME-Charset CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Email-Valid CPAN-DEFAULT CPAN-DEFAULT
+ * perl-Mail-Sendmail CPAN-DEFAULT CPAN-DEFAULT
+ * rsstail DEFAULT http://www.vanheusden.com/rsstail/
+ * libmrss DEFAULT http://www2.autistici.org/bakunin/libmrss/
+ * libnxml DEFAULT http://autistici.org/bakunin/codes.php
 <!-- END LIST OF PACKAGES -->
             """
+
+##testing list
+#            page_text = """
+#== List Of Packages ==
+# * task DEFAULT http://taskwarrior.org/projects/show/taskwarrior
+# * gifsicle DEFAULT http://www.lcdf.org/gifsicle/
+# * perl-MailTools CPAN-DEFAULT CPAN-DEFAULT
+# * unrar DEFAULT:unrarsrc http://www.rarlab.com/rar_add.htm
+#<!-- END LIST OF PACKAGES -->
+#            """
             #print page_text
             for package_data in sorted(helper.match_interval(page_text, package_line_regex, "== List Of Packages ==", "<!-- END LIST OF PACKAGES -->")):
 #                print package_data
@@ -609,7 +627,6 @@ class PackageList:
         #print packages
         #print "Packages"
         self.append = self.packages.append
-
     def __getitem__(self, key):
         if isinstance(key, int):
             return self.packages[key]

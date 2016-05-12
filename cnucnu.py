@@ -112,7 +112,7 @@ if __name__ == '__main__':
                         sys.stdout.flush()
                         outdated+=1
                        #print "Name",p.name
-                        pprint(p.report_outdated(dry_run=options.dry_run))
+                        p.report_outdated(dry_run=options.dry_run)
                 except UpstreamVersionRetrievalError:
                     print "Missing URL"
                     upstream+=1
